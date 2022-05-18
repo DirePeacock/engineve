@@ -1,0 +1,5 @@
+@startuml
+engine -> engine: main_loop() wants the game to make a command
+engine -> invoker: make_attack_command()
+invoker -> receiver: evaluate_command()
+@enduml
