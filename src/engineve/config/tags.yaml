@@ -1,6 +1,11 @@
-tags
+data:
 - action
 - bonus_action
-- object interaction
+- object_interaction
+- target
+- attack
+- damage
 - move_on_your_turn
 - reaction
+- hit
+- miss

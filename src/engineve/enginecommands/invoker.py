@@ -1,4 +1,6 @@
-class Invoker():
+from .observer.observermanager import ObserverManager
+from ..tags import meta 
+class Invoker(ObserverManager):
     """Client calls this to send command to the receiver
     keep track of history
     apply commands
@@ -17,7 +19,6 @@ class Invoker():
     def put(self, command):
         self.command_stack.insert(0, command)
     
-
     def execute(self, state, command):
         "evaluate command, send actionable change to receiver"
         self.put(command)

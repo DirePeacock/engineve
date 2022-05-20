@@ -14,13 +14,15 @@ class GameEngine():
         """
 
         """
-        for attacker_id in self.state_manager.get_combat_iter():
+        for current_actor in self.state_manager.get_combat_iter():
             # while resource
             # target_id = self._get_target(self.state_manager.actors[attacker_id])
-            attack_command = BasicAI.make_attack_command(self.state_manager, attacker_id)
+            self.state_manager.actors[current_actor].get_attack_command(self.state_manager)
+            
+            attack_command = BasicAI.make_attack_command(self.state_manager, current_actor)
             # self.invoker.execute('attack', args=(attacker_id, target_id))
 
-            self.invoker.execute(state=self.state_manager, 
+            self.invoker.execute(state=self.state_manager,
                                  command=attack_command)
             # self.state_manager.manage_attack(attacker_id, target_id)
             # self.receiver.tick_stack()

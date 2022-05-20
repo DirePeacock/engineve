@@ -1,6 +1,6 @@
 import logging
 import random
-
+from ..actorai.basicai import BasicAI
 from .loc import Loc
 
 
@@ -8,7 +8,7 @@ def roll(size=20):
     return random.randint(1, size)
 
 class Actor():
-    def __init__(self, name=1, team=1, loc=(0,0)):
+    def __init__(self, name=1, team=1, loc=(0,0), ai_class=BasicAI):
         self.team = team 
         self.name = name
         self.id = self.name
@@ -17,8 +17,17 @@ class Actor():
         self.dex = 2
         self.str = 2
         self.ac = 13
+        self.ai_class = ai_class
         self.loc = Loc(loc) if isinstance(loc, tuple) else loc
+        self.commands = {}
     
+    def add_command_type(self, command_class):
+        return
+    def get_command_type(self, name):
+        return
+
+    def _make_attack_command(self, state):
+        return self.ai_class.make_attack_command(state, self.id)
     def modify_hp(self, value):
         change = value.num if hasattr(value,'num') else value
         word = 'dmg' if change <= 0 else 'oh'

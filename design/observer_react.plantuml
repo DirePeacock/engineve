@@ -1,0 +1,40 @@
+@startuml
+package engine_main
+{
+    
+    class Invoker
+    {
+        + command_stack[]
+        + observers[]
+        + notify_observers()
+        + tick_stack()
+    }
+    class ActorAI
+    {
+        + take_turn()
+        + make_command()
+    }
+    
+    class statemanager
+    {
+        + actors
+    }
+    class Actor
+    {
+        + ai_type 
+        + get_observer
+    }
+    class Observer
+    {
+        + invoke_reaction()
+        + actor_id
+        + meta_filter
+        + _get_reaction()
+    }
+    
+    
+    Actor -d-> statemanager
+
+}
+
+@enduml 
