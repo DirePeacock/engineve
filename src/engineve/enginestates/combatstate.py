@@ -1,6 +1,7 @@
 from .enginestate import EngineState
 from ..enginecommands.effectcommands.nextturn import NextTurn
 from ..enginecommands.gamecommands.initiativecommand import InitiativeCommand
+
 class CombatState(EngineState):
     ''' TODO: WTF do i not do that the combat object does? should i delete that thing?(probly)'''
     def __init__(self, actor_ids=None, *args, **kwargs):
@@ -21,10 +22,8 @@ class CombatState(EngineState):
         else:
             self.end_combat(state, invoker)
 
-
-
     def is_turn_done(self, state, invoker):
-        return  state.actors[state.combat.current_iter].is_turn_done(state)
+        return state.actors[state.combat.current_iter].is_turn_done(state)
 
     def start_combat(self, state, invoker):
         self.roll_inits(state, invoker)

@@ -8,10 +8,11 @@
         {
             "name": "debug main",
             "type": "python",
+            "subProcess": true,
             "request": "launch",
-            "program": "${workspaceFolder}/src/engineve/main.py",
+            "module": "src.engineve",
             "console": "integratedTerminal",
-            "justMyCode": true
+            
         },
         {
             "name": "pytest",
