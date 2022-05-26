@@ -10,9 +10,7 @@ from engineve.enginecommands.observer.observermanager import ObserverManager
 #     print('somehting')
 #     for name, value in TAGS.__members__.items():
 #         print(f"{name}: {value}")
-
-def test_reation_command():
-    """ test reactable actions
+""" test reactable actions
     make a state with combatants A and B
     B can react to an attack that misses or hits or somehting
     A attacks B
@@ -23,18 +21,34 @@ def test_reation_command():
     observer pattern - kinda
     game command types -
     Actor.get_command() ->
-    tags
     pytest stubs?
     """
+
+def test_get_reation_command():
     def _trigger(state, obj):
         return isinstance(obj, TaggedClass) and TAGS.attack in obj.tags
 
     def _reaction(*args, **kwargs):
-        print(f"_reaction({args}, {kwargs})")
+        logging.debug(f"_reaction({args}, {kwargs})")
         return True
 
-    _reaction = 'reaction'
     test_observer= Observer(trigger=_trigger, reaction=_reaction)
     meta = TaggedClass(tags=[TAGS.attack])
     retval = test_observer.react(state=None, meta=meta)
     assert retval
+    
+    return
+
+def test_notify():
+    def _trigger(state, obj):
+        return isinstance(obj, TaggedClass) and TAGS.attack in obj.tags
+
+    def _reaction(*args, **kwargs):
+        logging.debug(f"_reaction({args}, {kwargs})")
+        return True
+    
+    manager = ObserverManager()
+    manager.register_observer(Observer(trigger=_trigger, reaction=_reaction))
+    meta_event = TaggedClass(tags=[TAGS.attack])
+    manager.notify(state=None, meta=meta_event)
+    return

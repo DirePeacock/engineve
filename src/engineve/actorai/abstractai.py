@@ -5,17 +5,14 @@ class AbstractAI(metaclass=ABCMeta):
     
     @staticmethod
     @abstractmethod
-    def execute():
+    def is_turn_completed(state, actor_id):
         """ The required execute method that all command objects will use"""
-        pass
+        
+
+    @staticmethod
+    @abstractmethod
+    def select_game_move(state, actor_id):
+        """select a move from those available for that actor"""
     
-    @staticmethod
-    @abstractmethod
-    def evaluate():
-        '''calculate effect and undo'''
-        pass
-    @staticmethod
-    @abstractmethod
-    def undo():
-        '''calculate effect and undo'''
-        pass
+
+    

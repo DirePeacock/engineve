@@ -8,7 +8,9 @@ class ObserverManager():
         self.observers.append(observer)
 
     def notify(self, state, meta):
-        """Alert the observers"""
+        """Alert the observers
+        TODO: what should this return
+        """
         for observer in self.observers:
             if observer.match_notification(state, meta):
-                observer.get_reaction(self)
+                observer.get_reaction(state, meta)

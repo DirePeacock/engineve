@@ -1,3 +1,5 @@
+# TODO delete this when combat class works
+
 class CombatActorIterator():
     def __init__(self, game_state, ids=None):
         self.GAME_STATE = game_state

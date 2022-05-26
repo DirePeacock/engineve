@@ -1,4 +1,12 @@
 import random
+import uuid
+import math
+
+def roll(size=20):
+    return random.randint(1, size)
+
+def get_id():
+    return uuid.uuid4().int
 
 rando = 1
 def get_rando():
@@ -7,9 +15,23 @@ def get_rando():
     rando += 1
     return rv
 
+
 name_table = ['arthur', 'bartholemew', 'charlemange', 'diocles', 'elwing', 'falcor', 'gawain', 'hadrian', 'iori', 'jamis', 
 'kelvin', 'llewelyn', 'malice', 'nostradamus', 'ophelia', 'phelia', 'quattro', 'roderick', 'stefan', 'theodocian',  
-'ullamon', 'valter', 'wolfgard', 'xxx', 'yorick', 'zezima']
+'ullamon', 'valter', 'wolfgard', 'xyna', 'yorick', 'zezima']
+
+used_names = []
+def get_stat_modifier(stat):
+    return math.floor((float(stat) - 10.0) / 2.0)
+    
 def get_random_name():
-    name_table[random.randint(0, len(name_table))]
+    global name_table
+    global used_names
+    new_name = name_table[random.randint(0, len(name_table)-1)]
+    used_names.append(new_name)
+    name_table.remove(new_name)
+    if 0 == len(name_table):
+        name_table = used_names
+        used_names = []
+    return new_name
 

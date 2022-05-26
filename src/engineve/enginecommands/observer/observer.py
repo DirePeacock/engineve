@@ -11,6 +11,7 @@ class Observer():
         self.reaction = reaction
     
     def react(self, state, meta):
+        """should return command obj for the stack"""
         if self.match_notification(state, meta):
            return self.get_reaction(state, meta)
 

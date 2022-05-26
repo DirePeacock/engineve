@@ -19,6 +19,7 @@ class CompositeCommand(Command):
     def evaluate(self, state):
         '''evaluate children until all my children are evaluated and I know what to do with them.'''
         self._evaluate_children(state)
+        super().evaluate(state)
 
     def _evaluate_children(self, state):
         for key in self.children.keys():

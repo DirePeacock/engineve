@@ -1,0 +1,7 @@
+@startuml
+for game_move_command in actor.turn(state)
+    invoker.add_command(game_move_command)
+    ' invoker.add_command(game_move_command)
+
+
+@enduml

@@ -1,5 +1,5 @@
-from .primitivecommand import PrimitiveCommand
-class ModifyHP(PrimitiveCommand):
+from .effectcommand import EffectCommand
+class ModifyHP(EffectCommand):
     def __init__(self, target_id, num, attacker_id=None):
         self.target_id = target_id
         self.num = num
