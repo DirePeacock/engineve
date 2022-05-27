@@ -1,5 +1,29 @@
 # VeGameEngine
 
+## This Game Engine Shall have the Following Capabilities
+* observable state and changes via command & observer SW patterns
+* pause-able & variable speed main loop 
+* state of engine and game can be saved/loaded
+* game rules like in the 5e SRD can be defined and loaded from json/yaml
+* character sheets allow for decoration of actors with class levels
+* black formatted
+* runs headless
+* observer hooks for a hypothetical Graphics Engine
+* "runs fast"
+* "good unit test coverage"
+* "design is understandable to a junior dev & has pictures"
+* "well documented"
+* "modern CI/CD"
+
+* bonus: undo-able command effects
+* bonus: statistics collection
+* bonus: machine learning
+* bonus: Graphics engine has a way for graphics data to be associated with a game object?
+* bonus: bonus: MULTIPLAYER???
+
+
+
+
 ## NEEDS 4 GAME DEMO
 engine tick
 everything i need to display needs to be a command
@@ -8,7 +32,10 @@ load game
 save game
 
 ## todos
-
+where does the weighing of game moves happen
+    basicai.weighmoveoptions()
+    GameMove.GetTargetWeights()
+    
 how does a game_cmd reduce_resource
 game_clock_tick thing
 complete observer tests

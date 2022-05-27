@@ -2,13 +2,14 @@ from ..serializable import Serializable
 
 class Resource(Serializable):
     serializable_attrs = ['name', 'val', 'max']
-    def __init__(self, name, val=None, max=1):
+    def __init__(self, name, value=None, max=None):
         self.name = name
-        self.val = val
+        self.value = value
         self.max = max
     
     def is_available(self):
-        return self.val is None or self.val > 0
+        return self.value is None or self.value > 0
 
     def recharge(self):
-        self.val = self.max
+        if self.value is not None:
+            self.value = self.max

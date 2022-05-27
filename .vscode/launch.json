@@ -12,7 +12,9 @@
             "request": "launch",
             "module": "src.engineve",
             "console": "integratedTerminal",
-            
+            "args":[
+                "--debug"
+            ]
         },
         {
             "name": "pytest",

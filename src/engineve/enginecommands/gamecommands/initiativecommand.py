@@ -2,7 +2,7 @@ import logging
 
 from ..basecommands.compositecommand import CompositeCommand
 from .abilitycheckcommand import AbilityCheckCommand
-
+from ..effectcommands.initiative import Initiative
 class InitiativeCommand(CompositeCommand):
     def __init__(self, actor_ids, *args, **kwargs):
         '''make a skill check command for every actor_id'''
@@ -14,6 +14,8 @@ class InitiativeCommand(CompositeCommand):
     def evaluate(self, state):
         super().evaluate(state)
         self.value = {}
-        for actor_id, child_command in self.children:
-            self.value[actor_id] = child_command.value + (0.01 * float(state.actors[actor_id].dex))
+        for actor_id, init_command in self.children.items():
+            init_score = init_command.value + (0.01 * float(state.actors[actor_id].dex))
+            self.value[init_score] = actor_id
+        self.effects.append(Initiative(self.value))
         

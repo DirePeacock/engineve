@@ -1,48 +1,31 @@
 from ..enginecommands.gamecommands.attackcommand import AttackCommand
+
 class BasicAI():
     '''class for making decision based on state and args thru static methods'''
-        
-    @staticmethod
-    def get_target(state, attacker_id):
-        for key, state_actor in state.actors.items():
-            if state_actor.team != state.actors[attacker_id].team:
-                return key
+
+    @classmethod
+    def choose_game_move(cls, actor_id, state):
+        keys = cls.get_available_game_move_keys(actor_id, state)
+        # TODO make this smart
+        if len(keys) > 0:
+            return keys[0]
+        return None
     
     @classmethod
-    def make_attack_command(cls, state, attacker_id):
-        target_id = cls.get_target(state, attacker_id)
-        attack_command = AttackCommand(attacker_id=attacker_id, target_id=target_id)
-        return attack_command
-    
+    def get_available_game_move_keys(cls, actor_id, state):
+        return [key for key, game_move in state.actors[actor_id].game_moves.items() if game_move.is_available(actor_id, state)]
+
     @classmethod
-    def make_game_move_command(cls, state, actor_id):
-        thing = cls.choose_game_move(state, actor_id)
-        
-        return cls.make_attack_command(state, attacker_id=actor_id)
+    def is_turn_completed(cls, actor_id, state):
+        '''has no more available game moves for those that are available'''
+        return 0 == len(cls.get_available_game_move_keys(actor_id, state))
 
-    @staticmethod
-    def choose_game_move(state, actor_id):
-        return 'attack_action'
-        
-    
-    @staticmethod
-    def is_turn_completed(actor_id, state):
-        '''has no more turn resources or game moves for those that are available'''
-        for resource_name in state.actors[actor_id].turn_resources:
-            break;    
-            # check is available
-            if not state.actors[actor_id].resources[resource_name].is_avalable():
-                return False
-            # check if there is a move available
-            
-        return True
+    @classmethod
+    def make_game_move_command(cls, actor_id, state):
+        move_selection = cls.choose_game_move(actor_id, state)
+        return state.actors[actor_id].game_moves[move_selection].make_command(actor_id, state)
 
-    @staticmethod
-    def take_turn(state, actor_id):
-        '''
+    # @staticmethod
+    # def take_turn(state, actor_id):
         
-        '''        
-        return
-        # for resource_key in ['turn_action']  # state.actors[actor_id].turn_resources:
-
             

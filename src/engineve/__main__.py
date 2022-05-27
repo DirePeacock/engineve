@@ -4,7 +4,7 @@ import argparse
 import sys
 
 parser = argparse.ArgumentParser()
-parser.add_argument('processes', nargs="?", type=str, default=None)
+parser.add_argument('--debug', action='store_true', default=False)
 args = parser.parse_args(sys.argv[1:])
-processes = args.processes if args.processes is not None else ["game", "graphics"]
-main()
+
+main(debug=args.debug)

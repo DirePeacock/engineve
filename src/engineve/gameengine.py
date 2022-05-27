@@ -13,16 +13,21 @@ class GameEngine():
     def __init__(self, invoker, game_state):
         self.invoker = invoker
         self.game_state = game_state
+        self.engine_state = None
+        # self.engine_state setup
         self.transition_to(LandingState())
 
     
     def main(self):
         # self.engine_state = CombatState([actor_id for actor_id in self.game_state.actors.keys()])
-        test_frames = 100000
+        test_frames = 100
         for i in range(0, test_frames):
-            self.engine_state.periodic(self.game_state, self.invoker)
-            # TODO should this be in the engine_state
-            self.invoker.periodic(self.game_state)
+            self.periodic()
+        print(f"completed in {i} rounds!")
+    def periodic(self):
+        self.engine_state.periodic(self.game_state, self.invoker)
+        # TODO should this be in the engine_state
+        self.invoker.periodic(self.game_state)
 
     def spawn_actors(self, actor_class, num=1, **kwargs):
         for some_actor in GameEngine.generate_actors(actor_class, num, **kwargs):
@@ -33,6 +38,8 @@ class GameEngine():
         return [actor_class(**kwargs) for i in range(0, num)]
 
     def transition_to(self, engine_state):
+        logging.debug(f"{type(self.engine_state).__name__} to {type(engine_state).__name__}")
+        
         self.engine_state = engine_state
         self.engine_state.engine = self
 

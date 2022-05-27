@@ -8,5 +8,5 @@ class ModifyResources(EffectCommand):
         '''do thing to state'''
         for name, net_change in self.changes.items():
             if name in state.actors[self.actor_id].resources.keys():
-                state.actors[self.actor_id].resources[name].val += net_change
+                state.actors[self.actor_id].resources[name].value += net_change
         
