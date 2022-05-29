@@ -25,13 +25,21 @@
 
 
 ## NEEDS 4 GAME DEMO
-engine tick
-everything i need to display needs to be a command
+txt_log
 loc
+observers
+integrate into thing
+skelington sprite
+premade_statblock
 load game
 save game
+ut
 
 ## todos
+actual pathfinding, maybe refactor
+Crits and resistances
+where should command log strs be created?
+
 where does the weighing of game moves happen
     basicai.weighmoveoptions()
     GameMove.GetTargetWeights()

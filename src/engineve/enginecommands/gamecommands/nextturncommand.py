@@ -9,7 +9,7 @@ class NextTurnCommand(Command):
         next_i = state.combat.get_next_init(state)
 
         #notify?
-        logging.debug(f"{state.actors[state.combat.order[curr_i]].name}@{curr_i} - turn ended")
-        logging.debug(f"{state.actors[state.combat.order[next_i]].name}@{next_i} - turn began")
+        # logging.debug(f"{state.actors[state.combat.order[curr_i]].name}@{curr_i} - turn ended")
+        # logging.debug(f"{state.actors[state.combat.order[next_i]].name}@{next_i} - turn began")
         
         self.effects.append(ChangeTurn(old_init=curr_i, next_init=next_i))

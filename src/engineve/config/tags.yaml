@@ -9,3 +9,10 @@ data:
 - reaction
 - hit
 - miss
+- prone
+- ability
+- skill
+- proficiency
+- critical
+- critical_miss
+- move

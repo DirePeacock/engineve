@@ -4,7 +4,7 @@ class CompositeCommand(Command):
     '''state as arg or state as cls var'''
     def __init__(self, *args, **kwargs):
         self.children = {}
-        super().__init__(args, kwargs)
+        super().__init__(*args, **kwargs)
         
     def execute(self, state):
         '''execute all children'''

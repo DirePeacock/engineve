@@ -1,6 +1,7 @@
 from .effectcommand import EffectCommand
 class ModifyResources(EffectCommand):
-    def __init__(self, actor_id, changes=None):
+    def __init__(self, actor_id, changes=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.actor_id = actor_id
         self.changes = {} if changes is None else changes
         

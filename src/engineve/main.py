@@ -1,6 +1,6 @@
 import logging
-from .factory import factory
-
+import time
+from .mainfactory import factory
 
 def main(debug=False):
     if debug:
@@ -10,3 +10,4 @@ def main(debug=False):
 
 if __name__ == "__main__":
     main(debug=False)
+    # main(debug=False)

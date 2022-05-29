@@ -2,6 +2,7 @@ import logging
 
 from ..actorai.basicai import BasicAI
 from ..actorai.gamemoves.attackaction import AttackAction
+from ..actorai.gamemoves.usemovement import UseMovement
 from .resource import Resource
 from ..utils import get_id, get_random_name, get_stat_modifier, roll
 from ..serializable import Serializable
@@ -29,7 +30,8 @@ class Actor(Serializable):
     
     def _init_actor_core(self):
         self.add_game_move(AttackAction(actor_id=self.id))
-        for resource_name in ['turn_action']:        
+        self.add_game_move(UseMovement(actor_id=self.id))
+        for resource_name in ['turn_action', 'turn_movement']:        
             self.add_resource(Resource(name=resource_name, value=1, max=1))
 
     def get_ability_modifier(self, stat):
@@ -59,9 +61,9 @@ class Actor(Serializable):
     def modify_hp(self, value):
         change = value.num if hasattr(value,'num') else value
         plus = '' if change <= 0 else '+'
-        logging.debug(f"{self.name}: hp {plus}{change}")
+        # logging.debug(f"{self.name}: hp {plus}{change}")
         self.hp += change
-        logging.debug(f"{self.name}.hp = {self.hp}")
+        # logging.debug(f"{self.name}.hp = {self.hp}")
 
     def __str__(self):
         return str({key: val for key, val in self.__dict__.items() if isinstance(val, (int, str))})

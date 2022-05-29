@@ -15,6 +15,11 @@ def test_check_resource():
     """verify """
     return
 
+def test_attack_uses_resource():
+    """TODO THIS"""
+    return
+
+
 def test_select_game_move():
     "actorai should return an appropriate move based on the state"
     return

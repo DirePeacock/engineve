@@ -2,7 +2,7 @@ import includes
 
 from engineve.enginestates.combatstate import CombatState
 from engineve.gametypes.combat import Combat
-from engineve.factory import factory
+from engineve.mainfactory import factory
 from engineve.enginecommands.gamecommands.initiativecommand import InitiativeCommand
 from engineve.enginecommands.gamecommands.nextturncommand import NextTurnCommand
 
@@ -51,4 +51,16 @@ def test_next_turn():
 
 def test_end_combat():
     '''notifies observers that comabt is over'''
-    pass
+    game_engine = _setup_game_engine()
+    
+    game_engine.engine_state.start_combat(game_engine.game_state, game_engine.invoker)
+    game_engine.game_state.combat.active = True
+
+    for actor_id in game_engine.game_state.actors.keys():
+        game_engine.game_state.actors[actor_id].hp = 0
+
+    assert isinstance(game_engine.engine_state, CombatState)
+    
+    game_engine.periodic() #engine_state.periodic(game_engine.game_state, game_engine.invoker)
+
+    assert (not game_engine.game_state.combat.active)

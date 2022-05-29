@@ -2,9 +2,9 @@ from ..serializable import Serializable
 from ..tags import TaggedClass
 
 class Combat(Serializable, TaggedClass):
-    def __init__(self, actor_ids, active=False, *args, **kwargs):
+    def __init__(self, actor_ids=None, active=False, *args, **kwargs):
         # super().__init__(args, kwargs)
-        self.actor_ids = actor_ids
+        self.actor_ids = [] if actor_ids is None else actor_ids
         self.active = active
         self.current_iter = None
 
@@ -12,14 +12,17 @@ class Combat(Serializable, TaggedClass):
         self.order = {}
 
 
-    def _get_active_entries(self, state):
+    def get_active_entries(self, state):
         return {init: actor_id for init, actor_id in self.order.items() if not state.actors[actor_id].is_dead()}
+    
+    def get_active_actor_ids(self, state):
+        return [actor_id for actor_id in self.get_active_entries(state).values()]
 
     def _get_max(self, state):
         return max([init for init, actor_id in self.order.items() if not state.actors[actor_id].is_dead()]) 
         
     def get_next_init(self, state):
-        active_entries = self._get_active_entries(state)
+        active_entries = self.get_active_entries(state)
         if len(active_entries) <= 1:
             return self.current_iter
 
@@ -37,7 +40,7 @@ class Combat(Serializable, TaggedClass):
         return self.order[self.current_iter]
 
     def is_done(self, state):
-        active_entries = self._get_active_entries(state)
+        active_entries = self.get_active_entries(state)
         active_teams = []
         for init, actor_id in active_entries.items():
             team_id = state.actors[actor_id].team

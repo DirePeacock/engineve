@@ -38,6 +38,7 @@ class Command(AbstractCommand):
         self.effects = []
         self.inverse_effects = []
         self.evaluated = False
+        self.log = "" if 'log' not in kwargs.keys() else kwargs['log']
 
     def execute(self, state):
         if not self.evaluated:
@@ -49,7 +50,7 @@ class Command(AbstractCommand):
     def evaluate(self, state) -> None:
         '''resolves command down to primitive command'''
         self.evaluated = True
-        self.effects = []
+        # self.effects = [] if
         self.inverse_effects = []
 
     def apply_effects(self, state):

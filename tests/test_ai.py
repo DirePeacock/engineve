@@ -7,7 +7,7 @@ from engineve.enginecommands.observer.observermanager import ObserverManager
 
 from engineve.enginestates.combatstate import CombatState
 from engineve.gametypes.combat import Combat
-from engineve.factory import factory
+from engineve.mainfactory import factory
 from engineve.enginecommands.gamecommands.initiativecommand import InitiativeCommand
 
 

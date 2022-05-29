@@ -1,33 +1,43 @@
 import logging
 
+from .gamestatemanager import GameStateManager
+from .enginecommands.invoker import Invoker
 from .enginestates.combatstate import CombatState
 from .enginestates.landingstate import LandingState
 
 class GameEngine():
-    '''this is the top, it has an invoker
-    
+    '''this is the top, 
+    -   it has an invoker
     -   there is a gamestate of in-game objects
     -   engine_state is a state of the engine that knows what it's main method to do
-    this uses the periodic method of the current_engine state to find commands for the invoker to execute 
+    
+    this uses the periodic method of the current_engine state to find commands for the invoker to execute .
     '''
-    def __init__(self, invoker, game_state):
-        self.invoker = invoker
-        self.game_state = game_state
+    def __init__(self):
+        
+        self.game_state = GameStateManager()
+        self.invoker = Invoker(log=self.game_state.log)
+        
+        self.paused=False    
+        
         self.engine_state = None
-        # self.engine_state setup
         self.transition_to(LandingState())
 
     
+    
     def main(self):
-        # self.engine_state = CombatState([actor_id for actor_id in self.game_state.actors.keys()])
+        # TODO idk some kind of loop b/t combat/overworld/menu
         test_frames = 100
         for i in range(0, test_frames):
             self.periodic()
         print(f"completed in {i} rounds!")
+
     def periodic(self):
-        self.engine_state.periodic(self.game_state, self.invoker)
-        # TODO should this be in the engine_state
-        self.invoker.periodic(self.game_state)
+        if not self.paused:
+            self.engine_state.periodic(self.game_state, self.invoker)
+            # TODO should this be in the engine_state? 
+            # # A: probly not
+            self.invoker.periodic(self.game_state)
 
     def spawn_actors(self, actor_class, num=1, **kwargs):
         for some_actor in GameEngine.generate_actors(actor_class, num, **kwargs):
@@ -37,29 +47,16 @@ class GameEngine():
     def generate_actors(actor_class, num=1, **kwargs):
         return [actor_class(**kwargs) for i in range(0, num)]
 
+    def add_observer(self, observer):
+        '''hook in something like the graphics engine as an observer'''
+        return
+
     def transition_to(self, engine_state):
-        logging.debug(f"{type(self.engine_state).__name__} to {type(engine_state).__name__}")
-        
+        # logging.debug(f"{type(self.engine_state).__name__} to {type(engine_state).__name__}")
+        if 'CombatState' == type(self.engine_state).__name__:
+            logging.debug('done with combat. gg')
+            # for line in self.game_state.log.history:
+            #     print(line)
+            quit(0)
         self.engine_state = engine_state
         self.engine_state.engine = self
-
-    # def _combat_main(self):
-    #     """ aaa """
-    #     for current_actor in self.game_state.get_combat_iter():
-    #         while not self.game_state.actors[current_actor].is_turn_completed(self.game_state):
-    #             new_move = None
-    #             self.invoker.put(new_move)
-    #             self.invoker.tick_stack(self.game_state)
-
-            # while resource
-            # target_id = self._get_target(self.state_manager.actors[attacker_id])
-            
-            # self.state_manager.actors[current_actor].get_attack_command(self.state_manager)
-            
-            # attack_command = BasicAI.make_attack_command(self.state_manager, current_actor)
-            # self.invoker.execute('attack', args=(attacker_id, target_id))
-
-            # self.invoker.execute(state=self.state_manager,
-            #                      command=attack_command)
-            # self.state_manager.manage_attack(attacker_id, target_id)
-            # self.receiver.tick_stack()

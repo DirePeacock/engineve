@@ -28,6 +28,18 @@
             ]
         },
         {
+            "name": "rich_demo",
+            "type": "python",
+            "subProcess": true,
+            "request": "launch",
+            "module": "src.engineve",
+            "console": "integratedTerminal",
+            "args":[
+                // "--debug"
+                "--demo"
+            ]
+        },
+        {
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
