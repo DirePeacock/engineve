@@ -22,7 +22,7 @@ class AttackAction(GameMove):
         return {target_id: self.get_ttk_weight(target_id, state) for target_id in self.get_targets(state)}
 
     def enemy_in_range(self, enemy_id, state):
-        return pathingutils.measure_distance(state.actors[self.actor_id].loc, state.actors[enemy_id].loc)
+        return 1 <= pathingutils.measure_distance(state.actors[self.actor_id].loc, state.actors[enemy_id].loc)
 
     def make_command(self, state, *args, **kwargs) -> AttackCommand:
         target_weights = self.wiegh_targets(state)
@@ -36,6 +36,6 @@ class AttackAction(GameMove):
     
     def get_targets(self, state):
         enemy_ids = [eid for eid in aiutils.get_enemy_ids(self.actor_id, state)]
-        enemy_ids = [eid for eid in enemy_ids if aiutils.is_actor_alive(eid, state)]
-        #  and self.enemy_in_range(eid, state)
+        enemy_ids = [eid for eid in enemy_ids if aiutils.is_actor_alive(eid, state) and self.enemy_in_range(eid, state)]
+        #  
         return enemy_ids

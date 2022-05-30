@@ -17,8 +17,12 @@ from .gameengine import GameEngine
 from .gametypes.actor import Actor
 from .tags import TAGS
 
+MAP_WIDTH = 10
+MAP_HEIGHT = 10
+MAP_CHAR_WIDTH = 3
+EMPTY_CHAR = '.'
 DEMO_FPS = 2
-attack_frames = 3
+attack_frames = 2
 class SlowDemoEngine(GameEngine):
     fps = DEMO_FPS
     def __init__(self, *args, **kwargs):
@@ -53,10 +57,9 @@ def _get_color(hp):
     return "[red]" if hp < 1 else "[green]"
 def _get_team_color(team):
     return "[blue]" if team < 1 else "[red]"
-MAP_WIDTH = 10
-MAP_HEIGHT = 10
-MAP_CHAR_WIDTH = 3
-EMPTY_CHAR = '.'
+def _get_team_char(team):
+    return "b" if team < 1 else "r"
+
 class GraphicsEngineDemo:
     def __init__(self):
         self.layout = Layout()
@@ -98,7 +101,7 @@ class GraphicsEngineDemo:
     def _drawAnimationBar(self, engine_sync):
         wait_ends = {wid: wait.end_frame for wid, wait in engine_sync.waits.items()}
         if len(wait_ends) == 0:
-            return Text('n/a')
+            return Text('no active animations')
         
         wid = max(wait_ends, key=wait_ends.get)
         now = engine_sync.engine.frame - engine_sync.waits[wid].start_frame
@@ -119,9 +122,12 @@ class GraphicsEngineDemo:
         actorTable = Table()
         actorTable.add_column('name')
         actorTable.add_column('hp')
+        actorTable.add_column('loc')
         for actor in game_state.actors.values():
             # GAME_STATE.actors:
-            actorTable.add_row(f"[b]{_get_team_color(actor.team)}{actor.name}[/]", f"{_get_color(actor.hp)}{actor.hp}")
+            actorTable.add_row(f"[b]{_get_team_color(actor.team)}{actor.name}[/]", 
+                               f"{_get_color(actor.hp)}{actor.hp}",
+                               f"{actor.loc}")
         return actorTable
     
     def _drawInit(self, game_state):
@@ -169,10 +175,12 @@ class GraphicsEngineDemo:
     def _drawMap(self, game_state):
         MAP = EMPTY_MAP()
         for actor in [game_state.actors[a_id] for a_id in game_state.combat.actor_ids]:
-            inverted_y_loc = MAP_HEIGHT - (actor.loc[1] + 1)
+            inverted_y_loc = MAP_HEIGHT - (actor.loc[1]+1)
             
             # MAP[inverted_y_loc][actor.loc[0]] = f"[b]{_get_team_color(actor.team)}{actor.name[0].upper()}[/]"
-            MAP[inverted_y_loc][actor.loc[0]] = f" {actor.name[0].upper()} "
+            team_char = _get_team_char(actor.team)
+            map_str = f"{team_char}{actor.name[0].upper()}{max(0,actor.hp)}"
+            MAP[inverted_y_loc][actor.loc[0]] = map_str
         
         for i in range((MAP_HEIGHT - 1), -1, -1):
             visual_index = (MAP_HEIGHT - 1 - i )
