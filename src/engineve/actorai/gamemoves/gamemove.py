@@ -13,7 +13,8 @@ class GameMove(Serializable, TaggedClass):
     #     self.command_type = command_type
     #     self.name = name
     #     self.resource_cost = {} if resource_cost is None else resource_cost
-    def __init__(self, actor_id=None, name=None):
+    def __init__(self, actor_id=None, name=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.actor_id = actor_id
         self.name = name if name is not None else type(self).__name__
 
@@ -28,8 +29,11 @@ class GameMove(Serializable, TaggedClass):
         return []
 
     def make_command(self, *args, **kwargs):
-        return self.command_type(*args, **kwargs)
-        
+        cmd = self.command_type(*args, **kwargs)
+        for key, val in self.tags.items():
+            cmd.tags[key] = val
+        return cmd
+    
     def is_available(self, state):
         for key, change in self.resource_cost.items():
             if key in state.actors[self.actor_id].resources.keys():

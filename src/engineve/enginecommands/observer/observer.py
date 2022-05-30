@@ -10,16 +10,13 @@ class Observer():
         self.trigger = trigger
         self.reaction = reaction
     
-    def react(self, state, meta):
+    def react(self, meta):
         """should return command obj for the stack"""
-        if self.match_notification(state, meta):
-           return self.get_reaction(state, meta)
+        return self.reaction(meta)
 
-    def get_reaction(self, state, meta):
-        return self.reaction
         
-    def match_notification(self, state, meta):
-        return self.trigger(state, meta)
+    def match_notification(self, meta):
+        return self.trigger(meta)
         
 
    

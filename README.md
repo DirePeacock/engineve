@@ -25,15 +25,20 @@
 
 
 ## NEEDS 4 GAME DEMO
-txt_log
-loc
-observers
 integrate into thing
 skelington sprite
 premade_statblock
 load game
 save game
 ut
+
+## REFACTORS
+notifications, what needs to be in the notification thing
+complex meta info on observables
+animation lock integration
+gridmap & locs
+state passing vs state/engine reference
+
 
 ## todos
 actual pathfinding, maybe refactor

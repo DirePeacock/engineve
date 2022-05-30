@@ -4,6 +4,7 @@ from .gamestatemanager import GameStateManager
 from .enginecommands.invoker import Invoker
 from .enginestates.combatstate import CombatState
 from .enginestates.landingstate import LandingState
+from .enginesync import EngineSync
 
 class GameEngine():
     '''this is the top, 
@@ -13,17 +14,18 @@ class GameEngine():
     
     this uses the periodic method of the current_engine state to find commands for the invoker to execute .
     '''
+    fps=60
     def __init__(self):
         
         self.game_state = GameStateManager()
+        self.engine_sync = EngineSync(self)
         self.invoker = Invoker(log=self.game_state.log)
         
-        self.paused=False    
-        
+        self.frame = 0
         self.engine_state = None
+        
+        self.invoker.register_observer(self.engine_sync)
         self.transition_to(LandingState())
-
-    
     
     def main(self):
         # TODO idk some kind of loop b/t combat/overworld/menu
@@ -33,11 +35,15 @@ class GameEngine():
         print(f"completed in {i} rounds!")
 
     def periodic(self):
-        if not self.paused:
+        if not self.engine_sync.is_waiting():
             self.engine_state.periodic(self.game_state, self.invoker)
             # TODO should this be in the engine_state? 
             # # A: probly not
             self.invoker.periodic(self.game_state)
+        
+        # do @ end of every frame and in this order
+        self.engine_sync.periodic()
+        self.frame += 1
 
     def spawn_actors(self, actor_class, num=1, **kwargs):
         for some_actor in GameEngine.generate_actors(actor_class, num, **kwargs):

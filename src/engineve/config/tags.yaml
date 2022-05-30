@@ -16,3 +16,6 @@ data:
 - critical
 - critical_miss
 - move
+- animation
+- from
+- to 

@@ -29,8 +29,9 @@ class AttackAction(GameMove):
         target_id = max(target_weights, key=target_weights.__getitem__)
 
         attack_declaration = f"{state.actors[self.actor_id].name} attacks {state.actors[target_id].name}"
-        new_cmd = self.command_type(attacker_id=self.actor_id, target_id=target_id, log=attack_declaration)
+        new_cmd = super().make_command(attacker_id=self.actor_id, target_id=target_id, log=attack_declaration)
         new_cmd.effects.append(ModifyResources(new_cmd.attacker_id, changes=self.resource_cost))
+        
         return new_cmd
     
     def get_targets(self, state):

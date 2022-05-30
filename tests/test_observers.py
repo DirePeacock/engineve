@@ -1,7 +1,7 @@
 import includes
 import logging
 
-from engineve.tags import (meta, TAGS, TaggedClass)
+from engineve.tags import (meta, TAGS, TaggedClass, check_tags)
 from engineve.enginecommands.observer.observer import Observer
 from engineve.enginecommands.observer.observermanager import ObserverManager
 
@@ -24,31 +24,31 @@ from engineve.enginecommands.observer.observermanager import ObserverManager
     pytest stubs?
     """
 
+def _trigger(obj, *args, **kwargs):
+    return check_tags(obj, TAGS.attack)
+def _reaction(*args, **kwargs):
+    logging.debug(f"_reaction({args}, {kwargs})")
+    return True
+
+def test_register_observer():
+    manager = ObserverManager()
+    assert len(manager.observers) == 0
+    manager.register_observer(Observer(trigger=_trigger, reaction=_reaction))
+    assert len(manager.observers) > 0
+    
+    
+    
 def test_get_reation_command():
-    def _trigger(state, obj):
-        return isinstance(obj, TaggedClass) and TAGS.attack in obj.tags
-
-    def _reaction(*args, **kwargs):
-        logging.debug(f"_reaction({args}, {kwargs})")
-        return True
-
     test_observer= Observer(trigger=_trigger, reaction=_reaction)
     meta = TaggedClass(tags=[TAGS.attack])
-    retval = test_observer.react(state=None, meta=meta)
+    retval = test_observer.react(meta=meta)
     assert retval
     
-    return
+    
 
 def test_notify():
-    def _trigger(state, obj):
-        return isinstance(obj, TaggedClass) and TAGS.attack in obj.tags
-
-    def _reaction(*args, **kwargs):
-        logging.debug(f"_reaction({args}, {kwargs})")
-        return True
-    
     manager = ObserverManager()
     manager.register_observer(Observer(trigger=_trigger, reaction=_reaction))
     meta_event = TaggedClass(tags=[TAGS.attack])
-    manager.notify(state=None, meta=meta_event)
-    return
+    retval = manager.notify(meta=meta_event)
+    return len(retval) > 0

@@ -23,23 +23,3 @@ class GameStateManager():
     def instantiate(cls):
         instance = cls()
         return instance
-
-    # def get_combat_iter(self, ids=None):
-    #     return CombatActorIterator(self, ids)
-
-    # def manage_attack(self, attacker_id, target_id):  
-    #     to_hit_roll = self.actors[attacker_id].roll_to_hit()
-    #     attack_hits = to_hit_roll >= self.actors[target_id].ac
-    #     if attack_hits:
-    #         damage = self.actors[attacker_id].roll_damage() * -1
-    #         self.actors[target_id].modify_hp(damage)
-    #         logging.debug(f"{self.actors[attacker_id].name} hit {self.actors[target_id].name} for {damage}")
-    #     else:
-    #         logging.debug(f"{self.actors[attacker_id].name}'s {to_hit_roll} hits the {self.actors[target_id].ac} ac of {self.actors[target_id].name}")
-
-    # def apply_effects(self, effects):
-    #     print(effects)
-    #     for effect in effects:
-    #         print(effect)
-
-

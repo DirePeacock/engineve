@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 import logging
+from ...tags import TaggedClass
 def DoNothing(*args, **kwargs):
     print(f"DoNothing(args:{args}, kwargs:{kwargs})")
 
@@ -23,7 +24,7 @@ class AbstractCommand(metaclass=ABCMeta):
         pass
 
 
-class Command(AbstractCommand):
+class Command(AbstractCommand, TaggedClass):
     '''
     can be evaluated
     can do application of evaluated change
@@ -33,6 +34,7 @@ class Command(AbstractCommand):
     can be logged
     '''
     def __init__(self, *args, **kwargs):
+        TaggedClass.__init__(self, *args, **kwargs)
         self.args=args
         self.kwargs=kwargs      
         self.effects = []

@@ -11,26 +11,39 @@ from rich.table import Table
 from rich.layout import Layout
 from rich.live import Live
 from rich.console import Console
-
+from rich.progress_bar import ProgressBar
+from rich.progress import Progress
 from .gameengine import GameEngine
 from .gametypes.actor import Actor
+from .tags import TAGS
+
+DEMO_FPS = 2
+attack_frames = 3
 class SlowDemoEngine(GameEngine):
+    fps = DEMO_FPS
     def __init__(self, *args, **kwargs):
         super().__init__()
         self.flip_flop = True
     def periodic(self):
-        if not self.paused:
+        if not self.engine_sync.is_waiting():
             if self.flip_flop:
                 self.engine_state.periodic(self.game_state, self.invoker)
             else:
                 self.invoker.periodic(self.game_state)
             self.flip_flop = not self.flip_flop
-
+        
+        self.engine_sync.periodic()
+        self.frame += 1
 def factory(spawn=False):
     GAMEENGINE = SlowDemoEngine()
     if spawn:
         for team_id in [0, 1]:
             GAMEENGINE.spawn_actors(actor_class=Actor, num=3, team=team_id)
+    for a_id in GAMEENGINE.game_state.actors.keys():
+        for m_id in GAMEENGINE.game_state.actors[a_id].game_moves.keys():
+            if 'attack' in m_id.lower():
+                GAMEENGINE.game_state.actors[a_id].game_moves[m_id].add_tag(dict({TAGS.animation: attack_frames}))
+    
     return GAMEENGINE
 
 def EMPTY_MAP(): 
@@ -48,18 +61,23 @@ class GraphicsEngineDemo:
     def __init__(self):
         self.layout = Layout()
         self.console = Console()
-        self.layout.split_row(Layout(name="map", minimum_size=MAP_CHAR_WIDTH*MAP_WIDTH),
+        
+        self.layout.split_row(Layout(name="screen", minimum_size=MAP_CHAR_WIDTH*MAP_WIDTH),
                               Layout(name="tables"),
                               Layout(name="log"))
+        self.layout['screen'].split_column(Layout(name="map"),
+                                           Layout(name="animations"))        
         self.layout['tables'].split_column(Layout(name="stack"),
                                            Layout(name="actors"), 
                                            Layout(name="init"))
-    def draw(self, game_state) -> Layout:
-        self.layout['tables']['actors'].update(self._drawActors(game_state))
-        self.layout['tables']['init'].update(self._drawInit(game_state))
-        self.layout['tables']['stack'].update(self._drawStack(game_state.log.stack))
-        self.layout['map'].update(self._drawMap(game_state))
-        self.layout['log'].update(self._drawLog(game_state.log.history))
+    def draw(self, engine) -> Layout:
+        
+        self.layout['tables']['actors'].update(self._drawActors(engine.game_state))
+        self.layout['tables']['init'].update(self._drawInit(engine.game_state))
+        self.layout['tables']['stack'].update(self._drawStack(engine.game_state.log.stack))
+        self.layout['screen']['map'].update(self._drawMap(engine.game_state))
+        self.layout['screen']['animations'].update(self._drawAnimationBar(engine.engine_sync))
+        self.layout['log'].update(self._drawLog(engine.game_state.log.history))
         return self.layout
     
     def main(self, fps):
@@ -67,14 +85,35 @@ class GraphicsEngineDemo:
         with Live(self.layout, console=self.console, screen=False, refresh_per_second=fps) as livelayout:
             for i in range(1000):
                 engine.periodic()
-                livelayout.update(self.draw(engine.game_state))
+                livelayout.update(self.draw(engine))
                 time.sleep(1/fps)
+            time.sleep(1)
             quit(0)
     
     @classmethod
-    def run(cls, fps=2, *args, **kwargs):
+    def run(cls, fps, *args, **kwargs):
         inst = cls(*args, **kwargs)
         inst.main(fps)
+    
+    def _drawAnimationBar(self, engine_sync):
+        wait_ends = {wid: wait.end_frame for wid, wait in engine_sync.waits.items()}
+        if len(wait_ends) == 0:
+            return Text('n/a')
+        
+        wid = max(wait_ends, key=wait_ends.get)
+        now = engine_sync.engine.frame - engine_sync.waits[wid].start_frame
+        end = engine_sync.waits[wid].length
+        now = min(now, end)
+        
+        return ProgressBar(100.0, ((100.0 * now)/end))
+    def _drawActors(self, game_state):
+        actorTable = Table()
+        actorTable.add_column('name')
+        actorTable.add_column('hp')
+        for actor in game_state.actors.values():
+            # GAME_STATE.actors:
+            actorTable.add_row(f"[b]{_get_team_color(actor.team)}{actor.name}[/]", f"{_get_color(actor.hp)}{actor.hp}")
+        return actorTable
     
     def _drawActors(self, game_state):
         actorTable = Table()
@@ -158,4 +197,4 @@ class GraphicsEngineDemo:
 def rich_main(debug=False):
     if debug:
         logging.basicConfig(level=logging.DEBUG)
-    GraphicsEngineDemo.run()
+    GraphicsEngineDemo.run(fps=DEMO_FPS)
