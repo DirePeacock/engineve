@@ -10,7 +10,7 @@ class Combat(Serializable, TaggedClass):
 
         # dict of init_score: actor_id
         self.order = {}
-
+        self.winning_team=None
 
     def get_active_entries(self, state):
         return {init: actor_id for init, actor_id in self.order.items() if not state.actors[actor_id].is_dead()}
@@ -46,5 +46,10 @@ class Combat(Serializable, TaggedClass):
             team_id = state.actors[actor_id].team
             if team_id not in active_teams:
                 active_teams.append(team_id)
-        return 1 >= len(active_teams)
+        
+        is_combat_done = (1 >= len(active_teams))
+        if is_combat_done:
+            self.winning_team = active_teams[0]
+        return is_combat_done
+        
 

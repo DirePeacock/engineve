@@ -15,6 +15,7 @@ class GameEngine():
     
     this uses the periodic method of the current_engine state to find commands for the invoker to execute .
     '''
+    # used as a default val in some places
     fps=60
     def __init__(self):
         
@@ -26,15 +27,8 @@ class GameEngine():
         self.engine_state = None
         
         self.invoker.register_observer(self.engine_sync)
-        self.transition_to(MenuState())
-        self.did_combat=False
-    
-    def main(self):
-        # TODO idk some kind of loop b/t combat/overworld/menu
-        test_frames = 100
-        for i in range(0, test_frames):
-            self.periodic()
-        print(f"completed in {i} rounds!")
+        self.transition_to(MenuState(ready=True))
+        
 
     def periodic(self):
         if not self.engine_sync.is_waiting():
@@ -63,7 +57,6 @@ class GameEngine():
         # logging.debug(f"{type(self.engine_state).__name__} to {type(engine_state).__name__}")
         if 'CombatState' == type(self.engine_state).__name__:
             logging.debug('done with combat. gg')
-            self.did_combat = True
             
         self.engine_state = engine_state
         self.engine_state.engine = self

@@ -22,8 +22,9 @@ class CombatState(EngineState):
             self.start_combat(state, invoker)
 
         elif state.combat.is_done(state):
+            self.declare_victory(state, invoker)
             self.end_combat(state, invoker)
-        
+            
         elif state.combat.active:
             if self.is_turn_done(state, invoker):
                 self.next_turn(state, invoker)
@@ -33,6 +34,11 @@ class CombatState(EngineState):
         else:
             logging.warning(f"sorry something's gone wrong.")
             self.end_combat(state, invoker)
+
+    def declare_victory(self, state, invoker):
+        actor_names = [state.actors[a_id].name for a_id in state.combat.order.values() if state.actors[a_id].team == state.combat.winning_team] 
+        log_entry = " ".join((f"party {state.combat.winning_team} of", ", ".join(actor_names), "is victorious"))
+        state.log.write(log_entry)
 
     def is_turn_done(self, state, invoker):
         return state.actors[state.combat.get_current_actor_id()].is_turn_completed(state)
@@ -66,5 +72,6 @@ class CombatState(EngineState):
         
     def end_combat(self, state, invoker):
         state.combat.active = False
+        
         self.transition_to(self._post_combat_state())
 

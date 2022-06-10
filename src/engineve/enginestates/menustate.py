@@ -10,9 +10,13 @@ class MenuState(EngineState):
     _combat_state: type = None
     def __init__(self, ready=False,  *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.ready=ready
     
     def periodic(self, state, invoker):
-        self.start_combat(state, invoker)
+        if self.ready:
+            self.start_combat(state, invoker)
+        else:
+            pass
     
     def start_combat(self, state, invoker):
         logging.debug('startingcombat')
