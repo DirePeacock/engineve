@@ -1,9 +1,9 @@
 from .gameengine import GameEngine
 from .gametypes.actor import Actor
+from .factory.spawningpool import make_actors_i_guess
 def factory(spawn=True):
     GAMEENGINE = GameEngine()
     if spawn:
-        for team_id in [0, 1]:
-            GAMEENGINE.spawn_actors(actor_class=Actor, num=1, team=team_id)
+        make_actors_i_guess(GAMEENGINE, num_actors=4)
     return GAMEENGINE
     

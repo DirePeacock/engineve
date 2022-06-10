@@ -3,6 +3,7 @@ import logging
 from .gamestatemanager import GameStateManager
 from .enginecommands.invoker import Invoker
 from .enginestates.combatstate import CombatState
+from .enginestates.menustate import MenuState
 from .enginestates.landingstate import LandingState
 from .enginesync import EngineSync
 
@@ -25,7 +26,8 @@ class GameEngine():
         self.engine_state = None
         
         self.invoker.register_observer(self.engine_sync)
-        self.transition_to(LandingState())
+        self.transition_to(MenuState())
+        self.did_combat=False
     
     def main(self):
         # TODO idk some kind of loop b/t combat/overworld/menu
@@ -61,8 +63,7 @@ class GameEngine():
         # logging.debug(f"{type(self.engine_state).__name__} to {type(engine_state).__name__}")
         if 'CombatState' == type(self.engine_state).__name__:
             logging.debug('done with combat. gg')
-            # for line in self.game_state.log.history:
-            #     print(line)
-            quit(0)
+            self.did_combat = True
+            
         self.engine_state = engine_state
         self.engine_state.engine = self
