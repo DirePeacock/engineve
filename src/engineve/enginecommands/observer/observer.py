@@ -13,7 +13,6 @@ class Observer():
     def react(self, meta):
         """should return command obj for the stack"""
         return self.reaction(meta)
-
         
     def match_notification(self, meta):
         return self.trigger(meta)

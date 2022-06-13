@@ -19,3 +19,9 @@ data:
 - animation
 - from
 - to 
+- child_tags
+- actor_ids
+- start_turn
+- end_turn
+- log
+- loc_path

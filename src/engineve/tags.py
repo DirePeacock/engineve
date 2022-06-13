@@ -10,6 +10,8 @@ with open(tags_path, 'r') as tags_file:
     TAGS = IntEnum('TAGS', {thing: auto() for thing in _tags['data']})
 
 class meta(dict):
+    """indexable by str
+    """
     pass
 
 class TaggedClass:
@@ -22,18 +24,22 @@ class TaggedClass:
             self.tags[tag] = None
         elif isinstance(tag, dict):
             for key, val in tag.items():
-                self.tags[key] = val
+                if isinstance(tag, str):   
+                    self.tags[TAGS._member_map_[key]] = val
+                else:
+                    self.tags[key] = val
         elif isinstance(tag, str):
             self.tags[TAGS._member_map_[tag]] = None
         else:
             print('RIP')
+
         # if tag in TAGS:
         #     self.tags[tag] = None
     
 def check_tags(obj, tag):
+    key = tag if not isinstance(tag, str) else TAGS._member_map_[tag]
     if isinstance(obj, TaggedClass):
-        return tag in obj.tags
+        return key in obj.tags
     elif isinstance(obj, dict):
-        return tag in obj.keys()
-    
-    
+        return key in obj.keys()
+

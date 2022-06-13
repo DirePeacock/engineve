@@ -1,6 +1,7 @@
 import random
 import uuid
 import math
+from .tags import TAGS
 
 def roll(size=20):
     return random.randint(1, size)
@@ -14,16 +15,17 @@ def get_rando():
     rv = rando
     rando += 1
     return rv
+def get_tag_enum(string):
+    return TAGS._member_map_[string]
+
+def get_stat_modifier(stat):
+    return math.floor((float(stat) - 10.0) / 2.0)
 
 
 name_table = ['arthur', 'bartholemew', 'charlemange', 'diocles', 'elwing', 'falcor', 'gawain', 'hadrian', 'iori', 'jamis', 
 'kelvin', 'llewelyn', 'malice', 'nostradamus', 'ophelia', 'phelia', 'quattro', 'roderick', 'stefan', 'theodocian',  
 'ullamon', 'valter', 'wolfgard', 'xyna', 'yorick', 'zezima']
-
 used_names = []
-def get_stat_modifier(stat):
-    return math.floor((float(stat) - 10.0) / 2.0)
-    
 def get_random_name():
     global name_table
     global used_names

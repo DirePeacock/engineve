@@ -11,7 +11,9 @@ class ChangeLocCommand(Command):
         super().__init__(*args, **kwargs)
         self.actor_id = actor_id
         self.locpath = [] if locpath is None else locpath
-
+        self.add_tag('actor_ids', [actor_id])
+        self.add_tag('loc_path', self.locpath)
+        self.add_tag('log', None)
     
     def evaluate(self, state):
         for loc in self.locpath:

@@ -14,6 +14,8 @@ class AttackCommand(CompositeCommand):
         self.children['attack_roll'] = AttackRollCommand(self.attacker_id, self.target_id)
         self.children['damage_roll'] = DamageRollCommand(self.attacker_id, self.target_id)
         self.log = "" if log is None else log
+        self.add_tag('log')
+        self.add_tag('actor_ids', {'attacker_id':self.attacker_id, 'target_id':self.target_id})
         # self.resources= [] if resources is None else ModifyResources(actor_id=attacker_id, changes={'turn_action': -1})
         
     def evaluate(self, state):
@@ -24,6 +26,8 @@ class AttackCommand(CompositeCommand):
 
         attack_hits = self.children['attack_roll'].value
         if attack_hits:
+            self.add_tag('hit')
+
             self.children['damage_roll'].evaluate(state)
             # name attacks tgt_name
             self.log = f"{state.actors[self.attacker_id].name} hits {state.actors[self.target_id].name} {self.children['attack_roll'].log} for {self.children['damage_roll'].log}"

@@ -53,7 +53,6 @@ class EngineSync(Observer):
         for w_id in [w_id for w_id, wait_obj in self.waits.items() if wait_obj.end_frame < self.engine.frame]:
             self.remove_wait(w_id)
 
-    
     def is_waiting(self):
         return 0 < len(self.waits)
 

@@ -26,11 +26,12 @@
 
 ## NEEDS 4 GAME DEMO
 integrate into thing
-skelington sprite
+    actor observer
+    command tags
 premade_statblock
 load game
 save game
-ut
+bruh unit tests
 
 ## REFACTORS
 notifications, what needs to be in the notification thing

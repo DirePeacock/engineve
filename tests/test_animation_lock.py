@@ -24,7 +24,7 @@ def test_animation_unlocking():
     t = 10
     engine.engine_sync.wait(t)
     i = list(engine.engine_sync.waits.keys())[0]
-    engine.frame += t
+    engine.frame += t + 1
     engine.engine_sync.periodic()
     assert (not engine.engine_sync.is_waiting())
 

@@ -1,10 +1,12 @@
 import includes
 import logging
 
+from unittest.mock import Mock
+
 from engineve.tags import (meta, TAGS, TaggedClass, check_tags)
 from engineve.enginecommands.observer.observer import Observer
 from engineve.enginecommands.observer.observermanager import ObserverManager
-
+from engineve.utils import get_tag_enum
 # def test_meta_match():
 #     print(TAGS)
 #     print('somehting')
@@ -23,6 +25,9 @@ from engineve.enginecommands.observer.observermanager import ObserverManager
     Actor.get_command() ->
     pytest stubs?
     """
+mock = Mock()
+def log_args(*args, **kwargs):
+    logging.debug(f"\nargs\t{args}\nkwargs\t{kwargs}")
 
 def _trigger(obj, *args, **kwargs):
     return check_tags(obj, TAGS.attack)
@@ -36,15 +41,11 @@ def test_register_observer():
     manager.register_observer(Observer(trigger=_trigger, reaction=_reaction))
     assert len(manager.observers) > 0
     
-    
-    
 def test_get_reation_command():
     test_observer= Observer(trigger=_trigger, reaction=_reaction)
     meta = TaggedClass(tags=[TAGS.attack])
     retval = test_observer.react(meta=meta)
     assert retval
-    
-    
 
 def test_notify():
     manager = ObserverManager()
@@ -52,3 +53,27 @@ def test_notify():
     meta_event = TaggedClass(tags=[TAGS.attack])
     retval = manager.notify(meta=meta_event)
     return len(retval) > 0
+
+def actor_ids_trigger(obj, *args, **kwargs):
+    return check_tags(obj, TAGS.actor_ids)
+def log_meta_args(meta, *args, **kwargs):
+    logging.debug(f"meta: {meta}")
+    logging.debug(f"actor_ids: {meta[get_tag_enum('actor_ids')]}")
+
+mock.reaction.side_effect = log_meta_args
+def test_notify_actor_ids():
+    manager = ObserverManager()
+    
+    manager.register_observer(Observer(trigger=actor_ids_trigger, reaction=mock.reaction))
+    ids=[1,2]
+    meta_obj = TaggedClass(tags={TAGS.actor_ids:ids})
+    retval = manager.notify(meta=meta_obj.tags)
+    mock.reaction.assert_called()
+    # return len(retval) > 0
+
+def test_pushobserver_matches_children():
+    manager = ObserverManager()
+    mock.reaction.side_effect=log_meta_args
+
+def test_pushobserver_calls_children():
+    pass

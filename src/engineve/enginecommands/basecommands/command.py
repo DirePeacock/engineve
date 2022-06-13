@@ -1,8 +1,8 @@
 from abc import ABCMeta, abstractmethod
 import logging
 from ...tags import TaggedClass
-def DoNothing(*args, **kwargs):
-    print(f"DoNothing(args:{args}, kwargs:{kwargs})")
+from ...utils import get_id
+
 
 class AbstractCommand(metaclass=ABCMeta):
     "The command interface, that all commands will implement"
@@ -11,12 +11,13 @@ class AbstractCommand(metaclass=ABCMeta):
     def execute():
         """ The required execute method that all command objects will use"""
         pass
-    
+
     @staticmethod
     @abstractmethod
     def evaluate():
         '''calculate effect and undo'''
         pass
+
     @staticmethod
     @abstractmethod
     def undo():
@@ -33,10 +34,11 @@ class Command(AbstractCommand, TaggedClass):
     can be a composite command
     can be logged
     '''
+
     def __init__(self, *args, **kwargs):
         TaggedClass.__init__(self, *args, **kwargs)
-        self.args=args
-        self.kwargs=kwargs      
+        self.args = args
+        self.kwargs = kwargs
         self.effects = []
         self.inverse_effects = []
         self.evaluated = False
@@ -44,11 +46,9 @@ class Command(AbstractCommand, TaggedClass):
 
     def execute(self, state):
         if not self.evaluated:
-            self.evaluate(state)        
-        
+            self.evaluate(state)
         self.apply_effects(state)
 
-            
     def evaluate(self, state) -> None:
         '''resolves command down to primitive command'''
         self.evaluated = True
@@ -63,5 +63,3 @@ class Command(AbstractCommand, TaggedClass):
         if not self.evaluated:
             self.evaluate(state)
         state.apply_effects(self.inverse_effects)
-        
-
