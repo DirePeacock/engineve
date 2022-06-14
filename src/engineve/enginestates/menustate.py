@@ -14,16 +14,11 @@ class MenuState(EngineState):
         self.ready=ready
     
     def periodic(self, state, invoker):
-        number=int(input('How many monsters do u want?\n').replace(' ',''))
-        self.start_combat(number, state, invoker)
-        return
-
         if self.ready:
-            number=3  #input('How many monsters do u want')
-            self.start_combat(number, state, invoker)
+            pass
         else:
             pass
-        
+
     def start_combat(self, num, state, invoker):
         logging.debug('startingcombat')
         

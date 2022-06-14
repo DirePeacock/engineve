@@ -27,7 +27,7 @@ class GameEngine():
         self.engine_state = None
         
         self.invoker.register_observer(self.engine_sync)
-        self.transition_to(MenuState(ready=True))
+        self.transition_to(MenuState(ready=False))
         
 
     def periodic(self):
