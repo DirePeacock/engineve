@@ -11,6 +11,7 @@ from .loc import Loc
 class Actor(Serializable):
     serializable_attrs = ['name', 'team', 'loc', 'resources', 'game_moves']
     turn_resources = ['turn_movement', 'turn_action', 'turn_bonus_action']
+    delete_after_combat=False
     def __init__(self, name=None, team=1, loc=(0,0), ai_class=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.team = team

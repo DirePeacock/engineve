@@ -49,8 +49,6 @@ class CombatState(EngineState):
         #TODO spawn locations
         self.randomize_locs(state, invoker)
 
-        
-
     def roll_inits(self, state, invoker):
         invoker.put(InitiativeCommand(self.actor_ids))
     
@@ -70,8 +68,15 @@ class CombatState(EngineState):
         '''if things to do put commands on the stack'''
         invoker.put(state.actors[state.combat.get_current_actor_id()].make_game_move_command(state))
         
+    def clean_up_combat(self, state, invoker):
+        for actor_id in state.combat.order.values():
+            if actor_id in state.actors.keys() and state.actors[actor_id].delete_after_combat:
+                del state.actors[actor_id]
+
     def end_combat(self, state, invoker):
         state.combat.active = False
-        
+        self.clean_up_combat(state, invoker)
+        import logging
+        logging.debug('combat')
         self.transition_to(self._post_combat_state())
 

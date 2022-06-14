@@ -26,6 +26,8 @@ class AttackAction(GameMove):
 
     def make_command(self, state, *args, **kwargs) -> AttackCommand:
         target_weights = self.wiegh_targets(state)
+        if len(target_weights) ==0:
+            print(self.wiegh_targets(state))
         target_id = max(target_weights, key=target_weights.__getitem__)
 
         attack_declaration = f"{state.actors[self.actor_id].name} attacks {state.actors[target_id].name}"
