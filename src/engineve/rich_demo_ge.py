@@ -93,7 +93,7 @@ class GraphicsEngineDemo:
     def main(self, fps):
         engine = factory(spawn=True)
         with Live(self.layout, console=self.console, screen=False, refresh_per_second=fps) as livelayout:
-            for i in range(1000):
+            for i in range(500):
                 engine.periodic()
                 livelayout.update(self.draw(engine))
                 time.sleep(1/fps)
@@ -168,7 +168,7 @@ class GraphicsEngineDemo:
 
     def _drawMap(self, game_state):
         MAP = EMPTY_MAP()
-        for actor in [game_state.actors[a_id] for a_id in game_state.combat.actor_ids]:
+        for actor in [game_state.actors[a_id] for a_id in game_state.combat.actor_ids if a_id in game_state.actors.keys()]:
             inverted_y_loc = MAP_HEIGHT - (actor.loc[1]+1)
             
             # MAP[inverted_y_loc][actor.loc[0]] = f"[b]{_get_team_color(actor.team)}{actor.name[0].upper()}[/]"
