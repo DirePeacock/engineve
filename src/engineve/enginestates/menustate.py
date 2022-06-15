@@ -1,7 +1,7 @@
 import logging
 
 from .enginestate import EngineState
-from ..archetypes.archetype import MonsterArchetype
+from ..archetypes.archetype import new_monster
 # from .combatstate import CombatState
 from ..gametypes.combat import Combat
 
@@ -23,8 +23,10 @@ class MenuState(EngineState):
         logging.debug('startingcombat')
         
         # TODO should starting a combat be a command or something observable, idk
+        
         for team_id in [0, 1]:
-            MonsterArchetype.spawn(state=state, num=num, team=team_id)
+            for i in range(num):
+                state.add_actor(new_monster('skeleton'))
         some_ids = [actor_id for actor_id in state.actors.keys()]
         logging.debug(f"we have {len(state.actors.keys())} actors")
         state.combat = Combat(actor_ids=some_ids)

@@ -43,3 +43,8 @@ def check_tags(obj, tag):
     elif isinstance(obj, dict):
         return key in obj.keys()
 
+# def str_to_tag(tag):
+#     return TAGS._member_map_[t] if not isinstance(t, str) else t
+# def check_tags(obj, tag, use_any=False):
+#     tags_list = [tag] if not isinstance(tag, list) else [str_to_tag(t) for t in tag]
+#     return all()

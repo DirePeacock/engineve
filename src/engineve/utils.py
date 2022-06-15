@@ -37,3 +37,5 @@ def get_random_name():
         used_names = []
     return new_name
 
+def get_kwarg(string, kwargs, default=None):
+    return kwargs[string] if string in kwargs.keys() else default
