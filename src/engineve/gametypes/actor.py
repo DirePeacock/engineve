@@ -42,7 +42,8 @@ class Actor(Serializable, TaggedClass):
         self._init_actor_core()
 
     def roll_for_hp(self):
-        return self.hit_dice_num * (self.con + int(0.5 * self.hit_dice_size) + 1)
+        return self.hit_dice_num * (self.get_ability_modifier('con') + int(0.5 * self.hit_dice_size) + 1)
+        
     @property
     def ability_scores(self):
         return [self.str, self.dex, self.con, self.int, self.wis, self.cha]
@@ -66,7 +67,7 @@ class Actor(Serializable, TaggedClass):
             self.add_resource(Resource(name=resource_name, value=1, max=1))
 
     def get_ability_modifier(self, stat):
-        stat_scrore = self.dex if stat.lower() == 'dex' else self.str
+        stat_scrore = self.__getattribute__(stat.lower())
         return get_stat_modifier(stat_scrore)
     
     def add_game_move(self, game_move):
