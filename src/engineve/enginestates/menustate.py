@@ -26,7 +26,7 @@ class MenuState(EngineState):
         
         for team_id in [0, 1]:
             for i in range(num):
-                state.add_actor(new_monster('skeleton'))
+                state.add_actor(new_monster('skeleton', team=team_id))
         some_ids = [actor_id for actor_id in state.actors.keys()]
         logging.debug(f"we have {len(state.actors.keys())} actors")
         state.combat = Combat(actor_ids=some_ids)

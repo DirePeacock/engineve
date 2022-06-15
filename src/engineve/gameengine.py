@@ -49,14 +49,16 @@ class GameEngine():
     def generate_actors(actor_class, num=1, **kwargs):
         return [actor_class(**kwargs) for i in range(0, num)]
 
-    def add_observer(self, observer):
+    def register_observer(self, observer):
         '''hook in something like the graphics engine as an observer'''
-        return
+        self.invoker.register_observer(observer)
+
+    def start_combat(self, num):
+        if 'MenuState' == type(self.engine_state).__name__:
+            logging.debug(f"starting combat with {num} skeletons per side")
+            self.engine_state.start_combat(num=num, state=self.game_state, invoker=self.invoker)
 
     def transition_to(self, engine_state):
-        # logging.debug(f"{type(self.engine_state).__name__} to {type(engine_state).__name__}")
-        if 'CombatState' == type(self.engine_state).__name__:
-            logging.debug('done with combat. gg')
-            
+        logging.debug(f"{type(self.engine_state).__name__} to {type(engine_state).__name__}")
         self.engine_state = engine_state
         self.engine_state.engine = self

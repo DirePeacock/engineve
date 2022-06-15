@@ -45,8 +45,8 @@ class SlowDemoEngine(GameEngine):
 def factory(spawn=True):
     GAMEENGINE = SlowDemoEngine()
     if spawn:
-        for team_id in [0, 1]:
-            GAMEENGINE.spawn_actors(actor_class=Actor, num=DEMO_ACTORS, team=team_id)
+        GAMEENGINE.start_combat(DEMO_ACTORS)
+        
     for a_id in GAMEENGINE.game_state.actors.keys():
         for m_id in GAMEENGINE.game_state.actors[a_id].game_moves.keys():
             if 'attack' in m_id.lower():
@@ -56,6 +56,7 @@ def factory(spawn=True):
     GAMEENGINE.game_state.log.history.append(f"running at {DEMO_FPS} fps")
     GAMEENGINE.game_state.log.history.append(f"with {DEMO_ACTORS} actors per side")
     GAMEENGINE.game_state.log.history.append(f"simulating a {DEMO_ANIM_FRAMES} frame attack animation wait")
+    
     return GAMEENGINE
 
 def EMPTY_MAP(): 
@@ -128,7 +129,10 @@ class GraphicsEngineDemo:
         ordered_inits = list(game_state.combat.order.keys())
         ordered_inits.sort(reverse=True)
         for val in ordered_inits:
+            
             actor_id = game_state.combat.order[val]
+            if actor_id not in game_state.actors.keys():
+                continue
         # for val, actor_id in game_state.combat.order.items():
             # GAME_STATE.actors:
             turn_str = "X" if val == game_state.combat.current_iter else " "
