@@ -15,8 +15,8 @@ from rich.progress_bar import ProgressBar
 from rich.progress import Progress
 from .gameengine import GameEngine
 from .gametypes.actor import Actor
-from .tags import TAGS
-
+from .tags import TAGS, check_tags, tag
+from .enginecommands.observer.observer import Observer
 MAP_WIDTH = 10
 MAP_HEIGHT = 10
 MAP_CHAR_WIDTH = 3
@@ -25,6 +25,13 @@ EMPTY_CHAR = '.'
 DEMO_FPS = 4
 DEMO_ANIM_FRAMES = 1
 DEMO_ACTORS = 4
+
+def check_is_done(meta):
+    return check_tags(meta,'combat_end')
+def complete_demo(meta, *args, **kwargs):
+    logging.debug('we did it')
+    print('YAY! we did it')
+    quit(0)
 
 class SlowDemoEngine(GameEngine):
     fps = DEMO_FPS
@@ -52,7 +59,7 @@ def factory(spawn=True):
             if 'attack' in m_id.lower():
                 GAMEENGINE.game_state.actors[a_id].game_moves[m_id].add_tag(dict({TAGS.animation: DEMO_ANIM_FRAMES}))
     
-    
+    GAMEENGINE.register_observer(Observer(trigger=check_is_done, reaction=complete_demo))
     GAMEENGINE.game_state.log.history.append(f"running at {DEMO_FPS} fps")
     GAMEENGINE.game_state.log.history.append(f"with {DEMO_ACTORS} actors per side")
     GAMEENGINE.game_state.log.history.append(f"simulating a {DEMO_ANIM_FRAMES} frame attack animation wait")

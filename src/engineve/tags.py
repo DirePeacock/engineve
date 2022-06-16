@@ -35,7 +35,10 @@ class TaggedClass:
 
         # if tag in TAGS:
         #     self.tags[tag] = None
-    
+def tag(string):
+    return TAGS._member_map_[string]
+
+
 def check_tags(obj, tag):
     key = tag if not isinstance(tag, str) else TAGS._member_map_[tag]
     if isinstance(obj, TaggedClass):

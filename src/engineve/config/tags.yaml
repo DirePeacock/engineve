@@ -28,3 +28,5 @@ data:
 - animation_frames
 - stealth
 - proficiency
+- combat_start
+- combat_end

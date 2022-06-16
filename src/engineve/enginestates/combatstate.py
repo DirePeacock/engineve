@@ -5,7 +5,7 @@ from .enginestate import EngineState
 from ..enginecommands.gamecommands.nextturncommand import NextTurnCommand
 from ..enginecommands.gamecommands.initiativecommand import InitiativeCommand
 from ..enginecommands.effectcommands.changeloc import ChangeLoc
-
+from ..tags import tag
 class CombatState(EngineState):
     '''I move the engine through combat, the state of a combat is stored in the gametypes.combat'''
     _post_combat_state: type = None
@@ -47,6 +47,7 @@ class CombatState(EngineState):
         state.combat.active = True
         self.roll_inits(state, invoker)
         #TODO spawn locations
+        invoker.notify(meta={tag('combat_start'): None})
         self.randomize_locs(state, invoker)
 
     def roll_inits(self, state, invoker):
@@ -76,7 +77,7 @@ class CombatState(EngineState):
     def end_combat(self, state, invoker):
         state.combat.active = False
         self.clean_up_combat(state, invoker)
-        import logging
+        invoker.notify(meta={tag('combat_end'): None})
         logging.debug('combat')
         self.transition_to(self._post_combat_state())
 
