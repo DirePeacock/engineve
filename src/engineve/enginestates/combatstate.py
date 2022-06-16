@@ -6,6 +6,7 @@ from ..enginecommands.gamecommands.nextturncommand import NextTurnCommand
 from ..enginecommands.gamecommands.initiativecommand import InitiativeCommand
 from ..enginecommands.effectcommands.changeloc import ChangeLoc
 from ..tags import tag
+
 class CombatState(EngineState):
     '''I move the engine through combat, the state of a combat is stored in the gametypes.combat'''
     _post_combat_state: type = None

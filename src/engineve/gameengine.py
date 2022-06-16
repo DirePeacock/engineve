@@ -57,6 +57,11 @@ class GameEngine():
         if 'MenuState' == type(self.engine_state).__name__:
             logging.debug(f"starting combat with {num} skeletons per side")
             self.engine_state.start_combat(num=num, state=self.game_state, invoker=self.invoker)
+    
+    def stop_combat(self, num):
+        if 'CombatState' == type(self.engine_state).__name__:
+            logging.debug(f"starting combat with {num} skeletons per side")
+            self.engine_state.end_combat(num=num, state=self.game_state, invoker=self.invoker)
 
     def transition_to(self, engine_state):
         logging.debug(f"{type(self.engine_state).__name__} to {type(engine_state).__name__}")
