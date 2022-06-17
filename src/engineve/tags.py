@@ -21,7 +21,7 @@ class TaggedClass:
         '''Note Bene: if you pass strings that often and check str in keys, it defeats the puropose of less str comparisons'''
         # TODO tag trees for things  with value
         if isinstance(tag, TAGS):
-            self.tags[tag] = None
+            self.tags[tag] = value
         elif isinstance(tag, dict):
             for key, val in tag.items():
                 if isinstance(tag, str):   
@@ -29,7 +29,7 @@ class TaggedClass:
                 else:
                     self.tags[key] = val
         elif isinstance(tag, str):
-            self.tags[TAGS._member_map_[tag]] = None
+            self.tags[TAGS._member_map_[tag]] = value
         else:
             print('RIP')
 
