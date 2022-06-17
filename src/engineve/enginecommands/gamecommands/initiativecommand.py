@@ -8,6 +8,8 @@ class InitiativeCommand(CompositeCommand):
         '''make a skill check command for every actor_id'''
         super().__init__(*args, **kwargs)
         self.actor_ids = actor_ids
+        self.add_tag('actor_ids', self.actor_ids)
+        self.add_tag('log')
         for actor_id in self.actor_ids:
             self.children[actor_id] = AbilityCheckCommand(actor_id=actor_id, ability='dex')
 
