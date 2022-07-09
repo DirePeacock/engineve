@@ -45,3 +45,12 @@ def test_select_game_move():
     new_cmd = game_engine.game_state.actors[actor_i].make_game_move_command(game_engine.game_state)
     assert new_cmd is not None
 
+def test_select_target():
+    '''found that targets out of range were being selected, pls fix'''
+    # could be a target is in range but a different one is selected
+    target_in_range = False
+    move_first = False
+    not_select_dead_target = False
+
+    assert target_in_range
+    assert move_first
