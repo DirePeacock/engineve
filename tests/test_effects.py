@@ -23,3 +23,7 @@ def test_effect_checking():
 def test_effect_get_value():
     is_good = 2 == test_fighting_style_dueling.get_value(input_tags)
     assert is_good
+
+def test_duration():
+    is_good = False
+    assert is_good
