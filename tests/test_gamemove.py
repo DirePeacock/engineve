@@ -5,22 +5,26 @@ from engineve.actorai.gamemoves.gamemove import GameMove
 
 def test_init():
     """verify """
-    return
-
+    is_good = False
+    assert is_good
+    
 def test_get_target():
     """verify """
-    return
-
+    is_good = False
+    assert is_good
+    
 def test_check_resource():
     """verify """
-    return
+    is_good = False
+    assert is_good
 
 def test_attack_uses_resource():
     """TODO THIS"""
-    return
-
-
+    is_good = False
+    assert is_good
+    
 def test_select_game_move():
     "actorai should return an appropriate move based on the state"
-    return
-
+    is_good = False
+    assert is_good
+    

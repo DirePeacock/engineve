@@ -10,7 +10,7 @@ class DamageRollCommand(Command):
         self.target_id = target_id
         self.attacker_id = attacker_id
         
-    def evaluate(self, state):
+    def evaluate(self, state, invoker=None):
         super().evaluate(state)
         dmg_value = roll(size=6) + state.actors[self.attacker_id].get_ability_modifier('str')
         
@@ -18,8 +18,10 @@ class DamageRollCommand(Command):
         self.effects = [ModifyHP(self.target_id, (dmg_value * -1), self.attacker_id)]
         
         self.log = f"{dmg_value} dmg"
+        
+        invoker.notify(self.tags)
 
-    def apply_effects(self, state):
+    def apply_effects(self, state, invoker=None):
         super().apply_effects(state)
     
     # def execute(self, state):

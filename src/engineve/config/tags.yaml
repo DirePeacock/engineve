@@ -30,3 +30,8 @@ data:
 - proficiency
 - combat_start
 - combat_end
+- one_handed
+- two_handed
+- dual_wielding
+- melee_attack
+- weapon_attack

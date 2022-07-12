@@ -1,5 +1,4 @@
 from abc import ABCMeta, abstractmethod
-import logging
 from ...tags import TaggedClass
 from ...utils import get_id
 
@@ -33,10 +32,12 @@ class Command(AbstractCommand, TaggedClass):
     can store tags for obeservers
     can be a composite command
     can be logged
+    has ref to the invoker so command can track when it needs to 
     '''
 
     def __init__(self, *args, **kwargs):
         TaggedClass.__init__(self, *args, **kwargs)
+        self.id = get_id()
         self.args = args
         self.kwargs = kwargs
         self.effects = []
@@ -44,22 +45,22 @@ class Command(AbstractCommand, TaggedClass):
         self.evaluated = False
         self.log = "" if 'log' not in kwargs.keys() else kwargs['log']
 
-    def execute(self, state):
+    def execute(self, state, invoker=None):
         if not self.evaluated:
-            self.evaluate(state)
-        self.apply_effects(state)
+            self.evaluate(state, invoker)
+        self.apply_effects(state, invoker)
 
-    def evaluate(self, state) -> None:
+    def evaluate(self, state, invoker=None) -> None:
         '''resolves command down to primitive command'''
         self.evaluated = True
         # self.effects = [] if
         self.inverse_effects = []
 
-    def apply_effects(self, state):
+    def apply_effects(self, state, invoker=None):
         for effect in self.effects:
             effect.apply(state)
 
-    def undo(self, state):
+    def undo(self, state, invoker=None):
         if not self.evaluated:
-            self.evaluate(state)
+            self.evaluate(state, invoker)
         state.apply_effects(self.inverse_effects)

@@ -1,0 +1,37 @@
+Adventurers:
+  Solaire: 
+    class_levels:
+      fighter_custom: 4
+    level_up_choices:
+      fighting_style: dueling
+    stats: [18,12,16,11,10,9]
+    sprites:
+      portrait: solaire_portrait_lofi.png
+      game_piece: solaire_token_blk.png
+    ac: 18
+    profs: [athletics, acrobatics, perception, animal_handling, carpenters_tools, land_vehicles]
+    inventory: [Antinuous, ]
+    senses: 
+      darkvision': 60
+    speed:
+      land: 30
+      swim: 30
+      climb: 30
+    experience: 1200
+    languages: common
+    game_moves:
+      longsword:
+        parent_move: 'AttackAction'
+        dmg_dice: '1d10'
+        dmg_flat: 6 
+        to_hit: 4
+        animtation_frames: 3
+    death_saves:
+      pass: 0
+      fail: 0 
+    Traits: direct, honest, hard headed
+    Ideals: I can use my gifts for violence so others aren't forced to, good job if you can get it
+    Bonds: likes- other islanders & other longshormen; dislikes - knights of minos
+    Flaws: Sees a lot of the negative about things and has a hard time letting it be
+
+

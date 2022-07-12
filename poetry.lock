@@ -40,6 +40,26 @@ python-versions = "*"
 test = ["flake8 (==3.7.8)", "hypothesis (==3.55.3)"]
 
 [[package]]
+name = "dice"
+version = "3.1.2"
+description = "A library for parsing and evaluating dice notation"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+docopt = ">=0.6.1"
+pyparsing = ">=2.4.1"
+
+[[package]]
+name = "docopt"
+version = "0.6.2"
+description = "Pythonic argument parser, that will make you smile"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "iniconfig"
 version = "1.1.1"
 description = "iniconfig: brain-dead simple config-ini parsing"
@@ -90,7 +110,7 @@ python-versions = ">=3.6"
 name = "pyparsing"
 version = "3.0.9"
 description = "pyparsing module - Classes and methods to define and execute parsing grammars"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6.8"
 
@@ -166,7 +186,7 @@ python-versions = ">=3.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "8a1cf441de22c06985d0ac64e9a0a2f7b648362c80b8160d33a26d4ff7b64076"
+content-hash = "f4d13b77913370b4245162513d0def5293fc4cf62f2256c7e080bb577064814d"
 
 [metadata.files]
 atomicwrites = [
@@ -184,6 +204,13 @@ colorama = [
 commonmark = [
     {file = "commonmark-0.9.1-py2.py3-none-any.whl", hash = "sha256:da2f38c92590f83de410ba1a3cbceafbc74fee9def35f9251ba9a971d6d66fd9"},
     {file = "commonmark-0.9.1.tar.gz", hash = "sha256:452f9dc859be7f06631ddcb328b6919c67984aca654e5fefb3914d54691aed60"},
+]
+dice = [
+    {file = "dice-3.1.2-py2.py3-none-any.whl", hash = "sha256:64305a094bf896bb81ec7d0cc24846202c8b52767f4661d052fda34e9d1d2774"},
+    {file = "dice-3.1.2.tar.gz", hash = "sha256:e3df477cfd7327f630867311169202db0cab67acf4de96c863c5c42623c5d4f4"},
+]
+docopt = [
+    {file = "docopt-0.6.2.tar.gz", hash = "sha256:49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491"},
 ]
 iniconfig = [
     {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},

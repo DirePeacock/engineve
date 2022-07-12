@@ -12,7 +12,7 @@ from .loc import Loc
 class Actor(Serializable, TaggedClass):
     serializable_attrs = ['name', 'team', 'loc', 'resources', 'game_moves']
     turn_resources = ['turn_movement', 'turn_action', 'turn_bonus_action']
-    delete_after_combat=False
+    delete_after_combat = False
 
     def __init__(self, name=None, team=1, loc=(0,0), ai_class=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -37,7 +37,8 @@ class Actor(Serializable, TaggedClass):
         self.ai_class = BasicAI if ai_class is None else ai_class
         self.loc = Loc(loc) if isinstance(loc, tuple) else loc
         self.game_moves = {}
-        self.resources = {}  
+        self.resources = {}
+        self.effects = {}
         
         self._init_actor_core()
 
@@ -70,6 +71,24 @@ class Actor(Serializable, TaggedClass):
         stat_scrore = self.__getattribute__(stat.lower())
         return get_stat_modifier(stat_scrore)
     
+    def get_relevant_modifiers(self, tags):
+        '''given a set of tags, calculate modifiers that apply flat and numbers of adv & disadv'''
+        modifiers_dict = {}
+        
+        # proficiencies
+        modifiers_dict['pb'] = self.pb
+
+        # ability scores
+        modifiers_dict['pb'] = self.pb
+        
+        # weapons included in effects?
+        # effects
+        for name, effect in self.effects.items():
+            if effect.is_applicable(tags) and name not in modifiers_dict.keys():
+                modifiers_dict[name] = effect.value_func()
+
+        return modifiers_dict
+
     def add_game_move(self, game_move):
         self.game_moves[game_move.name] = game_move
 
@@ -91,7 +110,7 @@ class Actor(Serializable, TaggedClass):
         return self.ai_class.make_game_move_command(self.id, state)
     
     def modify_hp(self, value):
-        change = value.num if hasattr(value,'num') else value
+        change = value.num if hasattr(value, 'num') else value
         plus = '' if change <= 0 else '+'
         # logging.debug(f"{self.name}: hp {plus}{change}")
         self.hp += change

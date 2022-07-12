@@ -15,7 +15,7 @@ class ChangeLocCommand(Command):
         self.add_tag('loc_path', self.locpath)
         self.add_tag('log', None)
     
-    def evaluate(self, state):
+    def evaluate(self, state, invoker=None):
         for loc in self.locpath:
             self.effects.append(ChangeLoc(self.actor_id, loc))
         self.log = f"{state.actors[self.actor_id].name} moves {state.actors[self.actor_id].loc} -> {self.locpath[-1]}"

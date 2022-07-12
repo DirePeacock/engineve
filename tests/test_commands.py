@@ -43,3 +43,7 @@ def test_attack_command_log():
 #     target_id = get_target(attacker_id=first_id, state=state)
     
 #     return
+
+def test_commands_call_notify():
+    is_good = False
+    assert is_good

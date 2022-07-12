@@ -13,7 +13,7 @@ class InitiativeCommand(CompositeCommand):
         for actor_id in self.actor_ids:
             self.children[actor_id] = AbilityCheckCommand(actor_id=actor_id, ability='dex')
 
-    def evaluate(self, state):
+    def evaluate(self, state, invoker=None):
         super().evaluate(state)
         self.value = {}
         for actor_id, init_command in self.children.items():

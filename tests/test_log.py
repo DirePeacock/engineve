@@ -1,10 +1,13 @@
 import includes
 
 def test_display_command():
-    return
+    is_good = False
+    assert is_good
 
 def test_display_complex_command():
-    return
+    is_good = False
+    assert is_good
 
 def test_display_stack():
-    return
+    is_good = False
+    assert is_good

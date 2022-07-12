@@ -4,6 +4,6 @@ class ModifyHP(EffectCommand):
         self.target_id = target_id
         self.num = num
         
-    def apply(self, state):
+    def apply(self, state, invoker=None):
         '''do thing to state'''
         state.actors[self.target_id].modify_hp(self.num)

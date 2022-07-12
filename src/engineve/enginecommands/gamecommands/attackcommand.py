@@ -18,10 +18,11 @@ class AttackCommand(CompositeCommand):
         self.add_tag('actor_ids', {'attacker_id':self.attacker_id, 'target_id':self.target_id})
         # self.resources= [] if resources is None else ModifyResources(actor_id=attacker_id, changes={'turn_action': -1})
         
-    def evaluate(self, state):
+    def evaluate(self, state, invoker=None):
         # TODO resistance may want to change the log somewhere
         # TODO crits, crit tags
         self.evaluated = True
+
         self.children['attack_roll'].evaluate(state)
 
         attack_hits = self.children['attack_roll'].value

@@ -10,6 +10,7 @@ def get_id():
     return uuid.uuid4().int
 
 rando = 1
+
 def get_rando():
     global rando
     rv = rando
@@ -25,7 +26,9 @@ def get_stat_modifier(stat):
 name_table = ['arthur', 'bartholemew', 'charlemange', 'diocles', 'elwing', 'falcor', 'gawain', 'hadrian', 'iori', 'jamis', 
 'kelvin', 'llewelyn', 'malice', 'nostradamus', 'ophelia', 'phelia', 'quattro', 'roderick', 'stefan', 'theodocian',  
 'ullamon', 'valter', 'wolfgard', 'xyna', 'yorick', 'zezima']
+
 used_names = []
+
 def get_random_name():
     global name_table
     global used_names

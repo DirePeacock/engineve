@@ -5,7 +5,7 @@ class ModifyResources(EffectCommand):
         self.actor_id = actor_id
         self.changes = {} if changes is None else changes
         
-    def apply(self, state):
+    def apply(self, state, invoker=None):
         '''do thing to state'''
         for name, net_change in self.changes.items():
             if name in state.actors[self.actor_id].resources.keys():

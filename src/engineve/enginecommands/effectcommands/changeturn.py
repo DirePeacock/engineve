@@ -7,7 +7,7 @@ class ChangeTurn(EffectCommand):
         self.old_init = old_init
         self.next_init = next_init
 
-    def apply(self, state):
+    def apply(self, state, invoker=None):
         state.actors[state.combat.order[self.next_init]].refresh_turn_resources()
         state.combat.current_iter = self.next_init
 

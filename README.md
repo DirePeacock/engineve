@@ -22,7 +22,9 @@
 * bonus: bonus: MULTIPLAYER???
 
 
-
+# PC needed feature
+effects
+meta_commands
 
 ## NEEDS 4 GAME DEMO
 integrate into thing

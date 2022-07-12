@@ -21,7 +21,9 @@ class Invoker(ObserverManager):
         if self.command_stack[0].log and self._log:
             self._log.stack.pop(0)
         
-        self.command_stack[0].execute(state)
+        # execute the command and have it beable to send notifications for its own logic too
+        self.command_stack[0].execute(state=state, invoker=self)
+
         self.notify(meta=self.command_stack[0].tags)
         self.command_log.append(self.command_stack.pop(0))
         
