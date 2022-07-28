@@ -1,29 +1,41 @@
 import logging
 
 from ..basecommands.command import Command
-from  ..effectcommands.modifyhp import ModifyHP
-from ...utils import roll
+from .rollcommand import RollCommand
+from ..effectcommands.modifyhp import ModifyHP
+from ...utils import roll, check_tag
 
-class DamageRollCommand(Command):    
-    def __init__(self, attacker_id, target_id, *args, **kwargs):
+
+class DamageRollCommand(RollCommand):
+    def __init__(self, attacker_id, target_id, dice_func=None, stat="str", *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.target_id = target_id
         self.attacker_id = attacker_id
-        
+        self.dice_func = dice_func
+        self.stat = stat
+
     def evaluate(self, state, invoker=None):
         super().evaluate(state)
-        dmg_value = roll(size=6) + state.actors[self.attacker_id].get_ability_modifier('str')
-        
+
+        if self.stat is not None:
+            self.add_flat_modifier(self.stat, state.actors[self.attacker_id].get_ability_modifier(self.stat))
+
+        # check critical-ness of self then double the dice rolled
+        if check_tag(self.tags, "critical_hit"):
+            pass
+
+        dmg_value = roll(size=6)
+        dmg_value += self.get_total_flat_modifier()
         dmg_value = max(0, dmg_value)  # RULE no negative damage
         self.effects = [ModifyHP(self.target_id, (dmg_value * -1), self.attacker_id)]
-        
+
         self.log = f"{dmg_value} dmg"
-        
+
         invoker.notify(self.tags)
 
-    def apply_effects(self, state, invoker=None):
-        super().apply_effects(state)
-    
+    # def apply_effects(self, state, invoker=None):
+    #     super().apply_effects(state)
+
     # def execute(self, state):
     #     self.evaluate(state)
     #     return self.value
