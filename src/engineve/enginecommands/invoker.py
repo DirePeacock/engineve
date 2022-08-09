@@ -17,6 +17,7 @@ class Invoker(ObserverManager):
         self._log = log
 
     def periodic(self, state):
+        """if there is something on the stack, do it and put it in the history"""
         if len(self.command_stack) < 1:
             return
 
@@ -27,6 +28,7 @@ class Invoker(ObserverManager):
         # execute the command and have it beable to send notifications for its own logic too
         self.command_stack[0].execute(state=state, invoker=self)
 
+        # now that this is possible, we may want the notification to be at the end of execute
         self.notify(meta=self.command_stack[0].tags, state=state, invoker=self)
         self.command_log.append(self.command_stack.pop(0))
 
@@ -38,16 +40,3 @@ class Invoker(ObserverManager):
         self.command_stack.insert(0, command)
         if self._log is not None and command.log:
             self._log.stack.insert(0, command.log)
-
-
-class stack_iterator:
-    def __init__(self, invoker):
-        self._invoker = invoker
-        self._index = 0
-        self._child_keys = []
-
-    def __iter__(self):
-        pass
-
-    def __next__(self):
-        raise StopIteration

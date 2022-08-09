@@ -21,11 +21,14 @@
 * bonus: Graphics engine has a way for graphics data to be associated with a game object?
 * bonus: bonus: MULTIPLAYER???
 
-
+# JULY 
 # PC needed feature
-effects
-meta_commands
+effect removal timers (start/end of turn etc)
+where are effects defined
+apply effect with time - as a command!
 
+
+ 
 ## NEEDS 4 GAME DEMO
 integrate into thing
     actor observer
@@ -34,6 +37,7 @@ premade_statblock
 load game
 save game
 bruh unit tests
+
 
 ## REFACTORS
 notifications, what needs to be in the notification thing

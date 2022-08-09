@@ -2,6 +2,7 @@ import logging
 from ..basecommands.command import Command
 from ..effectcommands.changeturn import ChangeTurn
 from ..effectcommands.incrementgametime import IncrementGameTime
+from ...gametypes.time import roundsdelta
 
 
 class NextTurnCommand(Command):
@@ -13,7 +14,7 @@ class NextTurnCommand(Command):
         if next_i > curr_i:
             # if we start jumping around the turn order, this will have to be amended
             self.add_tag("next_round")
-            self.effects.append(ChangeTurn(old_init=curr_i, next_init=next_i))
+            self.add_tag("gametime_update", state.time + roundsdelta(1))
             self.effects.append(IncrementGameTime(rounds=1))
 
         self.add_tag("end_turn", state.combat.order[curr_i])

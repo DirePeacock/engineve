@@ -7,8 +7,10 @@ from ..enginecommands.gamecommands.initiativecommand import InitiativeCommand
 from ..enginecommands.effectcommands.changeloc import ChangeLoc
 from ..tags import tag
 
+
 class CombatState(EngineState):
-    '''I move the engine through combat, the state of a combat is stored in the gametypes.combat'''
+    """I move the engine through combat, the state of a combat is stored in the gametypes.combat"""
+
     _post_combat_state: type = None
 
     def __init__(self, actor_ids=None, *args, **kwargs):
@@ -25,19 +27,23 @@ class CombatState(EngineState):
         elif state.combat.is_done(state):
             self.declare_victory(state, invoker)
             self.end_combat(state, invoker)
-            
+
         elif state.combat.active:
             if self.is_turn_done(state, invoker):
                 self.next_turn(state, invoker)
             else:
-                self.actor_make_game_move(state, invoker)
+                self.actor_make_game_move(state.combat.get_current_actor_id(), state, invoker)
 
         else:
             logging.warning(f"sorry something's gone wrong.")
             self.end_combat(state, invoker)
 
     def declare_victory(self, state, invoker):
-        actor_names = [state.actors[a_id].name for a_id in state.combat.order.values() if state.actors[a_id].team == state.combat.winning_team] 
+        actor_names = [
+            state.actors[a_id].name
+            for a_id in state.combat.order.values()
+            if state.actors[a_id].team == state.combat.winning_team
+        ]
         log_entry = " ".join((f"party {state.combat.winning_team} of", ", ".join(actor_names), "is victorious"))
         state.log.write(log_entry)
 
@@ -47,29 +53,28 @@ class CombatState(EngineState):
     def start_combat(self, state, invoker):
         state.combat.active = True
         self.roll_inits(state, invoker)
-        #TODO spawn locations
-        invoker.notify(meta={tag('combat_start'): None})
+        # TODO spawn locations
+        invoker.notify(meta={tag("combat_start"): None})
         self.randomize_locs(state, invoker)
 
     def roll_inits(self, state, invoker):
         invoker.put(InitiativeCommand(self.actor_ids))
-    
+
     def randomize_locs(self, state, invoker):
         for actor_id in self.actor_ids:
-            random_loc = (random.randint(0,9), random.randint(0,9))
+            random_loc = (random.randint(0, 9), random.randint(0, 9))
             while state.gridmap.check_occupancy(random_loc, state):
-                random_loc = (random.randint(0,9), random.randint(0,9))
+                random_loc = (random.randint(0, 9), random.randint(0, 9))
             invoker.command_stack[0].effects.append(ChangeLoc(actor_id, random_loc))
 
     def next_turn(self, state, invoker):
-        '''do next trurn command'''
+        """do next trurn command"""
         invoker.put(NextTurnCommand())
-        
-    
-    def actor_make_game_move(self, state, invoker):
-        '''if things to do put commands on the stack'''
-        invoker.put(state.actors[state.combat.get_current_actor_id()].make_game_move_command(state))
-        
+
+    def actor_make_game_move(self, actor_id, state, invoker):
+        """if things to do put commands on the stack"""
+        invoker.put(state.actors[actor_id].make_game_move_command(state))
+
     def clean_up_combat(self, state, invoker):
         for actor_id in state.combat.order.values():
             if actor_id in state.actors.keys() and state.actors[actor_id].delete_after_combat:
@@ -78,7 +83,6 @@ class CombatState(EngineState):
     def end_combat(self, state, invoker):
         state.combat.active = False
         self.clean_up_combat(state, invoker)
-        invoker.notify(meta={tag('combat_end'): None})
-        logging.debug('combat')
+        invoker.notify(meta={tag("combat_end"): None})
+        logging.debug("combat")
         self.transition_to(self._post_combat_state())
-

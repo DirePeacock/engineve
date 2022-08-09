@@ -1,13 +1,19 @@
+import pathlib
 import includes
 import logging
 
 from engineve.mainfactory import factory
 from engineve.enginestates.combatstate import CombatState
 from engineve.gametypes.combat import Combat
+from engineve.gameengine import GameEngine
+
+
+def new_game_engine():
+    return GameEngine()
 
 
 def setup_game_engine():
-    game_engine = factory(spawn=False)
+    game_engine = new_game_engine()
     id_one = game_engine.spawn_archetype("skeleton", team=1, name="ONE")
     id_two = game_engine.spawn_archetype("skeleton", team=2, name="ONE")
 

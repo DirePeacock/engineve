@@ -20,6 +20,7 @@ log_cli_date_format = "%Y-%m-%d %H:%M:%S"
 pytest = "^7.1.2"
 rich = "^12.4.4"
 pytest-mock = "^3.7.0"
+pygount = "^1.4.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

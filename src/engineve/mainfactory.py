@@ -1,6 +1,6 @@
 from .gameengine import GameEngine
 from .gametypes.actor import Actor
-from .factory.spawningpool import make_actors_i_guess
+
 from .archetypes.archetype import ARCHETYPES, new_monster, MonsterArchetype
 
 def factory(spawn=True):

@@ -1,6 +1,7 @@
 import logging
 
 from ..actorai.basicai import BasicAI
+from ..actorai.movefactory import load_game_move
 from ..actorai.gamemoves.attackaction import AttackAction
 from ..actorai.gamemoves.usemovement import UseMovement
 from .resource import Resource
@@ -8,30 +9,39 @@ from ..utils import get_id, get_random_name, get_stat_modifier, roll, get_kwarg
 from ..serializable import Serializable
 from ..tags import TaggedClass
 from .loc import Loc
+from ..enginecommands.observer.observer import Observer
 
+# todo how do I want to iterate over observers for effects
+# notify with list of targets
 class Actor(Serializable, TaggedClass):
-    serializable_attrs = ['name', 'team', 'loc', 'resources', 'game_moves']
-    turn_resources = ['turn_movement', 'turn_action', 'turn_bonus_action']
+    serializable_attrs = ["name", "team", "loc", "resources", "game_moves"]
+    turn_resources = ["turn_movement", "turn_action", "turn_bonus_action"]
     delete_after_combat = False
 
-    def __init__(self, name=None, team=1, loc=(0,0), ai_class=None, *args, **kwargs):
+    def __init__(self, name=None, team=1, loc=(0, 0), ai_class=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.id = get_id()
         self.team = team
         self.name = name if name is not None else get_random_name()
-        # TODO this
-        self.hit_dice_num = get_kwarg('hit_dice_num', kwargs, 2)
-        self.hit_dice_size = get_kwarg('hit_dice_size', kwargs, 6)
+        # # TODO this?
+        # todo _init_hp(*args, **kwargs)
+        self.hit_dice_num = get_kwarg("hit_dice_num", kwargs, 2)
+        self.hit_dice_size = get_kwarg("hit_dice_size", kwargs, 6)
         self.pb = 2
-        self.proficiencies = [] if 'proficiencies' not in kwargs.keys() else kwargs['proficiencies']
-        self.speed = {'land': 30} if 'speed' not in kwargs.keys() else kwargs['speed']
-        self.str = 14 if 'str' not in kwargs.keys() else kwargs['str']
-        self.dex = 14 if 'dex' not in kwargs.keys() else kwargs['dex']
-        self.con = 10 if 'con' not in kwargs.keys() else kwargs['con']
-        self.int = 10 if 'int' not in kwargs.keys() else kwargs['int']
-        self.wis = 10 if 'wis' not in kwargs.keys() else kwargs['wis']
-        self.cha = 10 if 'cha' not in kwargs.keys() else kwargs['cha']
-        self.ac = 13 if 'ac' not in kwargs.keys() else kwargs['ac']
+        self.proficiencies = [] if "proficiencies" not in kwargs.keys() else kwargs["proficiencies"]
+        self.speed = {"land": 30} if "speed" not in kwargs.keys() else kwargs["speed"]
+        self.ac = 13 if "ac" not in kwargs.keys() else kwargs["ac"]
+
+        self._set_stats(*args, **kwargs)
+        self.senses = {} if "senses" not in kwargs.keys() else kwargs["senses"]
+        self.experience = get_kwarg("experience", kwargs, 0)
+        self.death_saves = get_kwarg("death_saves", kwargs, 0)
+        self.languages = get_kwarg("languages", kwargs, ["common"])
+        self.inventory = get_kwarg("inventory", kwargs, [])
+        self.flavor = get_kwarg("flavor", kwargs, {})
+        self.level_up_choices = get_kwarg("level_up_choices", kwargs, {})
+        self.class_levels = get_kwarg("class_levels", kwargs, {})
+
         self.max_hp = self.roll_for_hp()
         self.hp = self.max_hp
         self.ai_class = BasicAI if ai_class is None else ai_class
@@ -39,12 +49,37 @@ class Actor(Serializable, TaggedClass):
         self.game_moves = {}
         self.resources = {}
         self.effects = {}
-        
+
         self._init_actor_core()
+        if "game_moves" in kwargs.keys():
+            self._load_game_moves(kwargs["game_moves"])
+
+    def _load_game_moves(self, game_moves):
+        for name, move in game_moves.items():
+            self.game_moves[name] = load_game_move(**move)  # move
+
+    def _set_stats(self, *args, **kwargs):
+        if "stats" in kwargs.keys():
+            self.ability_scores = kwargs["stats"]
+        elif all(stat for stat in ["str", "dex", "con", "int", "wis", "cha"] if stat in kwargs.keys()):
+            self.str = 14 if "str" not in kwargs.keys() else kwargs["str"]
+            self.dex = 14 if "dex" not in kwargs.keys() else kwargs["dex"]
+            self.con = 10 if "con" not in kwargs.keys() else kwargs["con"]
+            self.int = 10 if "int" not in kwargs.keys() else kwargs["int"]
+            self.wis = 10 if "wis" not in kwargs.keys() else kwargs["wis"]
+            self.cha = 10 if "cha" not in kwargs.keys() else kwargs["cha"]
+        else:
+            for arg in args:
+                if isinstance(arg, list) and 6 == len(arg) and all(arg_i for arg_i in arg if isinstance(arg_i, int)):
+                    self.ability_scores = arg
+                    return
+
+    def _set_stats_from_list(self, _list):
+        self.ability_scores = _list
 
     def roll_for_hp(self):
-        return self.hit_dice_num * (self.get_ability_modifier('con') + int(0.5 * self.hit_dice_size) + 1)
-        
+        return self.hit_dice_num * (self.get_ability_modifier("con") + int(0.5 * self.hit_dice_size) + 1)
+
     @property
     def ability_scores(self):
         return [self.str, self.dex, self.con, self.int, self.wis, self.cha]
@@ -52,7 +87,7 @@ class Actor(Serializable, TaggedClass):
     @ability_scores.setter
     def ability_scores(self, score_list):
         if len(score_list) != 6 or not all([isinstance(score, int) for score in score_list]):
-            logging.warning(f'ability score array setter; needs to be list of 6 ints @{score_list}')
+            logging.warning(f"ability score array setter; needs to be list of 6 ints @{score_list}")
             return
         self.str = score_list[0]
         self.dex = score_list[1]
@@ -64,30 +99,30 @@ class Actor(Serializable, TaggedClass):
     def _init_actor_core(self):
         self.add_game_move(AttackAction(actor_id=self.id))
         self.add_game_move(UseMovement(actor_id=self.id))
-        for resource_name in ['turn_action', 'turn_movement']:        
+        for resource_name in ["turn_action", "turn_movement"]:
             self.add_resource(Resource(name=resource_name, value=1, max=1))
 
     def get_ability_modifier(self, stat):
         stat_scrore = self.__getattribute__(stat.lower())
         return get_stat_modifier(stat_scrore)
-    
+
     def get_relevant_modifiers(self, tags):
-        '''given a set of tags, calculate modifiers that apply flat and numbers of adv & disadv'''
+        """given a set of tags, calculate modifiers that apply flat and numbers of adv & disadv"""
         modifiers_dict = {}
-        
+
         # proficiencies
-        modifiers_dict['pb'] = self.pb
+        modifiers_dict["pb"] = self.pb
 
         # ability scores
-        modifiers_dict['pb'] = self.pb
-        
+        modifiers_dict["pb"] = self.pb
+
         # weapons included in effects?
         # effects
         for name, effect in self.effects.items():
             if effect.is_applicable(tags) and name not in modifiers_dict.keys():
                 modifiers_dict[name] = effect.value_func()
 
-        return modifiers_dict
+        return modifiers_dict, tags
 
     def add_game_move(self, game_move):
         self.game_moves[game_move.name] = game_move
@@ -105,13 +140,12 @@ class Actor(Serializable, TaggedClass):
             if resource_name in self.resources.keys():
                 self.resources[resource_name].value = self.resources[resource_name].max
 
-        
     def make_game_move_command(self, state):
         return self.ai_class.make_game_move_command(self.id, state)
-    
+
     def modify_hp(self, value):
-        change = value.num if hasattr(value, 'num') else value
-        plus = '' if change <= 0 else '+'
+        change = value.num if hasattr(value, "num") else value
+        plus = "" if change <= 0 else "+"
         # logging.debug(f"{self.name}: hp {plus}{change}")
         self.hp += change
         # logging.debug(f"{self.name}.hp = {self.hp}")
@@ -120,4 +154,27 @@ class Actor(Serializable, TaggedClass):
         return str({key: val for key, val in self.__dict__.items() if isinstance(val, (int, str))})
 
     def is_dead(self):
-        return (self.hp <= 0)
+        return self.hp <= 0
+
+    def add_effect(self, effect):
+        """add_effect by name
+        #TODO might want to just be by id
+        """
+        self.effects[effect.id] = effect
+
+    def check_effects(self, meta):
+        # TODO delete???
+        for name, effect in self.effects.items():
+
+            pass
+
+    def check_reactions(self):
+        # TODO delete???
+        pass
+
+    @classmethod
+    def load_actor(cls):
+        return cls.__init__()
+
+    def save_actor(self) -> dict:
+        return {}

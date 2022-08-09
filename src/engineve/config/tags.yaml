@@ -14,13 +14,15 @@ data:
 - skill
 - proficiency
 - critical
+- critical_hit
 - critical_miss
+- advantage
+- disadvantage
 - move
 - animation
 - from
 - to 
 - child_tags
-- actor_ids
 - start_turn
 - end_turn
 - log
@@ -35,3 +37,10 @@ data:
 - dual_wielding
 - melee_attack
 - weapon_attack
+- command_id
+- actor_ids
+- actor_id
+- target_id
+- attacker_id
+- next_round
+- gametime_update

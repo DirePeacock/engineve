@@ -5,6 +5,7 @@ import unittest
 import engineve.utils as engineve_utils
 from engineve import tags
 from utils import setup_game_engine
+from engineve.gametypes.time import GameTime, roundsdelta, GameTimeDelta
 
 
 class test_advantage_calcs(unittest.TestCase):
@@ -27,3 +28,14 @@ def test_stack_iter():
     for cmd in engineve_utils.command_stack_df_traversal(engine.invoker.command_stack):
         logging.debug(f"{type(cmd).__name__}: {cmd.id}")
     print("bruh")
+
+
+def test_time_add_sub():
+    diff_x = 1
+    time_a = GameTime.now()
+    time_b = time_a
+    delta_x = roundsdelta(rounds=diff_x)
+    time_b = time_b + delta_x
+
+    time_diff = time_b - time_a
+    assert time_diff == roundsdelta(rounds=diff_x)

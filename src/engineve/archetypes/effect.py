@@ -1,7 +1,7 @@
 import logging
 from ..enginecommands.observer.observer import Observer
 from ..tags import TaggedClass, tag, check_tag, check_tags_all
-from ..utils import yield_command_with_id
+from ..utils import yield_command_with_id, get_id
 
 # from ..utils import
 
@@ -26,10 +26,19 @@ class Effect(Observer, TaggedClass):
     Q: tags
     """
 
-    def __init__(self, parent_id=None, duration=None, *args, **kwargs):
+    def __init__(self, parent_id=None, duration=None, start_time=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.id = get_id()
+        self.name = type(self).__name__
         self.duration = duration
         self.parent_id = parent_id
+        self.start_time = start_time
+
+    # @classmethod
+    # def apply_effect(cls, *args, **kwargs):
+
+    #     logging.debug("we did it!!!!!!!!!!!")
+    #     pass
 
 
 class ConditionalBonus(Effect):
@@ -44,30 +53,6 @@ class ConditionalBonus(Effect):
 
 
 EFFECTS = {}
-
-
-class Dodge(Effect):
-    def __init__(self, duration=1, *args, **kwargs):
-        super().__init__(
-            duration=duration, trigger=self.check_applicable, reaction=self.apply_modifier, *args, **kwargs
-        )
-
-    def check_applicable(self, meta, state=None, invoker=None):
-        tag_vals_to_check = {"target_id": self.parent_id}
-        return check_tags_all(meta, tag_vals_to_check) and check_tag(meta, "attack")
-
-    def apply_modifier(self, meta, state=None, invoker=None):
-        triggering_cmd_id = meta[tag("command_id")]
-        # iterate over stack to get the correct command_id
-        # todo how to edit aan obj ina tree
-        for command in yield_command_with_id(triggering_cmd_id, invoker):
-            command.add_tag("disadvantage")
-
-    @classmethod
-    def apply_effect(cls, parent_id, duration=1, state=None):
-
-        logging.debug("we did it!!!!!!!!!!!")
-        pass
 
 
 # fighting_style_dueling = Effect(

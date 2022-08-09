@@ -14,9 +14,8 @@ MonsterArchetypes:
       scimitar:
         parent_move: 'AttackAction'
         dmg_dice: '1d6'
-        dmg_flat: 2
-        to_hit: 4
-        animtation_frames: 3
+        stat: 'dex'
+        animtation_frames: 0
     
 
 

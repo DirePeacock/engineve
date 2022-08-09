@@ -1,53 +1,97 @@
 import yaml
 import pathlib
 from enum import IntEnum, auto
+import logging
 
-tags_path = pathlib.Path(__file__).parent / 'config' / 'tags.yaml'
+tags_path = pathlib.Path(__file__).parent / "config" / "tags.yaml"
 TAGS = None
 
-with open(tags_path, 'r') as tags_file:
+with open(tags_path, "r") as tags_file:
     _tags = yaml.safe_load(tags_file)
-    TAGS = IntEnum('TAGS', {thing: auto() for thing in _tags['data']})
+    TAGS = IntEnum("TAGS", {thing: auto() for thing in _tags["data"]})
+
 
 class meta(dict):
-    """indexable by str
-    """
+    """indexable by str"""
+
     pass
+
 
 class TaggedClass:
     def __init__(self, tags=None, *args, **kwargs):
         self.tags = tags if tags is not None else {}
+
     def add_tag(self, tag, value=None):
-        '''Note Bene: if you pass strings that often and check str in keys, it defeats the puropose of less str comparisons'''
+        """Note Bene: if you pass strings that often and check str in keys, it defeats the puropose of less str comparisons"""
         # TODO tag trees for things  with value
         if isinstance(tag, TAGS):
             self.tags[tag] = value
         elif isinstance(tag, dict):
             for key, val in tag.items():
-                if isinstance(tag, str):   
+                if isinstance(tag, str):
                     self.tags[TAGS._member_map_[key]] = val
                 else:
                     self.tags[key] = val
         elif isinstance(tag, str):
             self.tags[TAGS._member_map_[tag]] = value
         else:
-            print('RIP')
+            print("RIP")
 
         # if tag in TAGS:
         #     self.tags[tag] = None
+
+
 def tag(string):
     return TAGS._member_map_[string]
 
 
-def check_tags(obj, tag):
+def check_tag(obj, tag, value=None):
+    """args: object, tag, value
+    # TODO rename to check_tag
+    """
     key = tag if not isinstance(tag, str) else TAGS._member_map_[tag]
+    tag_dict = {}
+
     if isinstance(obj, TaggedClass):
-        return key in obj.tags
+        tag_dict = obj.tags
     elif isinstance(obj, dict):
-        return key in obj.keys()
+        tag_dict = obj
+
+    retval = key in tag_dict.keys()
+    if value is not None:
+        retval = retval and tag_dict[key] == value
+
+    return retval
+
+
+def check_tags(*args, **kwargs):
+    logging.debug("pls use check_tag")
+    return check_tag(*args, **kwargs)
+
 
 def check_tags_all(obj, tags):
-    return all([check_tags(obj, tag) for tag in tags])
+    """checks that the object has all the tags listed
+    either give values for all of them or none of them
+    """
+    if isinstance(tags, dict):
+
+        # are all values in obj's tags
+        has_all_tags = all([check_tag(obj, tag) for tag in tags.keys()])
+        if not has_all_tags:
+            return False
+
+        # are all values equal
+        for key, value in tags.items():
+            # tag_key = key if isinstance(key, TAGS) else tag(key)
+            if not check_tag(obj, key, value):
+                return False
+
+        # all tags are present in both dicts and all values are equal
+        return True
+
+    else:
+        return all([check_tags(obj, tag) for tag in tags])
+
 
 # def str_to_tag(tag):
 #     return TAGS._member_map_[t] if not isinstance(t, str) else t

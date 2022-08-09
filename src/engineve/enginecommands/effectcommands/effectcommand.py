@@ -10,4 +10,4 @@ class EffectCommand(Command):
 
     def execute(self, state, invoker=None):
         """just do something to apply so this can be a standalone effect"""
-        self.apply(state)
+        self.apply(state, invoker)
