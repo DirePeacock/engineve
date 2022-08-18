@@ -7,11 +7,12 @@ from ...utils import roll, check_tag
 
 
 class DamageRollCommand(RollCommand):
-    def __init__(self, attacker_id, target_id, dice_func=None, stat="str", *args, **kwargs):
+    def __init__(self, attacker_id, target_id, dmg_dice=None, stat="str", *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.target_id = target_id
         self.attacker_id = attacker_id
-        self.dice_func = dice_func
+
+        self.dmg_dice = dmg_dice if dmg_dice is not None else "1d6"
         self.stat = stat
 
     def evaluate(self, state, invoker=None):
@@ -24,8 +25,9 @@ class DamageRollCommand(RollCommand):
         if check_tag(self.tags, "critical_hit"):
             pass
 
-        dmg_value = roll(size=6)
+        dmg_value = roll(self.dmg_dice)
         dmg_value += self.get_total_flat_modifier()
+
         dmg_value = max(0, dmg_value)  # RULE no negative damage
         self.effects = [ModifyHP(self.target_id, (dmg_value * -1), self.attacker_id)]
 

@@ -65,7 +65,7 @@ class SlowDemoEngine(GameEngine):
 def factory(spawn=True):
     GAMEENGINE = SlowDemoEngine()
     if spawn:
-        GAMEENGINE.start_combat(DEMO_ACTORS)
+        pass  # GAMEENGINE.start_combat(DEMO_ACTORS)
 
     if DEMO_ANIM_FRAMES is not None:
         for a_id in GAMEENGINE.game_state.actors.keys():
@@ -75,7 +75,7 @@ def factory(spawn=True):
                         dict({TAGS.animation: DEMO_ANIM_FRAMES})
                     )
 
-    GAMEENGINE.register_observer(Observer(trigger=check_is_done, reaction=complete_demo))
+    # GAMEENGINE.register_observer(Observer(trigger=check_is_done, reaction=complete_demo))
     GAMEENGINE.game_state.log.history.append(f"running at {DEMO_FPS} fps")
     GAMEENGINE.game_state.log.history.append(f"with {DEMO_ACTORS} actors per side")
     if DEMO_ANIM_FRAMES is not None:

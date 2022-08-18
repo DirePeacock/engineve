@@ -15,7 +15,7 @@ def new_game_engine():
 def setup_game_engine():
     game_engine = new_game_engine()
     id_one = game_engine.spawn_archetype("skeleton", team=1, name="ONE")
-    id_two = game_engine.spawn_archetype("skeleton", team=2, name="ONE")
+    id_two = game_engine.spawn_archetype("skeleton", team=2, name="TWO")
 
     all_ids = [actor_id for actor_id in game_engine.game_state.actors.keys()]
     game_engine.engine_state = CombatState(all_ids)
@@ -25,7 +25,7 @@ def setup_game_engine():
 
 def actor_put_command(engine, actor_id, cmd_substring="attack"):
     for name, game_move in engine.game_state.actors[actor_id].game_moves.items():
-        if cmd_substring in name.lower():
+        if cmd_substring.lower() in name.lower():
             engine.invoker.put(game_move.make_command(engine.game_state))
             return engine.invoker.command_stack[0].id
     raise Exception(f"no move containing the name {cmd_substring}")

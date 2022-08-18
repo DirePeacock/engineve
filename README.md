@@ -35,6 +35,7 @@ integrate into thing
     command tags
 premade_statblock
 load game
+    load game move
 save game
 bruh unit tests
 

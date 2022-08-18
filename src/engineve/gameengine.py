@@ -9,38 +9,45 @@ from .enginesync import EngineSync
 from .durationobserver import DurationObserver
 from .archetypes.archetype import new_monster
 from .loader import Loader
+from .serializable import Serializable
 
 
-class GameEngine(Loader):
+class GameEngine(Loader, Serializable):
     """this is the top,
     -   it has an invoker
-    -   there is a gamestate of in-game objects
-    -   engine_state is a state of the engine that knows what it's main method to do
+    -   it has a gamestate of in-game objects
+    -   engine_state is a state of the engine that has a main method for its particular function
 
     this uses the periodic method of the current_engine state to find commands for the invoker to execute .
     """
 
     # used as a default val in some places
+
+    blacklist_strs = ["duration_observer", "invoker", "engine_sync"]
+
     fps = 60
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, save_slot="auto", *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.game_state = GameStateManager()
+        self.game_state = (
+            GameStateManager() if "game_state" not in kwargs.keys() else GameStateManager(**kwargs["game_state"])
+        )
         self.engine_sync = EngineSync(self)
         self.invoker = Invoker(log=self.game_state.log)
         self.duration_observer = DurationObserver()
-        # self.loader = Loader(config_yml)
+
         self.frame = 0
         self.engine_state = None
 
         self.invoker.register_observer(self.duration_observer)
         self.invoker.register_observer(self.engine_sync)
         self.transition_to(MenuState(ready=False))
+        self._save_slot = save_slot
 
     def periodic(self):
         if not self.engine_sync.is_waiting():
             self.engine_state.periodic(self.game_state, self.invoker)
-            # TODO should this be in the engine_state?
+            # # Q: should this be in the engine_state?
             # # A: probly not
             self.invoker.periodic(self.game_state)
 
@@ -51,6 +58,22 @@ class GameEngine(Loader):
     def spawn_actors(self, actor_class, num=1, **kwargs):
         for some_actor in GameEngine.generate_actors(actor_class, num, **kwargs):
             self.game_state.add_actor(some_actor)
+
+    def pick_party(self, names=(), ids=None, team=0):
+        a_ids = []
+        if ids is not None:
+            a_ids = ids
+        else:
+            for name in names:
+                for actor in self.game_state.actors.values():
+                    if name.lower() == actor.name.lower():
+                        a_ids.append(actor.id)
+                        break
+
+        self.game_state.party.actor_ids = a_ids
+        self.game_state.party.team = team
+        for a_id in a_ids:
+            self.game_state.actors[a_id].team = team
 
     @staticmethod
     def generate_actors(actor_class, num=1, **kwargs):
@@ -80,6 +103,15 @@ class GameEngine(Loader):
         self.game_state.add_actor(new_actor)
         return new_actor.id
 
+    def import_character(self, *args, **kwargs):
+        actor = super().load_character(*args, **kwargs)
+        if actor is not None:
+            return self.game_state.add_actor(actor)
+
     def garbage_collection(self):
         """delete things that take up too much memory or that we miss frequently"""
         pass
+
+    def serialize(self):
+        retval = super().serialize()
+        return retval

@@ -8,7 +8,7 @@ import dice
 
 
 def roll_func(string):
-    return dice.roll
+    return sum(dice.roll(string))
 
 
 def roll_size(size=20):

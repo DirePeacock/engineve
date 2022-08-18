@@ -1,6 +1,7 @@
 import logging
 
 from ..actorai.basicai import BasicAI
+from ..actorai.getaiclass import get_ai_class
 from ..actorai.movefactory import load_game_move
 from ..actorai.gamemoves.attackaction import AttackAction
 from ..actorai.gamemoves.usemovement import UseMovement
@@ -14,7 +15,7 @@ from ..enginecommands.observer.observer import Observer
 # todo how do I want to iterate over observers for effects
 # notify with list of targets
 class Actor(Serializable, TaggedClass):
-    serializable_attrs = ["name", "team", "loc", "resources", "game_moves"]
+    # serializable_attrs = ["name", "team", "loc", "resources", "game_moves"]
     turn_resources = ["turn_movement", "turn_action", "turn_bonus_action"]
     delete_after_combat = False
 
@@ -26,9 +27,11 @@ class Actor(Serializable, TaggedClass):
         # # TODO this?
         # todo _init_hp(*args, **kwargs)
         self.hit_dice_num = get_kwarg("hit_dice_num", kwargs, 2)
+        self.hit_dice_max = self.hit_dice_num
         self.hit_dice_size = get_kwarg("hit_dice_size", kwargs, 6)
         self.pb = 2
         self.proficiencies = [] if "proficiencies" not in kwargs.keys() else kwargs["proficiencies"]
+
         self.speed = {"land": 30} if "speed" not in kwargs.keys() else kwargs["speed"]
         self.ac = 13 if "ac" not in kwargs.keys() else kwargs["ac"]
 
@@ -37,14 +40,25 @@ class Actor(Serializable, TaggedClass):
         self.experience = get_kwarg("experience", kwargs, 0)
         self.death_saves = get_kwarg("death_saves", kwargs, 0)
         self.languages = get_kwarg("languages", kwargs, ["common"])
-        self.inventory = get_kwarg("inventory", kwargs, [])
         self.flavor = get_kwarg("flavor", kwargs, {})
-        self.level_up_choices = get_kwarg("level_up_choices", kwargs, {})
+
+        # unused atm
         self.class_levels = get_kwarg("class_levels", kwargs, {})
+        self.level_up_choices = get_kwarg("level_up_choices", kwargs, {})
+        self.inventory = get_kwarg("inventory", kwargs, [])
+        # probably not needed for headless but still
+        self.sprites = get_kwarg("sprites", kwargs, {})
 
         self.max_hp = self.roll_for_hp()
         self.hp = self.max_hp
-        self.ai_class = BasicAI if ai_class is None else ai_class
+
+        if isinstance(ai_class, str):
+            self.ai_class = get_ai_class(ai_class)
+        elif ai_class is None:
+            self.ai_class = BasicAI
+        else:
+            self.ai_class = ai_class
+
         self.loc = Loc(loc) if isinstance(loc, tuple) else loc
         self.game_moves = {}
         self.resources = {}
@@ -56,11 +70,16 @@ class Actor(Serializable, TaggedClass):
 
     def _load_game_moves(self, game_moves):
         for name, move in game_moves.items():
-            self.game_moves[name] = load_game_move(**move)  # move
+            new_move = load_game_move(**move)
+            if new_move is None:
+                logging.debug(f'idk what to do with {move}')
+                continue
+            self.game_moves[name] = new_move  # move
+            self.game_moves[name].actor_id = self.id
 
     def _set_stats(self, *args, **kwargs):
-        if "stats" in kwargs.keys():
-            self.ability_scores = kwargs["stats"]
+        if "ability_scores" in kwargs.keys():
+            self.ability_scores = kwargs["ability_scores"]
         elif all(stat for stat in ["str", "dex", "con", "int", "wis", "cha"] if stat in kwargs.keys()):
             self.str = 14 if "str" not in kwargs.keys() else kwargs["str"]
             self.dex = 14 if "dex" not in kwargs.keys() else kwargs["dex"]
@@ -106,24 +125,6 @@ class Actor(Serializable, TaggedClass):
         stat_scrore = self.__getattribute__(stat.lower())
         return get_stat_modifier(stat_scrore)
 
-    def get_relevant_modifiers(self, tags):
-        """given a set of tags, calculate modifiers that apply flat and numbers of adv & disadv"""
-        modifiers_dict = {}
-
-        # proficiencies
-        modifiers_dict["pb"] = self.pb
-
-        # ability scores
-        modifiers_dict["pb"] = self.pb
-
-        # weapons included in effects?
-        # effects
-        for name, effect in self.effects.items():
-            if effect.is_applicable(tags) and name not in modifiers_dict.keys():
-                modifiers_dict[name] = effect.value_func()
-
-        return modifiers_dict, tags
-
     def add_game_move(self, game_move):
         self.game_moves[game_move.name] = game_move
 
@@ -131,7 +132,6 @@ class Actor(Serializable, TaggedClass):
         self.resources[resource.name] = resource
 
     def is_turn_completed(self, state):
-        # self.hp=0
         return self.ai_class.is_turn_completed(self.id, state)
 
     def refresh_turn_resources(self):
@@ -157,9 +157,7 @@ class Actor(Serializable, TaggedClass):
         return self.hp <= 0
 
     def add_effect(self, effect):
-        """add_effect by name
-        #TODO might want to just be by id
-        """
+        """add_effect by id."""
         self.effects[effect.id] = effect
 
     def check_effects(self, meta):
@@ -178,3 +176,11 @@ class Actor(Serializable, TaggedClass):
 
     def save_actor(self) -> dict:
         return {}
+
+    def serialize(self):
+        """serialize and save type of AI and other stuff too"""
+        retval = super().serialize()
+        retval["ability_scores"] = self.ability_scores
+        retval["ai_class"] = self.ai_class.__name__
+
+        return retval

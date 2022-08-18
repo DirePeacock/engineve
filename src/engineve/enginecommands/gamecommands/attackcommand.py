@@ -15,18 +15,23 @@ class AttackCommand(CompositeCommand):
         self.attacker_id = attacker_id
         self.target_id = target_id
         self.log = "" if log is None else log
+        self.stat = stat
         self.add_tag("log")
         self.add_tag("attacker_id", self.attacker_id)
         # TODO make sure this doesn't double dip on notifications
         # TODO especially animation frames
         self.add_tag("target_id", self.target_id)
         # self.resources= [] if resources is None else ModifyResources(actor_id=attacker_id, changes={'turn_action': -1})
-        self.children["attack_roll"] = AttackRollCommand(self.attacker_id, self.target_id, tags=self.tags, stat=stat)
+        self.children["attack_roll"] = AttackRollCommand(
+            self.attacker_id, self.target_id, tags=self.tags, stat=self.stat
+        )
         self.children["attack_roll"].add_tag("attack")
+
         self.children["damage_roll"] = DamageRollCommand(
-            self.attacker_id, self.target_id, tags=self.tags, dmg_dice=dmg_dice
+            self.attacker_id, self.target_id, tags=self.tags, dmg_dice=dmg_dice, stat=self.stat
         )
         self.children["damage_roll"].add_tag("damage")
+
         if animation_frames is not None:
             self.add_tag("animation", animation_frames)
 

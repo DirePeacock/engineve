@@ -23,7 +23,7 @@ class RollCommand(Command):
             del self.flat_modifiers[key]
 
     def get_total_flat_modifier(self):
-        return sum(self.flat_modifiers.values())
+        return sum([mod for mod in self.flat_modifiers.values()])
 
 
 class RollModifier:

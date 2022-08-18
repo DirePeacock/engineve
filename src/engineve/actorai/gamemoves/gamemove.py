@@ -1,14 +1,17 @@
 from ...serializable import Serializable
 from ...tags import TaggedClass
 import random
+
+
 class GameMove(Serializable, TaggedClass):
-    '''this class represents a possible action to be taken by an actor in the game
+    """this class represents a possible action to be taken by an actor in the game
     actor should know which moves are available to it
     TODO ugh weighing this needs to be improved a lot
-    '''
+    """
+
     command_type = object  # None
-    resource_cost = {} # if resource_cost is None else resource_cost
-    
+    resource_cost = {}  # if resource_cost is None else resource_cost
+
     # def __init__(self, command_type, name='', resource_cost=None):
     #     self.command_type = command_type
     #     self.name = name
@@ -20,9 +23,9 @@ class GameMove(Serializable, TaggedClass):
 
     def get_weight(self, state):
         return random.randint(1, 10)
-    
+
     def wiegh_targets(self, state):
-        '''return dict {target, weight}'''
+        """return dict {target, weight}"""
         return {}
 
     def get_targets(self, state):
@@ -33,7 +36,7 @@ class GameMove(Serializable, TaggedClass):
         for key, val in self.tags.items():
             cmd.tags[key] = val
         return cmd
-    
+
     def is_available(self, state):
         for key, change in self.resource_cost.items():
             if key in state.actors[self.actor_id].resources.keys():
@@ -45,4 +48,9 @@ class GameMove(Serializable, TaggedClass):
                 return False
 
         return True
-                    
+
+    def serialize(self, *args, **kwargs):
+        retval = super().serialize(*args, **kwargs)
+        # kwarg to load this again as the same type
+        retval["parent_move"] = type(self).__name__
+        return retval

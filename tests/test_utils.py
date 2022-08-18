@@ -6,6 +6,7 @@ import engineve.utils as engineve_utils
 from engineve import tags
 from utils import setup_game_engine
 from engineve.gametypes.time import GameTime, roundsdelta, GameTimeDelta
+from engineve.gametypes.actor import Actor
 
 
 class test_advantage_calcs(unittest.TestCase):
@@ -39,3 +40,10 @@ def test_time_add_sub():
 
     time_diff = time_b - time_a
     assert time_diff == roundsdelta(rounds=diff_x)
+
+
+# def test_serializable():
+#     """make suer this thing gets the attributes we want?"""
+#     test_actor = Actor()
+#     for attr in test_actor.serializable_attrs:
+#         logging.debug(attr)

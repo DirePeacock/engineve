@@ -17,6 +17,9 @@ class GameTime(datetime.datetime):
     def round(self, value):
         self.second = value * 6
 
+    def serialize(self):
+        return self.strftime("%d/%m/%y %H:%M:%S")
+
     # def __sub__(self, *args, **kwargs):
     #     return GameTimeDelta(super().__sub__(*args, **kwargs))
 

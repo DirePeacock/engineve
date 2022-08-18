@@ -44,3 +44,6 @@ data:
 - attacker_id
 - next_round
 - gametime_update
+- recharge
+- short_rest
+- long_rest
