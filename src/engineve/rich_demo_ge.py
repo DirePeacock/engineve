@@ -66,6 +66,7 @@ def factory(spawn=True):
     GAMEENGINE = SlowDemoEngine()
     if spawn:
         pass  # GAMEENGINE.start_combat(DEMO_ACTORS)
+        GAMEENGINE.engine_state.load("something idk")
 
     if DEMO_ANIM_FRAMES is not None:
         for a_id in GAMEENGINE.game_state.actors.keys():

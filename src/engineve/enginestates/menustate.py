@@ -22,11 +22,15 @@ class MenuState(EngineState):
         if self.ready:
             self.open_overworld(state, invoker)
         else:
-            self.uhh_setup()
+            pass
+            # self.uhh_setup()
 
     # def load_party(self, state, invoker):
     #     # loaded_actor_ids = []
     #     state.party.actor_ids = loaded_actor_ids
+    def load(self, *args, **kwargs):
+        self.uhh_setup()
+
     def uhh_setup(self):
         # TODO idk get input or something idk
         chars = ["solaire"]

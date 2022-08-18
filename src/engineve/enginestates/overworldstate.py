@@ -17,6 +17,8 @@ class OverworldState(EngineState):
     def __init__(self, ready=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.ready = ready
+        self.i = 0
+        self.wait_frames = 1
 
     def periodic(self, state, invoker):
         if self.ready:
@@ -24,10 +26,14 @@ class OverworldState(EngineState):
         else:
             invoker.put(RestCommand(state.party.actor_ids))
             self.ready = True
+            # if i > self.wait_frames:
+            #     pass
+            # else:
+            #     self.i += 1
 
     def start_combat(self, state, invoker):
         logging.debug("startingcombat")
-
+        self.i = 0
         team_id = 42
         for i in range(random.randint(1, 3)):
             state.add_actor(new_monster("skeleton", team=team_id))
