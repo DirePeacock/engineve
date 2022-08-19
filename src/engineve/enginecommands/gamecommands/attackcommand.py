@@ -23,12 +23,12 @@ class AttackCommand(CompositeCommand):
         self.add_tag("target_id", self.target_id)
         # self.resources= [] if resources is None else ModifyResources(actor_id=attacker_id, changes={'turn_action': -1})
         self.children["attack_roll"] = AttackRollCommand(
-            self.attacker_id, self.target_id, tags=self.tags, stat=self.stat
+            self.attacker_id, self.target_id, tags=self.tags.copy(), stat=self.stat
         )
         self.children["attack_roll"].add_tag("attack")
 
         self.children["damage_roll"] = DamageRollCommand(
-            self.attacker_id, self.target_id, tags=self.tags, dmg_dice=dmg_dice, stat=self.stat
+            self.attacker_id, self.target_id, tags=self.tags.copy(), dmg_dice=dmg_dice, stat=self.stat
         )
         self.children["damage_roll"].add_tag("damage")
 
