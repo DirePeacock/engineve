@@ -10,6 +10,7 @@ from .durationobserver import DurationObserver
 from .archetypes.archetype import new_monster
 from .loader import Loader
 from .serializable import Serializable
+from .tags import TAGS
 
 
 class GameEngine(Loader, Serializable):
@@ -26,6 +27,7 @@ class GameEngine(Loader, Serializable):
     blacklist_strs = ["duration_observer", "invoker", "engine_sync"]
 
     fps = 60
+    _state_transition_await_frames = 0
 
     def __init__(self, save_slot="auto", *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -94,9 +96,14 @@ class GameEngine(Loader, Serializable):
             self.engine_state.end_combat(num=num, state=self.game_state, invoker=self.invoker)
 
     def transition_to(self, engine_state):
-        logging.debug(f"{type(self.engine_state).__name__} to {type(engine_state).__name__}")
+        new_state_name = type(engine_state).__name__
+        logging.debug(f"{type(self.engine_state).__name__} to {new_state_name}")
         self.engine_state = engine_state
         self.engine_state.engine = self
+        notice_meta = {TAGS["engine_state_transition"], new_state_name}
+        if self._state_transition_await_frames > 0:
+            notice_meta[TAG["animation"]] = self._state_transition_await_frames
+        self.invoker.notify(meta=notice_meta, state=self.game_state, invoker=self.invoker)
 
     def spawn_archetype(self, archetype_name, **kwargs):
         new_actor = new_monster(archetype_name, **kwargs)

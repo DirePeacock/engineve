@@ -40,6 +40,7 @@ data:
 - command_id
 - actor_ids
 - actor_id
+- engine_state_transition
 - target_id
 - attacker_id
 - next_round

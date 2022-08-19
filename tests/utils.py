@@ -14,6 +14,8 @@ def new_game_engine():
 
 def setup_game_engine():
     game_engine = new_game_engine()
+    game_engine.base_dir = pathlib.Path(__file__).parent / "test_data_load_loc"
+    game_engine.characters_dir = game_engine.base_dir / "characters"
     id_one = game_engine.spawn_archetype("skeleton", team=1, name="ONE")
     id_two = game_engine.spawn_archetype("skeleton", team=2, name="TWO")
 
