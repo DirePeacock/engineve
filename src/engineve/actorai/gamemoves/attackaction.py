@@ -34,7 +34,7 @@ class AttackAction(GameMove):
     def get_ttk_weight(self, target_id, state):
         return max((100.0 / state.actors[target_id].hp), -0.001)
 
-    def wiegh_targets(self, state):
+    def weigh_targets(self, state):
         return {target_id: self.get_ttk_weight(target_id, state) for target_id in self.get_targets(state)}
 
     def enemy_in_range(self, enemy_id, state):
@@ -45,9 +45,9 @@ class AttackAction(GameMove):
     def make_command(self, state, *args, **kwargs) -> AttackCommand:
         if 0 < len(self.command_kwargs):
             logging.debug("lookie here")
-        target_weights = self.wiegh_targets(state)
+        target_weights = self.weigh_targets(state)
         if len(target_weights) == 0:
-            print(self.wiegh_targets(state))
+            print(self.weigh_targets(state))
         target_id = max(target_weights, key=target_weights.__getitem__)
 
         attack_declaration = f"{state.actors[self.actor_id].name} attacks {state.actors[target_id].name}"

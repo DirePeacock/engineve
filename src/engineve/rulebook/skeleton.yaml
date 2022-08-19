@@ -15,7 +15,7 @@ MonsterArchetypes:
         parent_move: 'AttackAction'
         dmg_dice: '1d6'
         stat: 'dex'
-        animtation_frames: 0
+        animtation_frames: 5
     
 
 

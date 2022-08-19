@@ -11,9 +11,9 @@ class BasicAI:
     def choose_game_move(cls, actor_id, state):
 
         # TODO make this smart
-        key_wieghts = cls.get_available_game_move_keys(actor_id, state)
+        key_weights = cls.get_available_game_move_keys(actor_id, state)
         # cls.get_available_game_move_keys(actor_id, state)
-        return max(key_wieghts, key=key_wieghts.get)
+        return max(key_weights, key=key_weights.get)
 
     @classmethod
     def get_available_game_move_keys(cls, actor_id, state):

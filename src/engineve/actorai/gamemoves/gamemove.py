@@ -24,7 +24,7 @@ class GameMove(Serializable, TaggedClass):
     def get_weight(self, state):
         return random.randint(1, 10)
 
-    def wiegh_targets(self, state):
+    def weigh_targets(self, state):
         """return dict {target, weight}"""
         return {}
 
