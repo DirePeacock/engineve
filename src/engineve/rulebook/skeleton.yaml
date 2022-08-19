@@ -8,6 +8,9 @@ MonsterArchetypes:
       darkvision': 60
     speed:
       land: 30
+    sprites:
+      portrait: solaire_portrait_lofi.png
+      game_piece: solaire_token_blk.png
     cr: 0.25
     languages: common
     game_moves:
