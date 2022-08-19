@@ -47,10 +47,10 @@ class Loader:
         # with open(character_file_path, "r") as character_file:
         #     char_data = yaml.safe_load(character_file)
         # TODO find adventureres
-        logging.debug(self.characters_dir.glob("*"))
+        # logging.debug(self.characters_dir.glob("*"))
         for character_file_path in self.characters_dir.iterdir():
-            thing = str(character_file_path)
-            logging.debug(thing)
+            # thing = str(character_file_path)
+            # logging.debug(thing)
             if name.lower() in character_file_path.name.lower():
                 with open(character_file_path, "r") as character_file:
                     char_data = yaml.safe_load(character_file)
