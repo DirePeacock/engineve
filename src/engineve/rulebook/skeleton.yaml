@@ -9,7 +9,7 @@ MonsterArchetypes:
     speed:
       land: 30
     sprites:
-      game_piece: skeleton_64.png
+      game_piece: skeleton64.png
     cr: 0.25
     languages: common
     game_moves:
