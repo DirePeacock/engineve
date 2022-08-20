@@ -86,14 +86,13 @@ class GameEngine(Loader, Serializable):
         self.invoker.register_observer(observer)
 
     def start_combat(self, num):
-        if "MenuState" == type(self.engine_state).__name__:
+        if "CombatState" != type(self.engine_state).__name__:
             logging.debug(f"starting combat with {num} skeletons per side")
             self.engine_state.start_combat(num=num, state=self.game_state, invoker=self.invoker)
 
-    def stop_combat(self, num):
+    def stop_combat(self):
         if "CombatState" == type(self.engine_state).__name__:
-            logging.debug(f"starting combat with {num} skeletons per side")
-            self.engine_state.end_combat(num=num, state=self.game_state, invoker=self.invoker)
+            self.engine_state.end_combat(state=self.game_state, invoker=self.invoker)
 
     def transition_to(self, engine_state):
         new_state_name = type(engine_state).__name__
