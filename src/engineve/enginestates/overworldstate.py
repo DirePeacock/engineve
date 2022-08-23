@@ -3,6 +3,7 @@ import random
 from .enginestate import EngineState
 from ..archetypes.archetype import new_monster
 from ..enginecommands.effectcommands.restcommand import RestCommand
+from ..utils import roll
 
 # from .combatstate import CombatState
 from ..gametypes.combat import Combat
@@ -31,11 +32,12 @@ class OverworldState(EngineState):
             # else:
             #     self.i += 1
 
-    def start_combat(self, state, invoker):
+    def start_combat(self, state, invoker, num_roll="1d3"):
         logging.debug("startingcombat")
         self.i = 0
         team_id = 42
-        for i in range(random.randint(1, 3)):
+        num_monsters = roll(num_roll)
+        for i in range(random.randint(1, num)):
             state.add_actor(new_monster("skeleton", team=team_id))
 
         some_ids = [actor_id for actor_id, actor in state.actors.items() if actor.team in [team_id, state.party.team]]

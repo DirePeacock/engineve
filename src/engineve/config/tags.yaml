@@ -42,7 +42,9 @@ data:
 - actor_id
 - engine_state_transition
 - target_id
+- target_loc
 - attacker_id
+- attacker_loc
 - next_round
 - gametime_update
 - recharge

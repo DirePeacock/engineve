@@ -4,6 +4,7 @@ from ..basecommands.compositecommand import CompositeCommand
 from ..effectcommands.modifyresources import ModifyResources
 from .attackrollcommand import AttackRollCommand
 from .damagerollcommand import DamageRollCommand
+from ...tags import TAGS
 
 
 class AttackCommand(CompositeCommand):
@@ -39,6 +40,10 @@ class AttackCommand(CompositeCommand):
         # TODO resistance may want to change the log somewhere
         # TODO crits, crit tags
         self.evaluated = True
+
+        # adding actor locs may be kind of extra
+        # attacker_loc = state.actors[self.attacker_id].loc
+        # target_loc = state.actors[self.target_id].loc
 
         self.children["attack_roll"].evaluate(state, invoker)
 
