@@ -4,6 +4,7 @@ from ..basecommands.command import Command
 from .rollcommand import RollCommand
 from ..effectcommands.modifyhp import ModifyHP
 from ...utils import roll, check_tag
+from ...tags import TAGS
 
 
 class DamageRollCommand(RollCommand):
@@ -32,7 +33,7 @@ class DamageRollCommand(RollCommand):
         self.effects = [ModifyHP(self.target_id, (dmg_value * -1), self.attacker_id)]
 
         self.log = f"{dmg_value} dmg"
-
+        self.tags[TAGS["damage"]] = dmg_value
         invoker.notify(self.tags)
 
     # def apply_effects(self, state, invoker=None):
