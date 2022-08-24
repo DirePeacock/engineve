@@ -15,5 +15,6 @@ class Observer:
         """should return command obj for the stack"""
         return self.reaction(meta, state, invoker)
 
-    def match_notification(self, meta, state=None):
+    def match_notification(self, meta, state=None, invoker=None):
+        # TODO we may not need invoker in this one, clean this mess up
         return self.trigger(meta, state)

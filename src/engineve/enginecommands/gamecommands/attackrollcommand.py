@@ -2,6 +2,7 @@ import logging
 
 from .rollcommand import RollCommand
 from ...utils import roll, calculate_advantage
+from ...tags import TAGS
 
 
 class AttackRollCommand(RollCommand):
@@ -24,9 +25,10 @@ class AttackRollCommand(RollCommand):
         # setup that attacker is making a target
 
         # notify that we are making an attack before we roll
+        self.tags[TAGS["attack_roll_declared"]] = None
         if invoker is not None:
             invoker.notify(self.tags, state, invoker)
-
+        del self.tags[TAGS["attack_roll_declared"]]
         # get modifiers
 
         #
@@ -47,7 +49,9 @@ class AttackRollCommand(RollCommand):
         self.log = f"({to_hit_roll} v {state.actors[self.target_id].ac})"
 
         # notify that we are making an attack after we've determined a hit/crit/miss or whatever
+        self.tags[TAGS["attack_roll_completed"]] = None
         if invoker is not None:
+
             invoker.notify(self.tags, state, invoker)
 
         # if attack_hits:

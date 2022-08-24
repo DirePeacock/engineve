@@ -34,7 +34,7 @@ class DamageRollCommand(RollCommand):
 
         self.log = f"{dmg_value} dmg"
         self.tags[TAGS["damage"]] = dmg_value
-        invoker.notify(self.tags, state, invoker)
+        invoker.notify(self.tags, state)
 
     # def apply_effects(self, state, invoker=None):
     #     super().apply_effects(state)

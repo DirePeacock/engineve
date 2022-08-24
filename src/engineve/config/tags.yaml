@@ -45,6 +45,8 @@ data:
 - target_loc
 - attacker_id
 - attacker_loc
+- attack_roll_declared
+- attack_roll_completed
 - next_round
 - gametime_update
 - recharge
