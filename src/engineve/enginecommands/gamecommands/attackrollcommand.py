@@ -25,7 +25,7 @@ class AttackRollCommand(RollCommand):
 
         # notify that we are making an attack before we roll
         if invoker is not None:
-            invoker.notify(self.tags)
+            invoker.notify(self.tags, state, invoker)
 
         # get modifiers
 
@@ -48,7 +48,7 @@ class AttackRollCommand(RollCommand):
 
         # notify that we are making an attack after we've determined a hit/crit/miss or whatever
         if invoker is not None:
-            invoker.notify(self.tags)
+            invoker.notify(self.tags, state, invoker)
 
         # if attack_hits:
         #     logging.debug(f"HIT! {self.log}")

@@ -54,7 +54,7 @@ class CombatState(EngineState):
         state.combat.active = True
         self.roll_inits(state, invoker)
         # TODO spawn locations
-        invoker.notify(meta={tag("combat_start"): None})
+        invoker.notify(meta={tag("combat_start"): None}, state=state, invoker=invoker)
         self.randomize_locs(state, invoker)
 
     def roll_inits(self, state, invoker):
