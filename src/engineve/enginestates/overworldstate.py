@@ -37,7 +37,7 @@ class OverworldState(EngineState):
         self.i = 0
         team_id = 42
         num_monsters = roll(num_roll)
-        for i in range(random.randint(1, num)):
+        for i in range(random.randint(1, num_monsters)):
             state.add_actor(new_monster("skeleton", team=team_id))
 
         some_ids = [actor_id for actor_id, actor in state.actors.items() if actor.team in [team_id, state.party.team]]
