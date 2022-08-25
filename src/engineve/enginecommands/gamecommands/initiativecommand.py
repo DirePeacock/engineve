@@ -12,6 +12,8 @@ class InitiativeCommand(CompositeCommand):
         self.actor_ids = actor_ids
         self.add_tag("actor_ids", self.actor_ids)
         self.add_tag("log")
+        self.add_tag("initiative")
+
         for actor_id in self.actor_ids:
             self.children[actor_id] = AbilityCheckCommand(actor_id=actor_id, ability="dex")
 

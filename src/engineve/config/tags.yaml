@@ -52,4 +52,5 @@ data:
 - recharge
 - short_rest
 - long_rest
+- initiative
 - command_execution_completed
