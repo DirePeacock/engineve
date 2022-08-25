@@ -29,6 +29,7 @@ class Invoker(ObserverManager):
         self.command_stack[0].execute(state=state, invoker=self)
 
         # now that this is possible, we may want the notification to be at the end of execute
+        self.command_stack[0].add_tag(TAGS['command_execution_completed'])
         self.notify(meta=self.command_stack[0].tags, state=state, invoker=self)
         self.command_log.append(self.command_stack.pop(0))
 

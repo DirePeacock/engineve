@@ -52,3 +52,4 @@ data:
 - recharge
 - short_rest
 - long_rest
+- command_execution_completed
