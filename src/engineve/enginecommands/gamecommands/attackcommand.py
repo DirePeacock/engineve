@@ -48,11 +48,13 @@ class AttackCommand(CompositeCommand):
         self.children["attack_roll"].evaluate(state, invoker)
 
         attack_hits = self.children["attack_roll"].value
+        attacker_loc_str = ""  # f"@{state.actors[self.attacker_id].loc}"
+        target_loc_str = ""  # f"@{state.actors[self.target_id].loc}"
         if attack_hits:
             self.add_tag("hit")
 
             self.children["damage_roll"].evaluate(state, invoker)
             # name attacks tgt_name
-            self.log = f"{state.actors[self.attacker_id].name}@{state.actors[self.attacker_id].loc} hits {state.actors[self.target_id].name}@{state.actors[self.target_id].loc} {self.children['attack_roll'].log} for {self.children['damage_roll'].log}"
+            self.log = f"{state.actors[self.attacker_id].name}{attacker_loc_str} hits {state.actors[self.target_id].name} {self.children['attack_roll'].log} for {self.children['damage_roll'].log}"
         else:
-            self.log = f"{state.actors[self.attacker_id].name}@{state.actors[self.attacker_id].loc} misses {state.actors[self.target_id].name}@{state.actors[self.target_id].loc} {self.children['attack_roll'].log}"
+            self.log = f"{state.actors[self.attacker_id].name}{attacker_loc_str} misses {state.actors[self.target_id].name}{target_loc_str} {self.children['attack_roll'].log}"

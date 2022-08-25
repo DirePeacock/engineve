@@ -29,7 +29,7 @@ class Actor(Serializable, TaggedClass):
         self.hit_dice_num = get_kwarg("hit_dice_num", kwargs, 2)
         self.hit_dice_max = self.hit_dice_num
         self.hit_dice_size = get_kwarg("hit_dice_size", kwargs, 6)
-        self.pb = 2
+        self.pb = 2 if "pb" not in kwargs.keys() else kwargs["pb"]
         self.proficiencies = [] if "proficiencies" not in kwargs.keys() else kwargs["proficiencies"]
 
         self.speed = {"land": 30} if "speed" not in kwargs.keys() else kwargs["speed"]
@@ -72,7 +72,7 @@ class Actor(Serializable, TaggedClass):
         for name, move in game_moves.items():
             new_move = load_game_move(**move)
             if new_move is None:
-                logging.debug(f'idk what to do with {move}')
+                logging.debug(f"idk what to do with {move}")
                 continue
             self.game_moves[name] = new_move  # move
             self.game_moves[name].actor_id = self.id

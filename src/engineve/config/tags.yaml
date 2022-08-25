@@ -42,9 +42,7 @@ data:
 - actor_id
 - engine_state_transition
 - target_id
-- target_loc
 - attacker_id
-- attacker_loc
 - attack_roll_declared
 - attack_roll_completed
 - next_round
@@ -54,3 +52,5 @@ data:
 - long_rest
 - initiative
 - command_execution_completed
+- engine_wait
+- loc_changed
