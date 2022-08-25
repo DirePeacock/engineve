@@ -12,9 +12,12 @@ class GridLoc(Serializable, TaggedClass):
 
 
 class GridMap(Serializable, TaggedClass):
-    def __init__(self, w=10, h=10, *args, **kwargs):
+    def __init__(self, width=10, height=10, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
-        self.locs = [[GridLoc() for y in range(0, h)] for x in range(0, w)]
+        self.width = width
+        self.height = height
+
+        self.locs = [[GridLoc() for y in range(0, self.height)] for x in range(0, self.width)]
 
         # this doesn't follow with the other ones but we may want this referenced for
         # use determining loc occupancy
