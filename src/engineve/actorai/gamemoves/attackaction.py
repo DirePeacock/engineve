@@ -43,8 +43,8 @@ class AttackAction(GameMove):
         )
 
     def make_command(self, state, *args, **kwargs) -> AttackCommand:
-        if 0 < len(self.command_kwargs):
-            logging.debug("lookie here")
+        # if 0 < len(self.command_kwargs):
+        #     logging.debug("lookie here")
         target_weights = self.weigh_targets(state)
         if len(target_weights) == 0:
             print(self.weigh_targets(state))

@@ -14,8 +14,8 @@ class DurationObserver(Observer):
 
     def clean_up(self, meta, state, invoker):
         """this is before the gametime has updated"""
-        logging.debug(f"game_time = {state.time}")
-        logging.debug(f"tagged_time = {meta[TAGS.gametime_update]}")
+        # logging.debug(f"game_time = {state.time}")
+        # logging.debug(f"tagged_time = {meta[TAGS.gametime_update]}")
         # clear out global effects
         for effect_id in state.global_effects.keys():
             if state.global_effects[effect_id].duration is not None:
