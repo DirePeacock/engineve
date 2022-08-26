@@ -87,5 +87,5 @@ class CombatState(EngineState):
         state.combat.active = False
         self.clean_up_combat(state, invoker)
         invoker.notify(meta={tag("combat_end"): None})
-        logging.debug("combat")
+        # logging.debug("combat")
         self.transition_to(self._post_combat_state())
