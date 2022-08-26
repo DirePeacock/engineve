@@ -54,3 +54,4 @@ data:
 - command_execution_completed
 - engine_wait
 - loc_changed
+- graphics_engine_tag
