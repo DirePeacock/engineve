@@ -44,8 +44,7 @@ class OverworldState(EngineState):
 
         some_ids = [actor_id for actor_id, actor in state.actors.items() if actor.team in [team_id, state.party.team]]
 
-        logging.debug()
         state.combat = Combat(actor_ids=some_ids)
         mobs = len([mob for mob in state.combat.actor_ids if mob not in state.party.actor_ids])
-        state.log
+        # state.log.append()
         self.transition_to(self._combat_state(actor_ids=some_ids))
