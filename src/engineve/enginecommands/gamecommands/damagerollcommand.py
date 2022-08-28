@@ -26,13 +26,15 @@ class DamageRollCommand(RollCommand):
         if check_tag(self.tags, "critical_hit"):
             pass
 
-        dmg_value = roll(self.dmg_dice)
-        dmg_value += self.get_total_flat_modifier()
+        roll_val = roll(self.dmg_dice)
+        flat_val = self.get_total_flat_modifier()
+        dmg_value = roll_val + flat_val
 
         dmg_value = max(0, dmg_value)  # RULE no negative damage
         self.effects = [ModifyHP(self.target_id, (dmg_value * -1), self.attacker_id)]
 
-        self.log = f"{dmg_value} dmg"
+        func_log = f"{self.dmg_dice}" + ("" if flat_val == 0 else f"+{flat_val}")
+        self.log = f"{dmg_value}=({func_log}) dmg"
         self.tags[TAGS["damage"]] = dmg_value
         invoker.notify(self.tags, state)
 

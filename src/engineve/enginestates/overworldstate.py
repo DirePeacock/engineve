@@ -25,7 +25,7 @@ class OverworldState(EngineState):
         if self.ready:
             self.start_combat(state, invoker)
         else:
-            invoker.put(RestCommand(state.party.actor_ids))
+            pass
             self.ready = True
             # if i > self.wait_frames:
             #     pass
@@ -33,15 +33,19 @@ class OverworldState(EngineState):
             #     self.i += 1
 
     def start_combat(self, state, invoker, num_roll="1d3"):
-        logging.debug("startingcombat")
+        # logging.debug("startingcombat")
+        invoker.put(RestCommand(state.party.actor_ids))
         self.i = 0
         team_id = 42
         num_monsters = roll(num_roll)
+
         for i in range(random.randint(1, num_monsters)):
             state.add_actor(new_monster("skeleton", team=team_id))
 
         some_ids = [actor_id for actor_id, actor in state.actors.items() if actor.team in [team_id, state.party.team]]
 
-        logging.debug(f"we have {len(state.actors.keys())} actors")
+        logging.debug()
         state.combat = Combat(actor_ids=some_ids)
+        mobs = len([mob for mob in state.combat.actor_ids if mob not in state.party.actor_ids])
+        state.log
         self.transition_to(self._combat_state(actor_ids=some_ids))

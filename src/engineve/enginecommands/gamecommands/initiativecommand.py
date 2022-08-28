@@ -30,4 +30,5 @@ class InitiativeCommand(CompositeCommand):
                 self.value[init_score] = actor_id
         self.effects.append(Initiative(self.value))
         log_dict = {key: state.actors[val].name for key, val in self.value.items()}
-        self.log = f"init = {log_dict}"
+        self.log = f"The party encountered {len(self.actor_ids)- len(state.party.actor_ids)} skeletons"
+        # self.log = f"init = {log_dict}"
