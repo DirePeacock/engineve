@@ -24,13 +24,14 @@ class OverworldState(EngineState):
     def periodic(self, state, invoker):
         if self.ready:
             self.start_combat(state, invoker)
-        else:
-            pass
-            self.ready = True
-            # if i > self.wait_frames:
-            #     pass
-            # else:
-            #     self.i += 1
+
+        # else:
+        #     pass
+        #     self.ready = True
+        # if i > self.wait_frames:
+        #     pass
+        # else:
+        #     self.i += 1
 
     def start_combat(self, state, invoker, num_roll="1d3"):
         # logging.debug("startingcombat")
