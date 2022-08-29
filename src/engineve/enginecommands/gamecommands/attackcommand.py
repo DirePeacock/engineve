@@ -57,4 +57,5 @@ class AttackCommand(CompositeCommand):
             # name attacks tgt_name
             self.log = f"{state.actors[self.attacker_id].name}{attacker_loc_str} hits {state.actors[self.target_id].name} {self.children['attack_roll'].log} for {self.children['damage_roll'].log}"
         else:
+            self.add_tag("miss")
             self.log = f"{state.actors[self.attacker_id].name}{attacker_loc_str} misses {state.actors[self.target_id].name}{target_loc_str} {self.children['attack_roll'].log}"
