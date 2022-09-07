@@ -65,9 +65,9 @@ class Actor(Serializable, TaggedClass):
         self.resources = {}
         self.effects = {}
 
-        self._init_actor_core()
         if "game_moves" in kwargs.keys():
             self._load_game_moves(kwargs["game_moves"])
+        self._init_actor_core()
 
     def _load_game_moves(self, game_moves):
         for name, move in game_moves.items():
@@ -77,6 +77,15 @@ class Actor(Serializable, TaggedClass):
                 continue
             self.game_moves[name] = new_move  # move
             self.game_moves[name].actor_id = self.id
+
+    def _init_actor_core(self):
+        """add move and attack, don't add duplicate attacks if not needed"""
+        if 0 < len(self.game_moves):
+            if not any(move for move in self.game_moves.values() if isinstance(move, AttackAction)):
+                self.add_game_move(AttackAction(actor_id=self.id))
+        self.add_game_move(UseMovement(actor_id=self.id))
+        for resource_name in ["turn_action", "turn_movement"]:
+            self.add_resource(Resource(name=resource_name, value=1, max=1))
 
     def _set_stats(self, *args, **kwargs):
         if "ability_scores" in kwargs.keys():
@@ -115,12 +124,6 @@ class Actor(Serializable, TaggedClass):
         self.int = score_list[3]
         self.wis = score_list[4]
         self.cha = score_list[5]
-
-    def _init_actor_core(self):
-        self.add_game_move(AttackAction(actor_id=self.id))
-        self.add_game_move(UseMovement(actor_id=self.id))
-        for resource_name in ["turn_action", "turn_movement"]:
-            self.add_resource(Resource(name=resource_name, value=1, max=1))
 
     def get_ability_modifier(self, stat):
         stat_scrore = self.__getattribute__(stat.lower())

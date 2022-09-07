@@ -34,6 +34,7 @@ def test_measure_distance():
 
 def test_attack_in_range():
     game_engine, id_one, id_two = setup_game_engine()
+    atk_name = "scimitar"
     loc_one = (1, 1)
     loc_two = (1, 2)
     hp_one = 10
@@ -43,7 +44,7 @@ def test_attack_in_range():
     game_engine.game_state.actors[id_two].loc = loc_two
     game_engine.game_state.actors[id_two].hp = hp_two
 
-    valid_ids = game_engine.game_state.actors[id_two].game_moves["AttackAction"].get_targets(game_engine.game_state)
+    valid_ids = game_engine.game_state.actors[id_two].game_moves[atk_name].get_targets(game_engine.game_state)
     logging.debug(f"valid_ids {valid_ids}")
     assert 0 < len(valid_ids)
 
@@ -51,6 +52,7 @@ def test_attack_in_range():
 def test_attack_out_of_range():
     """shouldn't look at out of range things"""
     game_engine, id_one, id_two = setup_game_engine()
+    atk_name = "scimitar"
     loc_one = (1, 1)
     loc_two = (1, 3)
     hp_one = 10
@@ -60,13 +62,14 @@ def test_attack_out_of_range():
     game_engine.game_state.actors[id_two].loc = loc_two
     game_engine.game_state.actors[id_two].hp = hp_two
 
-    valid_ids = game_engine.game_state.actors[id_two].game_moves["AttackAction"].get_targets(game_engine.game_state)
+    valid_ids = game_engine.game_state.actors[id_two].game_moves[atk_name].get_targets(game_engine.game_state)
     logging.debug(f"valid_ids {valid_ids}")
     assert 1 > len(valid_ids)
 
 
 def test_attack_in_range_but_dead():
     game_engine, id_one, id_two = setup_game_engine()
+    atk_name = "scimitar"
     loc_one = (1, 1)
     loc_two = (1, 2)
     hp_one = 10
@@ -76,7 +79,7 @@ def test_attack_in_range_but_dead():
     game_engine.game_state.actors[id_two].loc = loc_two
     game_engine.game_state.actors[id_two].hp = hp_two
 
-    valid_ids = game_engine.game_state.actors[id_one].game_moves["AttackAction"].get_targets(game_engine.game_state)
+    valid_ids = game_engine.game_state.actors[id_one].game_moves[atk_name].get_targets(game_engine.game_state)
     logging.debug(f"valid_ids {valid_ids}")
     assert 1 > len(valid_ids)
 

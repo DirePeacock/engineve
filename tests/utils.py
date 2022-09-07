@@ -26,6 +26,7 @@ def setup_game_engine():
 
 
 def actor_put_command(engine, actor_id, cmd_substring="attack"):
+    # TODO make this just look for any attack with the type AttackMove if there is no cmd so its not hard coded :(
     for name, game_move in engine.game_state.actors[actor_id].game_moves.items():
         if cmd_substring.lower() in name.lower():
             engine.invoker.put(game_move.make_command(engine.game_state))

@@ -25,7 +25,8 @@ def test_dodge_tag_notification():
 
     engine, id_a, id_b = setup_game_engine()
     engine.engine_state.start_combat(engine.game_state, engine.invoker)
-    atk_cmd_id = actor_put_command(engine, id_a, cmd_substring="attack")
+
+    atk_cmd_id = actor_put_command(engine, id_a, cmd_substring="scimitar")
     dodge_effect_obj = TestDodge(duration=1, parent_id=id_b)
     engine.invoker.register_observer(dodge_effect_obj)
     engine.invoker.periodic(engine.game_state)
@@ -35,7 +36,7 @@ def test_dodge_tag_notification():
 def test_effect_adds_tag_to_trigger_cmd():
     engine, id_a, id_b = setup_game_engine()
     engine.engine_state.start_combat(engine.game_state, engine.invoker)
-    atk_cmd_id = actor_put_command(engine, id_a, cmd_substring="attack")
+    atk_cmd_id = actor_put_command(engine, id_a, cmd_substring="scimitar")
     dodge_effect_obj = Dodge(duration=1, parent_id=id_b)
     engine.invoker.register_observer(dodge_effect_obj)
     # this will actually  be on the child attack roll itself but do this to test ofc
@@ -65,7 +66,7 @@ def test_effect_notified():
     engine.invoker.put(apply_effect_cmd_obj)
     engine.invoker.periodic(engine.game_state)
     # Actor id_a should have the effect on it
-    atk_cmd_id = actor_put_command(engine, id_a, cmd_substring="attack")
+    atk_cmd_id = actor_put_command(engine, id_a, cmd_substring="scimitar")
     assert not check_tags(engine.invoker.command_stack[0].children["attack_roll"], "disadvantage")
     engine.invoker.notify(
         meta=engine.invoker.command_stack[0].children["attack_roll"].tags,

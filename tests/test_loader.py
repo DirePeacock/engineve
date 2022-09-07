@@ -98,6 +98,7 @@ def test_load_char():
         if actor.name == test_name:
             test_actor = actor
     game_engine.import_character(name=test_name)
+
     assert test_actor is not None
     assert test_actor.critical_threat == 19
 
