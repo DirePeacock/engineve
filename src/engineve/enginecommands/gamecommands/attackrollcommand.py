@@ -34,7 +34,8 @@ class AttackRollCommand(RollCommand):
         #
         dice_val = roll(size=20)
         # advantage_value = calculate_advantage(self.tags)
-        if dice_val == 20:
+        crit_threshold = state.actors[self.attacker_id].critical_threat
+        if dice_val >= crit_threshold:
             self.add_tag("critical_hit")
         elif dice_val == 1:
             self.add_tag("critical_miss")

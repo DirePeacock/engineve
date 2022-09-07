@@ -90,8 +90,16 @@ def test_save_char():
 
 def test_load_char():
     game_engine = utils.new_game_engine()
-    test_actor = game_engine._get_char_data("solaire")
+    test_name = "Solaire"
+    test_data = game_engine._get_char_data("test_name")
+    test_actor = None
+    game_engine.import_character(name=test_name)
+    for actor in game_engine.game_state.actors.values():
+        if actor.name == test_name:
+            test_actor = actor
+    game_engine.import_character(name=test_name)
     assert test_actor is not None
+    assert test_actor.critical_threat == 19
 
 
 def test_load_game_move():

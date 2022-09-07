@@ -4,7 +4,7 @@ from ..basecommands.compositecommand import CompositeCommand
 from ..effectcommands.modifyresources import ModifyResources
 from .attackrollcommand import AttackRollCommand
 from .damagerollcommand import DamageRollCommand
-from ...tags import TAGS
+from ...tags import TAGS, check_tag
 
 
 class AttackCommand(CompositeCommand):
@@ -52,6 +52,9 @@ class AttackCommand(CompositeCommand):
         target_loc_str = ""  # f"@{state.actors[self.target_id].loc}"
         if attack_hits:
             self.add_tag("hit")
+            if check_tag(self.children["attack_roll"], TAGS["critical_hit"]):
+                self.add_tag(TAGS["critical_hit"])
+                self.children["damage_roll"].add_tag
 
             self.children["damage_roll"].evaluate(state, invoker)
             # name attacks tgt_name

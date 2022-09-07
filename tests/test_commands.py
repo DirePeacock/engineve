@@ -7,8 +7,10 @@ from utils import setup_game_engine
 from engineve.enginecommands.basecommands.command import Command
 from engineve.enginecommands.basecommands.compositecommand import CompositeCommand
 from engineve.mainfactory import factory
+from engineve.tags import check_tag, TAGS
 from engineve.gamestatemanager import GameStateManager
 from engineve.enginecommands.gamecommands.attackcommand import AttackCommand
+from engineve.enginecommands.gamecommands.damagerollcommand import DamageRollCommand
 from engineve.actorai.basicai import BasicAI
 from engineve.actorai.aiutils import get_target
 from engineve.gametypes.actor import Actor
@@ -53,3 +55,17 @@ def test_commands_call_notify():
     dummy_str = "declaration!"
     custom_notification_command = AttackCommand(attacker_id=first_id, target_id=target_id, log=dummy_str)
     assert is_good
+
+
+def test_crit_damage():
+    """test to verify dice are doubled on a crit, 1d1+x should become 2d1+x"""
+    engine, id_a, id_b = setup_game_engine()
+    dice = "1d1"
+    expected_roll_val = 2
+    dmg_roll_cmd = DamageRollCommand(id_a, id_b, tags={TAGS["critical_hit"]: None}, dmg_dice="1d1", stat="str")
+    dmg_roll_cmd.evaluate(engine.game_state, engine.invoker)
+    dmg_total = dmg_roll_cmd.tags[TAGS["damage"]]
+    actual_roll_val = dmg_total - dmg_roll_cmd.get_total_flat_modifier()
+
+    assert "CRIT" in dmg_roll_cmd.log
+    assert actual_roll_val == expected_roll_val

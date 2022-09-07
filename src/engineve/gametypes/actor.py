@@ -34,6 +34,7 @@ class Actor(Serializable, TaggedClass):
 
         self.speed = {"land": 30} if "speed" not in kwargs.keys() else kwargs["speed"]
         self.ac = 13 if "ac" not in kwargs.keys() else kwargs["ac"]
+        self.critical_threat = get_kwarg("critical_threat", kwargs, 20)
 
         self._set_stats(*args, **kwargs)
         self.senses = {} if "senses" not in kwargs.keys() else kwargs["senses"]
