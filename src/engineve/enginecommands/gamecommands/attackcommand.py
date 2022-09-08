@@ -51,7 +51,7 @@ class AttackCommand(CompositeCommand):
             self.add_tag("hit")
             if check_tag(self.children["attack_roll"], TAGS["critical_hit"]):
                 self.add_tag(TAGS["critical_hit"])
-                self.children["damage_roll"].add_tag
+                self.children["damage_roll"].add_tag(TAGS["critical_hit"])
                 hit_str = "crits"
 
             self.children["damage_roll"].evaluate(state, invoker)

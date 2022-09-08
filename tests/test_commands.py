@@ -80,4 +80,7 @@ def test_critical_attack_log():
     atk_cmd.children["attack_roll"].value = True
     atk_cmd._evaluate_damage_roll(engine.game_state, engine.invoker)
     logging.debug(f"atk_log = {atk_cmd.log}")
+    assert check_tag(atk_cmd.tags, TAGS["critical_hit"])
+    assert check_tag(atk_cmd.children["attack_roll"], TAGS["critical_hit"])
+    assert check_tag(atk_cmd.children["damage_roll"], TAGS["critical_hit"])
     assert f"{dice}+{dice}" in atk_cmd.log
