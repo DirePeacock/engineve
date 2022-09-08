@@ -69,3 +69,15 @@ def test_crit_damage():
 
     assert f"{dice}+{dice}" in dmg_roll_cmd.log
     assert actual_roll_val == expected_roll_val
+
+
+def test_critical_attack_log():
+    engine, id_a, id_b = setup_game_engine()
+    dice = "1d1"
+    expected_roll_val = 2
+    atk_cmd = AttackCommand(id_a, id_b, tags={TAGS["critical_hit"]: None}, dmg_dice=dice, stat="str")
+    atk_cmd.children["attack_roll"].add_tag(TAGS["critical_hit"])
+    atk_cmd.children["attack_roll"].value = True
+    atk_cmd._evaluate_damage_roll(engine.game_state, engine.invoker)
+    logging.debug(f"atk_log = {atk_cmd.log}")
+    assert f"{dice}+{dice}" in atk_cmd.log

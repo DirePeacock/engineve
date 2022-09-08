@@ -36,21 +36,17 @@ class AttackCommand(CompositeCommand):
         if animation_frames is not None:
             self.add_tag("animation", animation_frames)
 
-    def evaluate(self, state, invoker=None):
-        # TODO resistance may want to change the log somewhere
-        # TODO crits, crit tags
-        self.evaluated = True
-
-        # adding actor locs may be kind of extra
-        # attacker_loc = state.actors[self.attacker_id].loc
-        # target_loc = state.actors[self.target_id].loc
-
+    def _evaluate_attack_roll(self, state, invoker=None):
         self.children["attack_roll"].evaluate(state, invoker)
 
+    def _evaluate_damage_roll(self, state, invoker=None):
         attack_hits = self.children["attack_roll"].value
         attacker_loc_str = ""  # f"@{state.actors[self.attacker_id].loc}"
         target_loc_str = ""  # f"@{state.actors[self.target_id].loc}"
         hit_str = "hits"
+        # adding actor locs may be kind of extra
+        # attacker_loc = state.actors[self.attacker_id].loc
+        # target_loc = state.actors[self.target_id].loc
         if attack_hits:
             self.add_tag("hit")
             if check_tag(self.children["attack_roll"], TAGS["critical_hit"]):
@@ -66,3 +62,10 @@ class AttackCommand(CompositeCommand):
         else:
             self.add_tag("miss")
             self.log = f"{state.actors[self.attacker_id].name}{attacker_loc_str} misses {state.actors[self.target_id].name}{target_loc_str} {self.children['attack_roll'].log}"
+
+    def evaluate(self, state, invoker=None):
+        """split so this is easier to Unit Test"""
+        # TODO resistance may want to change the log somewhere
+        self.evaluated = True
+        self._evaluate_attack_roll(state, invoker)
+        self._evaluate_damage_roll(state, invoker)

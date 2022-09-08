@@ -85,7 +85,7 @@ def test_save_char():
     serialized_actor = test_actor.serialize()
     pp = pprint.PrettyPrinter(indent=4)
     pp.pprint(loaded_data)
-    logging.debug("aaaa")
+    # logging.debug("aaaa")
 
 
 def test_load_char():
