@@ -67,5 +67,5 @@ def test_crit_damage():
     dmg_total = dmg_roll_cmd.tags[TAGS["damage"]]
     actual_roll_val = dmg_total - dmg_roll_cmd.get_total_flat_modifier()
 
-    assert "CRIT" in dmg_roll_cmd.log
+    assert f"{dice}+{dice}" in dmg_roll_cmd.log
     assert actual_roll_val == expected_roll_val

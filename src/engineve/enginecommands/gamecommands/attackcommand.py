@@ -50,15 +50,17 @@ class AttackCommand(CompositeCommand):
         attack_hits = self.children["attack_roll"].value
         attacker_loc_str = ""  # f"@{state.actors[self.attacker_id].loc}"
         target_loc_str = ""  # f"@{state.actors[self.target_id].loc}"
+        hit_str = "hits"
         if attack_hits:
             self.add_tag("hit")
             if check_tag(self.children["attack_roll"], TAGS["critical_hit"]):
                 self.add_tag(TAGS["critical_hit"])
                 self.children["damage_roll"].add_tag
+                hit_str = 'crits'
 
             self.children["damage_roll"].evaluate(state, invoker)
             # name attacks tgt_name
-            self.log = f"{state.actors[self.attacker_id].name}{attacker_loc_str} hits {state.actors[self.target_id].name} {self.children['attack_roll'].log} for {self.children['damage_roll'].log}"
+            self.log = f"{state.actors[self.attacker_id].name}{attacker_loc_str} {hit_str} {state.actors[self.target_id].name} {self.children['attack_roll'].log} for {self.children['damage_roll'].log}"
         else:
             self.add_tag("miss")
             self.log = f"{state.actors[self.attacker_id].name}{attacker_loc_str} misses {state.actors[self.target_id].name}{target_loc_str} {self.children['attack_roll'].log}"

@@ -36,7 +36,7 @@ class DamageRollCommand(RollCommand):
 
         func_log = f"{self.dmg_dice}" + ("" if flat_val == 0 else f"+{flat_val}")
         if check_tag(self.tags, "critical_hit"):
-            func_log = func_log + f"CRIT {self.dmg_dice}" + "+"
+            func_log = f"{self.dmg_dice}" + "+" + func_log
         self.log = f"{dmg_value}=({func_log}) dmg"
         self.tags[TAGS["damage"]] = dmg_value
         invoker.notify(self.tags, state)
