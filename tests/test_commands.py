@@ -62,7 +62,7 @@ def test_crit_damage():
     engine, id_a, id_b = setup_game_engine()
     dice = "1d1"
     expected_roll_val = 2
-    dmg_roll_cmd = DamageRollCommand(id_a, id_b, tags={TAGS["critical_hit"]: None}, dmg_dice="1d1", stat="str")
+    dmg_roll_cmd = DamageRollCommand(id_a, id_b, tags={TAGS["critical_hit"]: None}, dmg_dice=dice, stat="str")
     dmg_roll_cmd.evaluate(engine.game_state, engine.invoker)
     dmg_total = dmg_roll_cmd.tags[TAGS["damage"]]
     actual_roll_val = dmg_total - dmg_roll_cmd.get_total_flat_modifier()

@@ -26,7 +26,7 @@ class DamageRollCommand(RollCommand):
         roll_val = roll(self.dmg_dice)
         if check_tag(self.tags, "critical_hit"):
             roll_val += roll(self.dmg_dice)
-            # BONUS DAMAGE DICE?
+            # BONUS CRIT DAMAGE DICE?
 
         flat_val = self.get_total_flat_modifier()
         dmg_value = roll_val + flat_val
@@ -39,6 +39,11 @@ class DamageRollCommand(RollCommand):
             func_log = f"{self.dmg_dice}" + "+" + func_log
         self.log = f"{dmg_value}=({func_log}) dmg"
         self.tags[TAGS["damage"]] = dmg_value
+
+        # if check_tag(self.tags, "critical_hit"):
+
+        #     logging.debug(f"crit: log:{self.log}")
+
         invoker.notify(self.tags, state)
 
     # def apply_effects(self, state, invoker=None):
