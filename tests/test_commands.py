@@ -46,17 +46,6 @@ def test_attack_command_log():
     assert new_command.log != dummy_str
 
 
-def test_commands_call_notify():
-    """commands should all call notify weather by default or internally"""
-    is_good = False
-    engine, first_id, target_id = setup_game_engine()
-
-    command_core = Command()
-    dummy_str = "declaration!"
-    custom_notification_command = AttackCommand(attacker_id=first_id, target_id=target_id, log=dummy_str)
-    assert is_good
-
-
 def test_crit_damage():
     """test to verify dice are doubled on a crit, 1d1+x should become 2d1+x"""
     engine, id_a, id_b = setup_game_engine()

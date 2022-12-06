@@ -99,9 +99,9 @@ class GameEngine(Loader, Serializable):
         logging.debug(f"{type(self.engine_state).__name__} to {new_state_name}")
         self.engine_state = engine_state
         self.engine_state.engine = self
-        notice_meta = {TAGS["engine_state_transition"], new_state_name}
+        notice_meta = {TAGS["engine_state_transition"]: new_state_name}
         if self._state_transition_await_frames > 0:
-            notice_meta[TAG["animation"]] = self._state_transition_await_frames
+            notice_meta[TAGS["animation"]] = self._state_transition_await_frames
         self.invoker.notify(meta=notice_meta, state=self.game_state, invoker=self.invoker)
 
     def spawn_archetype(self, archetype_name, **kwargs):

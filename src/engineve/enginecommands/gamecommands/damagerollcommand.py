@@ -8,12 +8,12 @@ from ...tags import TAGS, check_tag
 
 
 class DamageRollCommand(RollCommand):
-    def __init__(self, attacker_id, target_id, dmg_dice=None, stat="str", *args, **kwargs):
+    def __init__(self, attacker_id, target_id, dmg_dice="1d6", stat="str", *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.target_id = target_id
         self.attacker_id = attacker_id
 
-        self.dmg_dice = dmg_dice if dmg_dice is not None else "1d6"
+        self.dmg_dice = dmg_dice
         self.stat = stat
 
     def evaluate(self, state, invoker=None):

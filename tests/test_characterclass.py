@@ -68,6 +68,14 @@ def test_applied_new_game_move_resource():
     assert is_good
 
 
+def test_rogue_sneak_attack():
+    # make a rogue
+    # verify hit dice size
+    # verify things
+    is_good = False
+    assert is_good
+
+
 # def test_class_add_level():
 #     is_good = False
 #     assert is_good

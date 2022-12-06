@@ -1,40 +1,93 @@
 @startuml
-package engine_main
+skinparam BackgroundColor #1e1e1e
+skinparam ArrowColor #9cdcfe
+skinparam ArrowFontColor #CE9178
+class GameEngine
 {
+    + invoker
+    + game_state
+    + engine_state
+    __
+    + periodic()
+    ..
+    "gets a command from self.engine_state onto invoker's stack
+    calls invoker to execute current command stack"
     
-    class Invoker
-    {
-        + command_stack[]
-        + observers[]
-        + notify_observers()
-        + tick_stack()
-    }
-    class ActorAI
-    {
-        + take_turn()
-        + make_command()
-    }
-    
-    class statemanager
-    {
-        + actors
-    }
-    class Actor
-    {
-        + ai_type 
-        + get_observer
-    }
-    class Observer
-    {
-        + invoke_reaction()
-        + actor_id
-        + meta_filter
-        + _get_reaction()
-    }
-    
-    
-    Actor -d-> statemanager
-
 }
+class EngineState
+{
+    "different periodic main loop by child class 
+    to run based on wether we are in combat,
+    in menu, rolling encounters while travelling, etc."
+    __
+    + periodic()
+    ..
+    "periodic method will put engine 
+    commands onto the stack"
+    
+    
+}
+class Invoker
+{
+    + command_stack[]
+    + command_history[]
+    + observers[]
+    + notify()
+    + register_observer()
+    
+    
+}
+class ActorAI
+{
+    + take_turn()
+    + weigh_game_moves()
+    + make_command()
+}
+
+class GameStateManager
+{
+    + actors
+    + combat
+    + gridmap
+    + log 
+}
+class Actor
+{
+    "many attributes of DnD characters"
+    + ai_type
+    + game_moves
+    + effects
+    + resources
+    
+}
+class Observer
+{
+    + trigger()
+    + reaction()
+}
+class GameMove
+{
+    + get_weight
+    + make_command() -> EngineCommand
+}
+class EngineCommand
+{
+    + effect
+    + children # EngineCommand
+    + evaluate()
+    + execute()
+    + undo()
+}
+    
+GameEngine "1" -* "1" GameStateManager
+GameEngine "1" -l-* "1" Invoker
+GameEngine "1" -u-* "1" EngineState
+Invoker "1" -u-o "many" Observer
+GameStateManager -r-o Actor
+Actor "many" .d.> "1" ActorAI
+ActorAI "1" .l.> "many" GameMove
+GameMove "1" .l.> "many" EngineCommand
+EngineCommand -l- Invoker : "commands go on the stack"
+
 
 @enduml 

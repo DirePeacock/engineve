@@ -92,24 +92,25 @@ import time
 
 
 def test_engine_trans_wait():
-    game_engine, id_one, id_two = setup_game_engine()
+    """when set, the engine should wait the number of frames and then stop waiting
+    waits can happen simultaneously atm"""
+    game_engine, id_one, id_two = setup_game_engine(combat=False)
     game_engine._state_transition_await_frames = 3
-    test_frames = 10
-    unpause_frames = game_engine._state_transition_await_frames * 1
+    test_frames = 2 * game_engine._state_transition_await_frames
+    unpause_frames = game_engine._state_transition_await_frames + 1
     if isinstance(game_engine.engine_state, MenuState):
-        game_engine.engine_state.open_overworld()
-    if isinstance(game_engine.engine_state, MenuState):
-        game_engine.engine_state.open_overworld()
+        game_engine.engine_state.open_overworld(game_engine.game_state, game_engine.invoker)
+    if isinstance(game_engine.engine_state, OverworldState):
+        game_engine.engine_state.start_combat(game_engine.game_state, game_engine.invoker)
     assert isinstance(game_engine.engine_state, CombatState)
     for i in range(0, test_frames):
-        game_engine.periodic()
         is_good = False
+        string = " is waiting"
         if i <= unpause_frames:
             is_good = game_engine.engine_sync.is_waiting()
         else:
             is_good = not game_engine.engine_sync.is_waiting()
-        logging.debug(f"frame: {i} is_good: {is_good}")
+            string = " is not waiting"
+
         assert is_good
-        # time.sleep(0.1)
-    # get game to overworld start combat
-    # have some arbitrary wait on transition
+        game_engine.periodic()

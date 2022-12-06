@@ -12,16 +12,17 @@ def new_game_engine():
     return GameEngine()
 
 
-def setup_game_engine():
+def setup_game_engine(combat=True):
     game_engine = new_game_engine()
     game_engine.base_dir = pathlib.Path(__file__).parent / "test_data_load_loc"
     game_engine.characters_dir = game_engine.base_dir / "characters"
     id_one = game_engine.spawn_archetype("skeleton", team=1, name="ONE")
     id_two = game_engine.spawn_archetype("skeleton", team=2, name="TWO")
+    if combat:
 
-    all_ids = [actor_id for actor_id in game_engine.game_state.actors.keys()]
-    game_engine.engine_state = CombatState(all_ids)
-    game_engine.game_state.combat = Combat(all_ids)
+        all_ids = [actor_id for actor_id in game_engine.game_state.actors.keys()]
+        game_engine.engine_state = CombatState(all_ids)
+        game_engine.game_state.combat = Combat(all_ids)
     return game_engine, id_one, id_two
 
 
