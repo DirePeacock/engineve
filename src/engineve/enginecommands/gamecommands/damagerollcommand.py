@@ -8,13 +8,18 @@ from ...tags import TAGS, check_tag
 
 
 class DamageRollCommand(RollCommand):
-    def __init__(self, attacker_id, target_id, dmg_dice="1d6", stat="str", *args, **kwargs):
+    def __init__(self, attacker_id, target_id, dmg_dice=None, stat="str", *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.target_id = target_id
         self.attacker_id = attacker_id
 
-        self.dmg_dice = dmg_dice
+        self.dmg_dice = dmg_dice if dmg_dice is not None else "1d6"
         self.stat = stat
+
+    def apply_effects(self, state, invoker=None):
+        super().apply_effects(state, invoker)
+        if state.actors[self.target_id].hp <= 0:
+            self.add_tag(TAGS["death"])
 
     def evaluate(self, state, invoker=None):
         super().evaluate(state)
@@ -24,6 +29,7 @@ class DamageRollCommand(RollCommand):
 
         # check critical-ness of self then double the dice rolled
         roll_val = roll(self.dmg_dice)
+
         if check_tag(self.tags, "critical_hit"):
             roll_val += roll(self.dmg_dice)
             # BONUS CRIT DAMAGE DICE?

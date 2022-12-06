@@ -73,3 +73,16 @@ def test_critical_attack_log():
     assert check_tag(atk_cmd.children["attack_roll"], TAGS["critical_hit"])
     assert check_tag(atk_cmd.children["damage_roll"], TAGS["critical_hit"])
     assert f"{dice}+{dice}" in atk_cmd.log
+
+
+def test_attack_kill_detection():
+    engine, id_a, id_b = setup_game_engine()
+    # set 2 actors health and AC to zero so they will always die
+    for i in (id_a, id_b):
+        engine.game_state.actors[i].hp = 1
+        engine.game_state.actors[i].ac = 0
+
+    atk_cmd = AttackCommand(id_a, id_b, tags={TAGS["critical_hit"]: None}, dmg_dice="1d1", stat="str")
+    atk_cmd.execute(engine.game_state, engine.invoker)
+    assert check_tag(atk_cmd.tags, TAGS["death"])
+    logging.debug(f"atk_cmd_keys = {atk_cmd.tags.keys()}")

@@ -63,6 +63,11 @@ class AttackCommand(CompositeCommand):
             self.add_tag("miss")
             self.log = f"{state.actors[self.attacker_id].name}{attacker_loc_str} misses {state.actors[self.target_id].name}{target_loc_str} {self.children['attack_roll'].log}"
 
+    def apply_effects(self, *args, **kwargs):
+        super().apply_effects(*args, **kwargs)
+        if check_tag(self.children["damage_roll"], TAGS["death"]):
+            self.tags[TAGS["death"]] = None
+
     def evaluate(self, state, invoker=None):
         """split so this is easier to Unit Test"""
         # TODO resistance may want to change the log somewhere
