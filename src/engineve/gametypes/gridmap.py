@@ -22,8 +22,10 @@ class GridMap(Serializable, TaggedClass):
         # this doesn't follow with the other ones but we may want this referenced for
         # use determining loc occupancy
 
-    def check_occupancy(self, loc, state):
-        for actor_id in state.combat.order.values():
+    def check_occupancy(self, loc, state, relevant_ids=None):
+        """you can pass in relevant ids if you want"""
+        relevant_ids = relevant_ids if relevant_ids is not None else state.combat.order.values()
+        for actor_id in relevant_ids:
             if state.actors[actor_id].loc.coords == loc.coords:
                 return True
         return False

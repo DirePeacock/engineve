@@ -3,7 +3,8 @@ import random
 from .enginestate import EngineState
 from ..archetypes.archetype import new_monster
 from ..enginecommands.effectcommands.restcommand import RestCommand
-from ..utils import roll
+from ..utils import roll, get_random_loc
+from ..config import constants
 
 # from .combatstate import CombatState
 from ..gametypes.combat import Combat
@@ -33,11 +34,28 @@ class OverworldState(EngineState):
         # else:
         #     self.i += 1
 
+    def randomize_actor_locs(self, actor_ids, state):
+        max_x = state.gridmap.width - 1
+        max_y = state.gridmap.height - 1
+        for actor_id in actor_ids:
+            min_x_spawn = 0 if (team % 2 == 0) else max_x // 2
+            max_x_spawn = max_x - (max_x // 2) if (team % 2 == 0) else max_x
+            x_range = (min_x_spawn, max_x_spawn)
+            y_range = (0, 9)
+
+            new_loc = get_random_loc(x_range, y_range, state)
+            while state.gridmap.check_occupancy(
+                loc=new_loc, state=state, relevant_ids=[i for i in actor_ids if i != actor_id]
+            ):
+                new_loc = get_random_loc(x_range, y_range, state)
+            state.actor[actor_id].loc = new_loc
+
     def start_combat(self, state, invoker, num_roll="1d3"):
         # logging.debug("startingcombat")
         invoker.put(RestCommand(state.party.actor_ids))
         self.i = 0
-        team_id = 42
+        team_id = constants.MONSTER_TEAM_ID
+
         num_monsters = roll(num_roll)
 
         for i in range(random.randint(1, num_monsters)):

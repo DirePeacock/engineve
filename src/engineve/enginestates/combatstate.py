@@ -53,7 +53,7 @@ class CombatState(EngineState):
     def start_combat(self, state, invoker):
         state.combat.active = True
         self.roll_inits(state, invoker)
-        self.randomize_locs(state, invoker)
+        # self.randomize_locs(state, invoker)
         # TODO spawn locations
         notify_payload = {TAGS["combat_start"]: None, TAGS["loc_changed"]: None}
         invoker.notify(meta=notify_payload, state=state)
@@ -61,14 +61,15 @@ class CombatState(EngineState):
     def roll_inits(self, state, invoker):
         invoker.put(InitiativeCommand(self.actor_ids))
 
-    def randomize_locs(self, state, invoker):
-        max_x = state.gridmap.width - 1
-        max_y = state.gridmap.height - 1
-        for actor_id in self.actor_ids:
-            random_loc = (random.randint(0, max_x), random.randint(0, max_y))
-            while state.gridmap.check_occupancy(random_loc, state):
-                random_loc = (random.randint(0, max_x), random.randint(0, max_y))
-            invoker.command_stack[0].effects.append(ChangeLoc(actor_id, random_loc))
+    # def randomize_locs(self, state, invoker):
+    #     # TODO delete now that this is done in the overworld
+    #     max_x = state.gridmap.width - 1
+    #     max_y = state.gridmap.height - 1
+    #     for actor_id in self.actor_ids:
+    #         random_loc = (random.randint(0, max_x), random.randint(0, max_y))
+    #         while state.gridmap.check_occupancy(random_loc, state):
+    #             random_loc = (random.randint(0, max_x), random.randint(0, max_y))
+    #         invoker.command_stack[0].effects.append(ChangeLoc(actor_id, random_loc))
 
     def next_turn(self, state, invoker):
         """do next trurn command"""

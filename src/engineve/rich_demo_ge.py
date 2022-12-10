@@ -123,6 +123,7 @@ class GraphicsEngineDemo:
 
     def main(self, fps):
         engine = factory(spawn=True)
+        engine.start_combat(num)
         with Live(self.layout, console=self.console, screen=False, refresh_per_second=fps) as livelayout:
             for i in range(500):
                 engine.periodic()
