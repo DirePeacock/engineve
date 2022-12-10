@@ -35,7 +35,7 @@ def equals_or_in(obj, obj_or_iter):
         return obj == obj_or_iter
 
 
-def get_random_loc(x_range=None, y_range=None) -> tuple:
+def get_random_coords(x_range=None, y_range=None) -> tuple:
     "given a range of"
     min_x, max_x = x_range if x_range is not None else (0, 9)
     min_y, max_y = y_range if y_range is not None else (0, 9)

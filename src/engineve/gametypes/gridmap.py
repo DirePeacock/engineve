@@ -24,9 +24,10 @@ class GridMap(Serializable, TaggedClass):
 
     def check_occupancy(self, loc, state, relevant_ids=None):
         """you can pass in relevant ids if you want"""
+        loc_tuple = loc if isinstance(loc, tuple) else loc.coord
         relevant_ids = relevant_ids if relevant_ids is not None else state.combat.order.values()
         for actor_id in relevant_ids:
-            if state.actors[actor_id].loc.coords == loc.coords:
+            if state.actors[actor_id].loc.coord == loc_tuple:
                 return True
         return False
 
