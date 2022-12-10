@@ -43,7 +43,7 @@ class OverworldState(EngineState):
             min_x_spawn = 0 if (team % 2 == 0) else max_x // 2
             max_x_spawn = max_x - (max_x // 2) if (team % 2 == 0) else max_x
             x_range = (min_x_spawn, max_x_spawn)
-            y_range = (0, 9)
+            y_range = (0, max_y)
 
             new_loc = get_random_coords(x_range, y_range)
             while state.gridmap.check_occupancy(

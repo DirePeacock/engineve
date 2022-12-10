@@ -39,7 +39,7 @@ def get_random_coords(x_range=None, y_range=None) -> tuple:
     "given a range of"
     min_x, max_x = x_range if x_range is not None else (0, 9)
     min_y, max_y = y_range if y_range is not None else (0, 9)
-    return (random.randint(min_x, max_x + 1), random.randint(min_y, max_y + 1))
+    return (random.randint(min_x, max_x), random.randint(min_y, max_y))
 
 
 rando = 1
