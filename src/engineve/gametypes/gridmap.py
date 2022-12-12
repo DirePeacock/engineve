@@ -27,7 +27,13 @@ class GridMap(Serializable, TaggedClass):
         loc_tuple = loc if isinstance(loc, tuple) else loc.coord
         relevant_ids = relevant_ids if relevant_ids is not None else state.combat.order.values()
         for actor_id in relevant_ids:
-            if state.actors[actor_id].loc.coord == loc_tuple:
+            # TODO FIX THIS BRO, this will be too much type checking, maybe just remove the loc type obj
+            actor_loc_tuple = (
+                state.actors[actor_id].loc
+                if isinstance(state.actors[actor_id].loc, tuple)
+                else state.actors[actor_id].loc.coord
+            )
+            if actor_loc_tuple == loc_tuple:
                 return True
         return False
 
