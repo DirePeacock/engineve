@@ -9,10 +9,13 @@ from engineve.mainfactory import factory
 from engineve.archetypes import characterclass
 from engineve.actorai.movefactory import load_game_move
 
+import_dir = pathlib.Path(__file__).parent / "test_data_load_loc"
+export_dir = pathlib.Path(__file__).parent / "test_data_save_loc"
+
 
 def test_loader_init():
     """make sure that all the dirs are there when you make the thing"""
-    game_engine = utils.new_game_engine()
+    game_engine, _, _ = utils.setup_game_engine()
     paths_to_check = {"base": game_engine.base_dir, "characters": game_engine.characters_dir}
     is_good = all(path.exists() for path in paths_to_check.values())
     assert is_good
@@ -23,7 +26,7 @@ def test_save_game():
     # TODO make sure this goes to the right place after where that is has been figured out
     pp = pprint.PrettyPrinter(indent=4)
     game_engine = utils.new_game_engine()
-    test_name = "Solaire"
+    test_name = "Kilsyth"
     test_actor = game_engine.import_character(name=test_name)
     save_data = game_engine.serialize()
     # pp.pprint(save_data)
@@ -34,6 +37,7 @@ def test_save_game():
     game_engine.save_game()
 
     assert test_save_path.exists()
+    logging.debug(f"save_path={test_save_path}")
     data_we_just_saved = None
     with open(test_save_path, "r") as test_save_file:
         data_we_just_saved = yaml.safe_load(test_save_file)
@@ -101,6 +105,18 @@ def test_load_char():
 
     assert test_actor is not None
     assert test_actor.critical_threat == 19
+
+
+# def test_save_game():
+#     """this should be able to load a state, and then dump dump the data"""
+#     is_good = False
+#     assert is_good
+
+
+# def test_load_saved_game():
+#     """this should be able to load the data from the yaml file and it should be set correctly according to the file"""
+#     is_good = False
+#     assert is_good
 
 
 # def test_load_game_move():

@@ -33,7 +33,7 @@ class MenuState(EngineState):
 
     def uhh_setup(self):
         # TODO idk get input or something idk
-        chars = ["solaire"]
+        chars = ["solaire", "kilsyth"]
         for char in chars:
             self._engine.import_character(char)
         self._engine.pick_party(chars)
