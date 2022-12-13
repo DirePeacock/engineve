@@ -1,8 +1,10 @@
 import includes
+import logging
+
 from engineve.actorai.pathingutils import get_radial_square_locs
+from engineve.actorai import pathfinding
 from engineve.gametypes.loc import Loc
 import utils
-import unittest
 
 
 def test_radial_squares():
@@ -47,7 +49,21 @@ def test_unoccupied_space():
     )
 
 
-def test_nearest_unoccupied_space():
+def test_move_shortest_distance():
     # TODO
+    game_engine, id_one, id_two = utils.setup_game_engine(combat=False)
 
-    pass
+    test_loc_tuple = (1, 1)
+    other_loc_tuple = (9, 9)
+
+    game_engine.game_state.actors[id_one].loc = test_loc_tuple
+    game_engine.game_state.actors[id_two].loc = other_loc_tuple
+
+    retval = pathfinding.move_next_to(
+        origin=game_engine.game_state.actors[id_one].loc,
+        destination=game_engine.game_state.actors[id_two].loc,
+        state=game_engine.game_state,
+        grid_range=1,
+    )
+    logging.debug(f"retval ={retval} ")
+    assert retval == (8, 8)

@@ -4,7 +4,7 @@ from ...enginecommands.effectcommands.modifyresources import ModifyResources
 from ...enginecommands.gamecommands.changeloccommand import ChangeLocCommand
 from ...enginecommands.basecommands.command import Command
 from ..aiutils import get_target, get_enemy_ids
-from ..pathfinding import nearest_unoccupied_space
+from ..pathfinding import move_next_to
 from ..pathingutils import measure_distance
 
 
@@ -44,7 +44,9 @@ class UseMovement(GameMove):
         #     new_cmd.effects.append(ModifyResources(new_cmd.attacker_id, changes=self.resource_cost))
 
         target_enemy_id = min(target_distances, key=target_distances.get)
-        destination_loc = nearest_unoccupied_space(state.actors[target_enemy_id].loc, state)
+        destination_loc = move_next_to(
+            origin=state.actors[self.actor_id].loc, destination=state.actors[target_enemy_id].loc, state=state
+        )
 
         locpath = [destination_loc]
 
