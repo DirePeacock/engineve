@@ -84,7 +84,7 @@ class Actor(Serializable, TaggedClass):
             if not any(move for move in self.game_moves.values() if isinstance(move, AttackAction)):
                 self.add_game_move(AttackAction(actor_id=self.id))
         self.add_game_move(UseMovement(actor_id=self.id))
-        for resource_name in ["turn_action", "turn_movement"]:
+        for resource_name in ["turn_action", "turn_movement", "turn_bonus_action"]:
             self.add_resource(Resource(name=resource_name, value=1, max=1))
 
     def _set_stats(self, *args, **kwargs):

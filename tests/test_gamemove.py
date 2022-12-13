@@ -29,7 +29,7 @@ def test_load_bonus_action_attack():
 
     moves = engine.game_state.actors[test_char_id].game_moves
     # logging.debug(engine.game_state.actors[test_char_id].name)
-    assert moves["swiftscythe_bonus_attack"].resource_cost["bonus_action"] == -1
+    assert moves["swiftscythe_right"].resource_cost["turn_bonus_action"] == -1
 
     # Actor id_a should have the effect on it
 
