@@ -13,6 +13,26 @@ def test_init():
     assert engine.invoker.command_stack[0].stat == "dex"
     assert engine.invoker.command_stack[0].children["damage_roll"].dmg_dice == "1d6"
 
+
+def test_load_bonus_action_attack():
+    """verify"""
+    test_char = "kilsyth"
+    engine, id_a, id_b = setup_game_engine()
+
+    engine.import_character(test_char)
+
+    test_char_id = None
+    for i, actor in engine.game_state.actors.items():
+        logging.debug(actor.name)
+        if actor.name.lower() == test_char:
+            test_char_id = i
+
+    moves = engine.game_state.actors[test_char_id].game_moves
+    # logging.debug(engine.game_state.actors[test_char_id].name)
+    assert moves["swiftscythe_bonus_attack"].resource_cost["bonus_action"] == -1
+
+    # Actor id_a should have the effect on it
+
     # assert attack is a scimitar attack
 
 

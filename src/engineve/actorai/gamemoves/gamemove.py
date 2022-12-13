@@ -16,10 +16,12 @@ class GameMove(Serializable, TaggedClass):
     #     self.command_type = command_type
     #     self.name = name
     #     self.resource_cost = {} if resource_cost is None else resource_cost
-    def __init__(self, actor_id=None, name=None, *args, **kwargs):
+    def __init__(self, actor_id=None, name=None, resource_cost=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.actor_id = actor_id
         self.name = name if name is not None else type(self).__name__
+        if resource_cost is not None:
+            self.resource_cost=resource_cost
 
     def get_weight(self, state):
         return random.randint(1, 10)
