@@ -10,7 +10,7 @@ class AbilityCheckCommand(Command):
         self.ability = ability
         self.skill = skill
 
-    def evaluate(self, state):
+    def evaluate(self, state, invoker=None):
         super().evaluate(state)
         ability_mod = state.actors[self.actor_id].get_ability_modifier(self.ability)
         prof_bonus = 0

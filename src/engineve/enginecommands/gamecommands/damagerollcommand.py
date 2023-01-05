@@ -1,27 +1,60 @@
 import logging
 
 from ..basecommands.command import Command
-from  ..effectcommands.modifyhp import ModifyHP
+from .rollcommand import RollCommand
+from ..effectcommands.modifyhp import ModifyHP
 from ...utils import roll
+from ...tags import TAGS, check_tag
 
-class DamageRollCommand(Command):    
-    def __init__(self, attacker_id, target_id, *args, **kwargs):
+
+class DamageRollCommand(RollCommand):
+    def __init__(self, attacker_id, target_id, dmg_dice=None, stat="str", *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.target_id = target_id
         self.attacker_id = attacker_id
-        
-    def evaluate(self, state):
+
+        self.dmg_dice = dmg_dice if dmg_dice is not None else "1d6"
+        self.stat = stat
+
+    def apply_effects(self, state, invoker=None):
+        super().apply_effects(state, invoker)
+        if state.actors[self.target_id].hp <= 0:
+            self.add_tag(TAGS["death"])
+
+    def evaluate(self, state, invoker=None):
         super().evaluate(state)
-        dmg_value = roll(size=6) + state.actors[self.attacker_id].get_ability_modifier('str')
-        
+
+        if self.stat is not None:
+            self.add_flat_modifier(self.stat, state.actors[self.attacker_id].get_ability_modifier(self.stat))
+
+        # check critical-ness of self then double the dice rolled
+        roll_val = roll(self.dmg_dice)
+
+        if check_tag(self.tags, "critical_hit"):
+            roll_val += roll(self.dmg_dice)
+            # BONUS CRIT DAMAGE DICE?
+
+        flat_val = self.get_total_flat_modifier()
+        dmg_value = roll_val + flat_val
+
         dmg_value = max(0, dmg_value)  # RULE no negative damage
         self.effects = [ModifyHP(self.target_id, (dmg_value * -1), self.attacker_id)]
-        
-        self.log = f"{dmg_value} dmg"
 
-    def apply_effects(self, state):
-        super().apply_effects(state)
-    
+        func_log = f"{self.dmg_dice}" + ("" if flat_val == 0 else f"+{flat_val}")
+        if check_tag(self.tags, "critical_hit"):
+            func_log = f"{self.dmg_dice}" + "+" + func_log
+        self.log = f"{dmg_value}=({func_log}) dmg"
+        self.tags[TAGS["damage"]] = dmg_value
+
+        # if check_tag(self.tags, "critical_hit"):
+
+        #     logging.debug(f"crit: log:{self.log}")
+
+        invoker.notify(self.tags, state)
+
+    # def apply_effects(self, state, invoker=None):
+    #     super().apply_effects(state)
+
     # def execute(self, state):
     #     self.evaluate(state)
     #     return self.value

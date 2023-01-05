@@ -1,0 +1,28 @@
+MonsterArchetypes:
+  skeleton: 
+    stats: [8,14,10,10,8,8]
+    ac: 15
+    hp_dice: '2d6'
+    profs: ['stealth']
+    senses: 
+      darkvision': 60
+    speed:
+      land: 30
+    sprites:
+      game_piece: skeleton64.png
+    cr: 0.25
+    languages: common
+    game_moves:
+      scimitar:
+        parent_move: 'AttackAction'
+        dmg_dice: '1d6'
+        stat: 'dex'
+        animtation_frames: 5
+    
+
+
+      
+        
+
+
+    

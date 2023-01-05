@@ -1,9 +1,13 @@
 from .gameengine import GameEngine
 from .gametypes.actor import Actor
+
+from .archetypes.archetype import ARCHETYPES, new_monster, MonsterArchetype
+
 def factory(spawn=True):
     GAMEENGINE = GameEngine()
     if spawn:
-        for team_id in [0, 1]:
-            GAMEENGINE.spawn_actors(actor_class=Actor, num=1, team=team_id)
+        for team_id in [0,1]:
+            for i in range(4):
+                GAMEENGINE.game_state.add_actor(new_monster('skeleton', team=team_id))
     return GAMEENGINE
     
