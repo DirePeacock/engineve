@@ -4,11 +4,13 @@ from ..tags import TaggedClass
 
 class GridLoc(Serializable, TaggedClass):
     #### TODO  how does this relate to the Loc class?
-    def __init__(self, difficult_terrain=False, obscuration=0, passible=True, *args, **kwargs):
+    def __init__(self, cost=False, obscuration=0, passible=True, team_occupancy=None, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
-        self.difficult_terrain = difficult_terrain
+        self.cost = cost
         self.obscuration = obscuration
         self.passible = passible
+        self.team_occupancy = team_occupancy
+        
 
 
 class GridMap(Serializable, TaggedClass):
@@ -36,6 +38,7 @@ class GridMap(Serializable, TaggedClass):
             if actor_loc_tuple == loc_tuple:
                 return True
         return False
+    
 
     def get_actor_locs_dict(self, state):
         return {actor_id: state.actors[actor_id].loc for actor_id in state.combat.order.values()}

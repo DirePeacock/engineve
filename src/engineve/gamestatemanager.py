@@ -65,3 +65,12 @@ class GameStateManager(Serializable):
                 blah[actor.team] = []
             blah[actor.team].append({attr: actor.__getattribute__(attr) for attr in self._actor_debug_attrs})
         print(json.dumps(blah, indent=4))
+
+    def set_actor_loc(self, actor_id, destination):
+        # empty old loc
+        x_a, y_a = self.actors[actor_id].loc.coord
+        self.gridmap.locs[x_a][y_a].team_occupancy = None
+
+        self.actors[actor_id].loc = destination
+        x_b, y_b = self.actors[actor_id].loc.coord
+        self.gridmap.locs[x_b][y_b].team_occupancy = self.actors[actor_id].team

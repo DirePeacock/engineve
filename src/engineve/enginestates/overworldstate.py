@@ -50,7 +50,8 @@ class OverworldState(EngineState):
                 loc=new_loc, state=state, relevant_ids=[i for i in actor_ids if i != actor_id]
             ):
                 new_loc = get_random_coords(x_range, y_range)
-            state.actors[actor_id].loc = Loc(new_loc)
+                
+            state.set_actor_loc(actor_id, Loc(new_loc))
 
     def start_combat(self, state, invoker, num_roll="1d3"):
         # logging.debug("startingcombat")

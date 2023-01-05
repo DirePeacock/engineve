@@ -53,6 +53,8 @@ class Actor(Serializable, TaggedClass):
         self.max_hp = self.roll_for_hp()
         self.hp = self.max_hp
 
+        self.threat = get_kwarg("threat", kwargs, 0)
+
         if isinstance(ai_class, str):
             self.ai_class = get_ai_class(ai_class)
         elif ai_class is None:
@@ -69,6 +71,11 @@ class Actor(Serializable, TaggedClass):
             self._load_game_moves(kwargs["game_moves"])
         self._init_actor_core()
 
+    def add_bonus():
+        '''add a bonus to the bonus list'''
+        pass
+    def remove_bonus():
+        pass
     def _load_game_moves(self, game_moves):
         for name, move in game_moves.items():
             new_move = load_game_move(**move)
@@ -110,6 +117,14 @@ class Actor(Serializable, TaggedClass):
         return self.hit_dice_num * (self.get_ability_modifier("con") + int(0.5 * self.hit_dice_size) + 1)
 
     @property
+    def loc(self):
+        return self._loc
+
+    @loc.setter
+    def loc(self, loc):
+        self._loc = loc if isinstance(loc, Loc) else Loc(loc)    
+    
+    @property
     def ability_scores(self):
         return [self.str, self.dex, self.con, self.int, self.wis, self.cha]
 
@@ -125,6 +140,7 @@ class Actor(Serializable, TaggedClass):
         self.wis = score_list[4]
         self.cha = score_list[5]
 
+    
     def get_ability_modifier(self, stat):
         stat_scrore = self.__getattribute__(stat.lower())
         return get_stat_modifier(stat_scrore)

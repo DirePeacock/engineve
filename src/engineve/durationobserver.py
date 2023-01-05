@@ -6,6 +6,7 @@ from .gametypes.time import roundsdelta
 
 
 class DurationObserver(Observer):
+    """this class runs cleanup at the end of every turn or whatever"""
     def __init__(self):
         super().__init__(trigger=self._is_gametime_updated, reaction=self.clean_up)
 

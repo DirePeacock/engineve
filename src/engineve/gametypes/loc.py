@@ -16,6 +16,7 @@ class Loc():
     
     def __getitem__(self, key):
         return self.coord[key]
+        
     @property
     def coord(self):
         return tuple(val for val in [self.x, self.y, self.z] if val is not None)
