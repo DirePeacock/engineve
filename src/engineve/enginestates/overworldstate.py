@@ -20,7 +20,6 @@ class OverworldState(EngineState):
     def __init__(self, ready=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.ready = ready
-        self.i = 0
         self.wait_frames = 1
 
     def periodic(self, state, invoker):
@@ -56,7 +55,6 @@ class OverworldState(EngineState):
     def start_combat(self, state, invoker, num_roll="1d3"):
         # logging.debug("startingcombat")
         invoker.put(RestCommand(state.party.actor_ids))
-        self.i = 0
         team_id = constants.MONSTER_TEAM_ID
 
         num_monsters = roll(num_roll)

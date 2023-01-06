@@ -32,7 +32,7 @@ class Actor(Serializable, TaggedClass):
         self.pb = 2 if "pb" not in kwargs.keys() else kwargs["pb"]
         self.proficiencies = [] if "proficiencies" not in kwargs.keys() else kwargs["proficiencies"]
 
-        self.speed = {"land": 30} if "speed" not in kwargs.keys() else kwargs["speed"]
+        self.speed = {"land": 6} if "speed" not in kwargs.keys() else kwargs["speed"]
         self.ac = 13 if "ac" not in kwargs.keys() else kwargs["ac"]
         self.critical_threat = get_kwarg("critical_threat", kwargs, 20)
 
@@ -69,6 +69,7 @@ class Actor(Serializable, TaggedClass):
 
         if "game_moves" in kwargs.keys():
             self._load_game_moves(kwargs["game_moves"])
+
         self._init_actor_core()
 
     def add_bonus():
@@ -76,6 +77,7 @@ class Actor(Serializable, TaggedClass):
         pass
     def remove_bonus():
         pass
+
     def _load_game_moves(self, game_moves):
         for name, move in game_moves.items():
             new_move = load_game_move(**move)
@@ -97,16 +99,15 @@ class Actor(Serializable, TaggedClass):
     def _set_stats(self, *args, **kwargs):
         if "ability_scores" in kwargs.keys():
             self.ability_scores = kwargs["ability_scores"]
-        elif all(stat for stat in ["str", "dex", "con", "int", "wis", "cha"] if stat in kwargs.keys()):
+        elif all(stat for stat in ["str", "agi", "con", "mnd", "arc"] if stat in kwargs.keys()):
             self.str = 14 if "str" not in kwargs.keys() else kwargs["str"]
-            self.dex = 14 if "dex" not in kwargs.keys() else kwargs["dex"]
+            self.agi = 14 if "agi" not in kwargs.keys() else kwargs["agi"]
             self.con = 10 if "con" not in kwargs.keys() else kwargs["con"]
-            self.int = 10 if "int" not in kwargs.keys() else kwargs["int"]
-            self.wis = 10 if "wis" not in kwargs.keys() else kwargs["wis"]
-            self.cha = 10 if "cha" not in kwargs.keys() else kwargs["cha"]
+            self.mnd = 10 if "mnd" not in kwargs.keys() else kwargs["mnd"]
+            self.arc = 10 if "arc" not in kwargs.keys() else kwargs["arc"]
         else:
             for arg in args:
-                if isinstance(arg, list) and 6 == len(arg) and all(arg_i for arg_i in arg if isinstance(arg_i, int)):
+                if isinstance(arg, list) and 5 == len(arg) and all(arg_i for arg_i in arg if isinstance(arg_i, int)):
                     self.ability_scores = arg
                     return
 
@@ -126,19 +127,18 @@ class Actor(Serializable, TaggedClass):
     
     @property
     def ability_scores(self):
-        return [self.str, self.dex, self.con, self.int, self.wis, self.cha]
+        return [self.str, self.agi, self.con, self.mnd, self.arc]
 
     @ability_scores.setter
     def ability_scores(self, score_list):
-        if len(score_list) != 6 or not all([isinstance(score, int) for score in score_list]):
-            logging.warning(f"ability score array setter; needs to be list of 6 ints @{score_list}")
+        if len(score_list) != 5 or not all([isinstance(score, int) for score in score_list]):
+            logging.warning(f"ability score array setter; needs to be list of 5 ints @{score_list}")
             return
         self.str = score_list[0]
-        self.dex = score_list[1]
+        self.agi = score_list[1]
         self.con = score_list[2]
-        self.int = score_list[3]
-        self.wis = score_list[4]
-        self.cha = score_list[5]
+        self.mnd = score_list[3]
+        self.arc = score_list[4]
 
     
     def get_ability_modifier(self, stat):

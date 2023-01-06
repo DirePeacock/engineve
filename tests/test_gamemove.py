@@ -10,7 +10,7 @@ def test_init():
     engine.engine_state.start_combat(engine.game_state, engine.invoker)
     # Actor id_a should have the effect on it
     atk_cmd_id = actor_put_command(engine, id_a, cmd_substring="Scimitar")
-    assert engine.invoker.command_stack[0].stat == "dex"
+    assert engine.invoker.command_stack[0].stat == "agi"
     assert engine.invoker.command_stack[0].children["damage_roll"].dmg_dice == "1d6"
 
 

@@ -6,7 +6,7 @@ Solaire:
   hit_dice_num: 4
   level_up_choices:
     fighting_style: dueling
-  stats: [18,12,16,11,10,9]
+  stats: [18,12,16,11,10]
   sprites:
     portrait: solaire_portrait_lofi.png
     game_piece: solaire_token_blk.png

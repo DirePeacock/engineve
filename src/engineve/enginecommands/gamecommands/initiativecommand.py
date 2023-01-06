@@ -15,13 +15,13 @@ class InitiativeCommand(CompositeCommand):
         self.add_tag("initiative")
 
         for actor_id in self.actor_ids:
-            self.children[actor_id] = AbilityCheckCommand(actor_id=actor_id, ability="dex")
+            self.children[actor_id] = AbilityCheckCommand(actor_id=actor_id, ability="agi")
 
     def evaluate(self, state, invoker):
         super().evaluate(state, invoker)
         self.value = {}
         for actor_id, init_command in self.children.items():
-            init_score = init_command.value + (0.01 * float(state.actors[actor_id].dex))
+            init_score = init_command.value + (0.01 * float(state.actors[actor_id].agi))
             if init_score not in self.value.keys():
                 self.value[init_score] = actor_id
             else:

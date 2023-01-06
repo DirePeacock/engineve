@@ -6,7 +6,6 @@ Kilsyth:
     - 16
     - 12
     - 14
-    - 13
   ac: 17
   class_levels:
     rogue: 4
@@ -25,14 +24,14 @@ Kilsyth:
       animtation_frames: 3
       dmg_dice: 1d6
       parent_move: AttackAction
-      stat: dex
+      stat: agi
     swiftscythe_right:
       animtation_frames: 3
       dmg_dice: 1d6
       parent_move: AttackAction
       resource_cost:
         turn_bonus_action: -1
-      stat: dex
+      stat: agi
   hit_dice_num: 4
   hit_dice_size: 8
   languages: common
