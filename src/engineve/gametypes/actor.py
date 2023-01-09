@@ -24,27 +24,28 @@ class Actor(Serializable, TaggedClass):
         self.id = get_id()
         self.team = team
         self.name = name if name is not None else get_random_name()
-        
+
         # todo _init_hp(*args, **kwargs)
-        
+
         # self.level_modifier
         self.pb = 2 if "pb" not in kwargs.keys() else kwargs["pb"]
         # probly not needed
-        self.proficiencies = [] if "proficiencies" not in kwargs.keys() else kwargs["proficiencies"]
+        self.proficiencies = (
+            [] if "proficiencies" not in kwargs.keys() else kwargs["proficiencies"]
+        )
         self.hit_dice_num = get_kwarg("hit_dice_num", kwargs, 2)
         self.hit_dice_max = self.hit_dice_num
         self.hit_dice_size = get_kwarg("hit_dice_size", kwargs, 6)
-        
-        
+
         self.speed = {"land": 6} if "speed" not in kwargs.keys() else kwargs["speed"]
-        
+
         self.ac = 13 if "ac" not in kwargs.keys() else kwargs["ac"]
         # crit_chance
         # crit_multiplier
         self.attack_speed = get_kwarg("critical_threat", kwargs, 1.0)
         self.critical_threat = get_kwarg("critical_threat", kwargs, 5.0)
-        self.critical_threat = get_kwarg("critical_multiplier", kwargs, 2.0)
-
+        self.critical_threat = 19  # get_kwarg("critical_threat", kwargs, 5.0)
+        self.critical_multiplier = get_kwarg("critical_multiplier", kwargs, 2.0)
 
         self._set_stats(*args, **kwargs)
         self.experience = get_kwarg("experience", kwargs, 0)
@@ -83,8 +84,9 @@ class Actor(Serializable, TaggedClass):
         self._init_actor_core()
 
     def add_bonus():
-        '''add a bonus to the bonus list'''
+        """add a bonus to the bonus list"""
         pass
+
     def remove_bonus():
         pass
 
@@ -100,7 +102,11 @@ class Actor(Serializable, TaggedClass):
     def _init_actor_core(self):
         """add move and attack, don't add duplicate attacks if not needed"""
         if 0 < len(self.game_moves):
-            if not any(move for move in self.game_moves.values() if isinstance(move, AttackAction)):
+            if not any(
+                move
+                for move in self.game_moves.values()
+                if isinstance(move, AttackAction)
+            ):
                 self.add_game_move(AttackAction(actor_id=self.id))
         self.add_game_move(UseMovement(actor_id=self.id))
         for resource_name in ["turn_action", "turn_movement", "turn_bonus_action"]:
@@ -109,7 +115,11 @@ class Actor(Serializable, TaggedClass):
     def _set_stats(self, *args, **kwargs):
         if "ability_scores" in kwargs.keys():
             self.ability_scores = kwargs["ability_scores"]
-        elif all(stat for stat in ["str", "agi", "con", "mnd", "arc"] if stat in kwargs.keys()):
+        elif all(
+            stat
+            for stat in ["str", "agi", "con", "mnd", "arc"]
+            if stat in kwargs.keys()
+        ):
             self.str = 14 if "str" not in kwargs.keys() else kwargs["str"]
             self.agi = 14 if "agi" not in kwargs.keys() else kwargs["agi"]
             self.con = 10 if "con" not in kwargs.keys() else kwargs["con"]
@@ -117,7 +127,11 @@ class Actor(Serializable, TaggedClass):
             self.arc = 10 if "arc" not in kwargs.keys() else kwargs["arc"]
         else:
             for arg in args:
-                if isinstance(arg, list) and 5 == len(arg) and all(arg_i for arg_i in arg if isinstance(arg_i, int)):
+                if (
+                    isinstance(arg, list)
+                    and 5 == len(arg)
+                    and all(arg_i for arg_i in arg if isinstance(arg_i, int))
+                ):
                     self.ability_scores = arg
                     return
 
@@ -125,7 +139,9 @@ class Actor(Serializable, TaggedClass):
         self.ability_scores = _list
 
     def roll_for_hp(self):
-        return self.hit_dice_num * (self.get_ability_modifier("con") + int(0.5 * self.hit_dice_size) + 1)
+        return self.hit_dice_num * (
+            self.get_ability_modifier("con") + int(0.5 * self.hit_dice_size) + 1
+        )
 
     @property
     def loc(self):
@@ -133,16 +149,20 @@ class Actor(Serializable, TaggedClass):
 
     @loc.setter
     def loc(self, loc):
-        self._loc = loc if isinstance(loc, Loc) else Loc(loc)    
-    
+        self._loc = loc if isinstance(loc, Loc) else Loc(loc)
+
     @property
     def ability_scores(self):
         return [self.str, self.agi, self.con, self.mnd, self.arc]
 
     @ability_scores.setter
     def ability_scores(self, score_list):
-        if len(score_list) != 5 or not all([isinstance(score, int) for score in score_list]):
-            logging.warning(f"ability score array setter; needs to be list of 5 ints @{score_list}")
+        if len(score_list) != 5 or not all(
+            [isinstance(score, int) for score in score_list]
+        ):
+            logging.warning(
+                f"ability score array setter; needs to be list of 5 ints @{score_list}"
+            )
             return
         self.str = score_list[0]
         self.agi = score_list[1]
@@ -150,7 +170,6 @@ class Actor(Serializable, TaggedClass):
         self.mnd = score_list[3]
         self.arc = score_list[4]
 
-    
     def get_ability_modifier(self, stat):
         stat_scrore = self.__getattribute__(stat.lower())
         return get_stat_modifier(stat_scrore)
@@ -181,7 +200,13 @@ class Actor(Serializable, TaggedClass):
         # logging.debug(f"{self.name}.hp = {self.hp}")
 
     def __str__(self):
-        return str({key: val for key, val in self.__dict__.items() if isinstance(val, (int, str))})
+        return str(
+            {
+                key: val
+                for key, val in self.__dict__.items()
+                if isinstance(val, (int, str))
+            }
+        )
 
     def is_dead(self):
         return self.hp <= 0
