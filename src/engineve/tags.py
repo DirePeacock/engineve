@@ -2,15 +2,10 @@ import yaml
 import pathlib
 from enum import IntEnum, auto
 import logging
+from .config.tags_list import tags_list
 
-tags_path = pathlib.Path(__file__).parent / "config" / "tags.yaml"
-TAGS = None
-
-with open(tags_path, "r") as tags_file:
-    _tags = yaml.safe_load(tags_file)
-    TAGS = IntEnum("TAGS", {thing: auto() for thing in _tags["data"]})
-
-
+TAGS = IntEnum("TAGS", {thing: auto() for thing in tags_list})
+    
 class meta(dict):
     """indexable by str"""
 
@@ -98,3 +93,5 @@ def check_tags_all(obj, tags):
 # def check_tags(obj, tag, use_any=False):
 #     tags_list = [tag] if not isinstance(tag, list) else [str_to_tag(t) for t in tag]
 #     return all()
+if __name__ == "__main__":
+    print("ayy lmao")

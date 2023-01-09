@@ -24,24 +24,34 @@ class Actor(Serializable, TaggedClass):
         self.id = get_id()
         self.team = team
         self.name = name if name is not None else get_random_name()
-        # # TODO this?
+        
         # todo _init_hp(*args, **kwargs)
+        
+        # self.level_modifier
+        self.pb = 2 if "pb" not in kwargs.keys() else kwargs["pb"]
+        # probly not needed
+        self.proficiencies = [] if "proficiencies" not in kwargs.keys() else kwargs["proficiencies"]
         self.hit_dice_num = get_kwarg("hit_dice_num", kwargs, 2)
         self.hit_dice_max = self.hit_dice_num
         self.hit_dice_size = get_kwarg("hit_dice_size", kwargs, 6)
-        self.pb = 2 if "pb" not in kwargs.keys() else kwargs["pb"]
-        self.proficiencies = [] if "proficiencies" not in kwargs.keys() else kwargs["proficiencies"]
-
+        
+        
         self.speed = {"land": 6} if "speed" not in kwargs.keys() else kwargs["speed"]
+        
         self.ac = 13 if "ac" not in kwargs.keys() else kwargs["ac"]
-        self.critical_threat = get_kwarg("critical_threat", kwargs, 20)
+        # crit_chance
+        # crit_multiplier
+        self.attack_speed = get_kwarg("critical_threat", kwargs, 1.0)
+        self.critical_threat = get_kwarg("critical_threat", kwargs, 5.0)
+        self.critical_threat = get_kwarg("critical_multiplier", kwargs, 2.0)
+
 
         self._set_stats(*args, **kwargs)
-        self.senses = {} if "senses" not in kwargs.keys() else kwargs["senses"]
         self.experience = get_kwarg("experience", kwargs, 0)
-        self.death_saves = get_kwarg("death_saves", kwargs, 0)
-        self.languages = get_kwarg("languages", kwargs, ["common"])
-        self.flavor = get_kwarg("flavor", kwargs, {})
+        # self.death_saves = get_kwarg("death_saves", kwargs, 0)
+        # self.senses = {} if "senses" not in kwargs.keys() else kwargs["senses"]
+        # self.languages = get_kwarg("languages", kwargs, ["common"])
+        # self.flavor = get_kwarg("flavor", kwargs, {})
 
         # unused atm
         self.class_levels = get_kwarg("class_levels", kwargs, {})
