@@ -5,7 +5,8 @@ import logging
 from .config.tags_list import tags_list
 
 TAGS = IntEnum("TAGS", {thing: auto() for thing in tags_list})
-    
+
+
 class meta(dict):
     """indexable by str"""
 

@@ -16,7 +16,7 @@ from ..enginecommands.observer.observer import Observer
 # notify with list of targets
 class Actor(Serializable, TaggedClass):
     # serializable_attrs = ["name", "team", "loc", "resources", "game_moves"]
-    turn_resources = ["turn_movement", "turn_action", "turn_bonus_action"]
+    turn_resources = ["turn_movement", "turn_action"]
     delete_after_combat = False
 
     def __init__(self, name=None, team=1, loc=(0, 0), ai_class=None, *args, **kwargs):
@@ -28,23 +28,22 @@ class Actor(Serializable, TaggedClass):
         # todo _init_hp(*args, **kwargs)
 
         # self.level_modifier
-        self.pb = 2 if "pb" not in kwargs.keys() else kwargs["pb"]
-        # probly not needed
-        self.proficiencies = (
-            [] if "proficiencies" not in kwargs.keys() else kwargs["proficiencies"]
+        self.level_bonus = (
+            2 if "level_bonus" not in kwargs.keys() else kwargs["level_bonus"]
         )
-        self.hit_dice_num = get_kwarg("hit_dice_num", kwargs, 2)
-        self.hit_dice_max = self.hit_dice_num
-        self.hit_dice_size = get_kwarg("hit_dice_size", kwargs, 6)
+        self.max_hearts = get_kwarg("max_hearts", kwargs, 4)
+        self.hearts = get_kwarg("hearts", kwargs, self.max_hearts)
 
-        self.speed = {"land": 6} if "speed" not in kwargs.keys() else kwargs["speed"]
+        self.heart_size = get_kwarg("heart_size", kwargs, 6)
 
-        self.ac = 13 if "ac" not in kwargs.keys() else kwargs["ac"]
+        self.speed = 6 if "speed" not in kwargs.keys() else kwargs["speed"]
+
+        self.evasion = 65 if "evasion" not in kwargs.keys() else kwargs["evasion"]
+        self.armor = 0 if "armor" not in kwargs.keys() else kwargs["armor"]
         # crit_chance
         # crit_multiplier
-        self.attack_speed = get_kwarg("critical_threat", kwargs, 1.0)
-        self.critical_threat = get_kwarg("critical_threat", kwargs, 5.0)
-        self.critical_threat = 19  # get_kwarg("critical_threat", kwargs, 5.0)
+        self.attack_speed = get_kwarg("attack_speed", kwargs, 1.0)
+        self.critical_chance = get_kwarg("critical_chance", kwargs, 5.0)
         self.critical_multiplier = get_kwarg("critical_multiplier", kwargs, 2.0)
 
         self._set_stats(*args, **kwargs)
@@ -120,11 +119,11 @@ class Actor(Serializable, TaggedClass):
             for stat in ["str", "agi", "con", "mnd", "arc"]
             if stat in kwargs.keys()
         ):
-            self.str = 14 if "str" not in kwargs.keys() else kwargs["str"]
-            self.agi = 14 if "agi" not in kwargs.keys() else kwargs["agi"]
-            self.con = 10 if "con" not in kwargs.keys() else kwargs["con"]
-            self.mnd = 10 if "mnd" not in kwargs.keys() else kwargs["mnd"]
-            self.arc = 10 if "arc" not in kwargs.keys() else kwargs["arc"]
+            self.str = 0 if "str" not in kwargs.keys() else kwargs["str"]
+            self.agi = 0 if "agi" not in kwargs.keys() else kwargs["agi"]
+            self.con = 0 if "con" not in kwargs.keys() else kwargs["con"]
+            self.mnd = 0 if "mnd" not in kwargs.keys() else kwargs["mnd"]
+            self.arc = 0 if "arc" not in kwargs.keys() else kwargs["arc"]
         else:
             for arg in args:
                 if (
@@ -139,8 +138,8 @@ class Actor(Serializable, TaggedClass):
         self.ability_scores = _list
 
     def roll_for_hp(self):
-        return self.hit_dice_num * (
-            self.get_ability_modifier("con") + int(0.5 * self.hit_dice_size) + 1
+        return self.max_hearts * (
+            self.get_ability_modifier("con") + int(0.5 * self.heart_size) + 1
         )
 
     @property
@@ -171,8 +170,9 @@ class Actor(Serializable, TaggedClass):
         self.arc = score_list[4]
 
     def get_ability_modifier(self, stat):
-        stat_scrore = self.__getattribute__(stat.lower())
-        return get_stat_modifier(stat_scrore)
+        return self.__getattribute__(stat.lower())
+        # stat_scrore = self.__getattribute__(stat.lower())
+        # return get_stat_modifier(stat_scrore)
 
     def add_game_move(self, game_move):
         self.game_moves[game_move.name] = game_move

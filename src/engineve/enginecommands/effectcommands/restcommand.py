@@ -22,6 +22,6 @@ class RestCommand(EffectCommand):
                 for resource in state.actors[a_id].resources.keys():
                     state.actors[a_id].resources[resource].recharge
                 state.actors[a_id].hp = state.actors[a_id].max_hp
-                state.actors[a_id].hit_dice_num = state.actors[a_id].hit_dice_max
+                state.actors[a_id].hearts = state.actors[a_id].max_hearts
                 names.append(state.actors[a_id].name)
         self.log = f"{self.rest_type} rest for {', '.join(names)}"

@@ -16,6 +16,7 @@ from .gameengine import GameEngine
 from .gametypes.actor import Actor
 from .tags import TAGS, check_tag, tag
 from .enginecommands.observer.observer import Observer
+from .enginestates.overworldstate import OverworldState
 
 MAP_WIDTH = 10
 MAP_HEIGHT = 10
@@ -24,7 +25,7 @@ EMPTY_CHAR = "."
 
 DEMO_FPS = 4
 DEMO_ANIM_FRAMES = None
-DEMO_ACTORS = 3
+DEMO_ACTORS = 8
 # None if you don't want it to swap b/w adding to the stack and executing on alternating fr
 FLIP_FLOP = None
 
@@ -64,9 +65,6 @@ class SlowDemoEngine(GameEngine):
 
 def factory(spawn=True):
     GAMEENGINE = SlowDemoEngine()
-    if spawn:
-        pass  # GAMEENGINE.start_combat(DEMO_ACTORS)
-        GAMEENGINE.engine_state.load("something idk")
 
     if DEMO_ANIM_FRAMES is not None:
         for a_id in GAMEENGINE.game_state.actors.keys():
@@ -80,7 +78,15 @@ def factory(spawn=True):
     GAMEENGINE.game_state.log.history.append(f"running at {DEMO_FPS} fps")
     GAMEENGINE.game_state.log.history.append(f"with {DEMO_ACTORS} actors per side")
     if DEMO_ANIM_FRAMES is not None:
-        GAMEENGINE.game_state.log.history.append(f"simulating a {DEMO_ANIM_FRAMES} frame attack animation wait")
+        GAMEENGINE.game_state.log.history.append(
+            f"simulating a {DEMO_ANIM_FRAMES} frame attack animation wait"
+        )
+    if spawn:
+        pass  # GAMEENGINE.start_combat(DEMO_ACTORS)
+        GAMEENGINE.engine_state.load("something idk")
+
+    # GAMEENGINE.engine_state.load("something idk")
+    GAMEENGINE.periodic()
 
     return GAMEENGINE
 
@@ -107,25 +113,41 @@ class GraphicsEngineDemo:
         self.console = Console()
 
         self.layout.split_row(
-            Layout(name="screen", minimum_size=MAP_CHAR_WIDTH * MAP_WIDTH), Layout(name="tables"), Layout(name="log")
+            Layout(name="screen", minimum_size=MAP_CHAR_WIDTH * MAP_WIDTH),
+            Layout(name="tables"),
+            Layout(name="log"),
         )
-        self.layout["screen"].split_column(Layout(name="map"), Layout(name="animations"))
+        self.layout["screen"].split_column(
+            Layout(name="map"), Layout(name="animations")
+        )
         self.layout["tables"].split_column(Layout(name="stack"), Layout(name="init"))
 
     def draw(self, engine) -> Layout:
 
         self.layout["tables"]["init"].update(self._drawInit(engine.game_state))
-        self.layout["tables"]["stack"].update(self._drawStack(engine.game_state.log.stack))
+        self.layout["tables"]["stack"].update(
+            self._drawStack(engine.game_state.log.stack)
+        )
         self.layout["screen"]["map"].update(self._drawMap(engine.game_state))
-        self.layout["screen"]["animations"].update(self._drawAnimationBar(engine.engine_sync))
+        self.layout["screen"]["animations"].update(
+            self._drawAnimationBar(engine.engine_sync)
+        )
         self.layout["log"].update(self._drawLog(engine.game_state.log.history))
         return self.layout
 
     def main(self, fps):
         engine = factory(spawn=True)
-        engine.start_combat(num)
-        with Live(self.layout, console=self.console, screen=False, refresh_per_second=fps) as livelayout:
+        engine.start_combat(4)
+        with Live(
+            self.layout, console=self.console, screen=False, refresh_per_second=fps
+        ) as livelayout:
             for i in range(500):
+                if isinstance(engine.engine_state, OverworldState):
+                    engine.engine_state.start_combat(
+                        engine.game_state,
+                        engine.invoker,
+                        num_roll=(DEMO_ACTORS, DEMO_ACTORS),
+                    )
                 engine.periodic()
                 livelayout.update(self.draw(engine))
                 time.sleep(1 / fps)
@@ -203,7 +225,9 @@ class GraphicsEngineDemo:
     def _drawMap(self, game_state):
         MAP = EMPTY_MAP()
         for actor in [
-            game_state.actors[a_id] for a_id in game_state.combat.actor_ids if a_id in game_state.actors.keys()
+            game_state.actors[a_id]
+            for a_id in game_state.combat.actor_ids
+            if a_id in game_state.actors.keys()
         ]:
             inverted_y_loc = MAP_HEIGHT - (actor.loc[1] + 1)
 
@@ -228,7 +252,12 @@ class GraphicsEngineDemo:
         last_row_rule_offset = "   "
         rowstr = "".join([f" {i} " if i < 10 else f"{i} " for i in range(MAP_WIDTH)])
         mapstr.append_text(Text(last_row_rule_offset + rowstr))
-        MAP_TEXT = Panel(mapstr, title="MAP", height=MAP_HEIGHT + 3, width=(MAP_CHAR_WIDTH * MAP_WIDTH) + 7)
+        MAP_TEXT = Panel(
+            mapstr,
+            title="MAP",
+            height=MAP_HEIGHT + 3,
+            width=(MAP_CHAR_WIDTH * MAP_WIDTH) + 7,
+        )
         return MAP_TEXT
 
 

@@ -1,8 +1,7 @@
 monsters = {
     "skeleton": {
-        "stats": [8, 14, 10, 10, 8],
-        "ac": 15,
-        "hp_dice": "2d6",
+        "stats": [-1, 2, 0, 0, -1],
+        "evasion": 15,
         "hearts": 2,
         "heart_size": 6,
         "speed": {"land": 6},
@@ -12,7 +11,7 @@ monsters = {
         "game_moves": {
             "scimitar": {
                 "parent_move": "AttackAction",
-                "dmg_dice": "1d6",
+                "dmg_range": (1, 6),
                 "stat": "agi",
                 "animtation_frames": 5,
             }

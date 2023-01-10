@@ -23,7 +23,8 @@
             "console": "integratedTerminal",
             "args": [
                 "${workspaceFolder}/tests",
-                "-s"
+                "-s",
+                // "-x"
             ]
         },
         {

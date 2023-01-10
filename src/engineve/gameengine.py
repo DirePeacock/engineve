@@ -32,7 +32,9 @@ class GameEngine(Loader, Serializable):
     def __init__(self, save_slot="auto", *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.game_state = (
-            GameStateManager() if "game_state" not in kwargs.keys() else GameStateManager(**kwargs["game_state"])
+            GameStateManager()
+            if "game_state" not in kwargs.keys()
+            else GameStateManager(**kwargs["game_state"])
         )
         self.engine_sync = EngineSync(self)
         self.invoker = Invoker(log=self.game_state.log)
@@ -88,7 +90,9 @@ class GameEngine(Loader, Serializable):
     def start_combat(self, num):
         if "CombatState" != type(self.engine_state).__name__:
             logging.debug(f"starting combat with {num} skeletons per side")
-            self.engine_state.start_combat(num=num, state=self.game_state, invoker=self.invoker)
+            self.engine_state.start_combat(
+                state=self.game_state, invoker=self.invoker, num_roll=(num, num)
+            )
 
     def stop_combat(self):
         if "CombatState" == type(self.engine_state).__name__:
@@ -102,7 +106,9 @@ class GameEngine(Loader, Serializable):
         notice_meta = {TAGS["engine_state_transition"]: new_state_name}
         if self._state_transition_await_frames > 0:
             notice_meta[TAGS["animation"]] = self._state_transition_await_frames
-        self.invoker.notify(meta=notice_meta, state=self.game_state, invoker=self.invoker)
+        self.invoker.notify(
+            meta=notice_meta, state=self.game_state, invoker=self.invoker
+        )
 
     def spawn_archetype(self, archetype_name, **kwargs):
         new_actor = new_monster(archetype_name, **kwargs)

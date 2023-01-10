@@ -13,14 +13,26 @@ def roll_func(string):
 
 def roll_size(size=20):
     return random.randint(1, size)
-
+def roll_range(range_tuple):
+    return random.randint(*range_tuple)
 
 def roll(*args, **kwargs):
     # TODO lwo prio probably dont want a switch here if possible idk if it matters that much
     for arg in args:
-        return roll_size(arg) if isinstance(arg, int) else roll_func(arg)
+        if isinstance(arg, int):
+            return roll_size(arg)
+        elif isinstance(arg, tuple):
+            return roll_range(arg)
+        else:
+            return roll_func(arg)
+        
     for arg in kwargs.values():
-        return roll_size(arg) if isinstance(arg, int) else roll_func(arg)
+        if isinstance(arg, int):
+            return roll_size(arg)
+        elif isinstance(arg, tuple):
+            return roll_range(arg)
+        else:
+            return roll_func(arg)
 
 
 def get_id():

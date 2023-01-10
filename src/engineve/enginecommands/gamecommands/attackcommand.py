@@ -9,7 +9,15 @@ from ...tags import TAGS, check_tag
 
 class AttackCommand(CompositeCommand):
     def __init__(
-        self, attacker_id, target_id, log=None, stat="str", dmg_dice=None, animation_frames=None, *args, **kwargs
+        self,
+        attacker_id,
+        target_id,
+        log=None,
+        stat="str",
+        dmg_range=(1, 6),
+        animation_frames=None,
+        *args,
+        **kwargs,
     ):
         """make attackRoll and damage roll command children"""
         super().__init__(*args, **kwargs)
@@ -29,7 +37,11 @@ class AttackCommand(CompositeCommand):
         self.children["attack_roll"].add_tag("attack")
 
         self.children["damage_roll"] = DamageRollCommand(
-            self.attacker_id, self.target_id, tags=self.tags.copy(), dmg_dice=dmg_dice, stat=self.stat
+            self.attacker_id,
+            self.target_id,
+            tags=self.tags.copy(),
+            dmg_range=dmg_range,
+            stat=self.stat,
         )
         self.children["damage_roll"].add_tag("damage")
 

@@ -11,7 +11,7 @@ def test_init():
     # Actor id_a should have the effect on it
     atk_cmd_id = actor_put_command(engine, id_a, cmd_substring="Scimitar")
     assert engine.invoker.command_stack[0].stat == "agi"
-    assert engine.invoker.command_stack[0].children["damage_roll"].dmg_dice == "1d6"
+    assert engine.invoker.command_stack[0].children["damage_roll"].dmg_range == (1, 6)
 
 
 def test_load_bonus_action_attack():

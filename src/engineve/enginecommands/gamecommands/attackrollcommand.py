@@ -3,6 +3,7 @@ import logging
 from .rollcommand import RollCommand
 from ...utils import roll, calculate_advantage
 from ...tags import TAGS
+from ...config import constants
 
 
 class AttackRollCommand(RollCommand):
@@ -32,22 +33,24 @@ class AttackRollCommand(RollCommand):
         # get modifiers
 
         #
-        dice_val = roll(size=20)
+        dice_val = roll(size=100)
         # advantage_value = calculate_advantage(self.tags)
-        crit_threshold = state.actors[self.attacker_id].critical_threat
+        crit_threshold = 100.00 - state.actors[self.attacker_id].critical_chance
         if dice_val >= crit_threshold:
             self.add_tag("critical_hit")
-        elif dice_val == 1:
-            self.add_tag("critical_miss")
+        # removed critical_hit
+        # elif dice_val == 1:
+        #     self.add_tag("critical_miss")
 
         to_hit_roll = (
             dice_val
-            + state.actors[self.attacker_id].pb
+            + state.actors[self.attacker_id].level_bonus * constants.ACCURACY_MULTIPLIER
             + state.actors[self.attacker_id].get_ability_modifier(self.stat)
+            * constants.ACCURACY_MULTIPLIER
         )
 
-        attack_hits = to_hit_roll >= state.actors[self.target_id].ac
-        self.log = f"({to_hit_roll} v {state.actors[self.target_id].ac})"
+        attack_hits = to_hit_roll >= state.actors[self.target_id].evasion
+        self.log = f"({to_hit_roll} v {state.actors[self.target_id].evasion})"
 
         # notify that we are making an attack after we've determined a hit/crit/miss or whatever
         self.tags[TAGS["attack_roll_completed"]] = None
