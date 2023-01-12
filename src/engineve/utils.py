@@ -13,8 +13,11 @@ def roll_func(string):
 
 def roll_size(size=20):
     return random.randint(1, size)
+
+
 def roll_range(range_tuple):
     return random.randint(*range_tuple)
+
 
 def roll(*args, **kwargs):
     # TODO lwo prio probably dont want a switch here if possible idk if it matters that much
@@ -25,7 +28,7 @@ def roll(*args, **kwargs):
             return roll_range(arg)
         else:
             return roll_func(arg)
-        
+
     for arg in kwargs.values():
         if isinstance(arg, int):
             return roll_size(arg)
@@ -52,6 +55,16 @@ def get_random_coords(x_range=None, y_range=None) -> tuple:
     min_x, max_x = x_range if x_range is not None else (0, 9)
     min_y, max_y = y_range if y_range is not None else (0, 9)
     return (random.randint(min_x, max_x), random.randint(min_y, max_y))
+
+
+def percent_rounding(num: float):
+    """takes the remaining percent and rounds it up or down
+    rounding chance is equal to the remaining percent
+    """
+    if random.random() < num % 1:
+        return math.ceil(num)
+    else:
+        return math.floor(num)
 
 
 rando = 1

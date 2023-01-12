@@ -24,7 +24,9 @@ class Loader:
 
     def _init_config_data(self, config_yml=None):
         config_file_path = (
-            config_yml if config_yml is not None else pathlib.Path(__file__).parent / "config" / "config.yml"
+            config_yml
+            if config_yml is not None
+            else pathlib.Path(__file__).parent / "config" / "config.yml"
         )
         with open(config_file_path, "r") as config_file:
             return yaml.safe_load(config_file)
@@ -46,7 +48,9 @@ class Loader:
         # character_file_path = self.characters_dir / name_file
         # with open(character_file_path, "r") as character_file:
         #     char_data = yaml.safe_load(character_file)
+
         # TODO find adventureres
+        # TODO has trouble with multiple files with the same name in it
         # logging.debug(self.characters_dir.glob("*"))
         for character_file_path in self.characters_dir.iterdir():
             # thing = str(character_file_path)
@@ -84,7 +88,9 @@ class Loader:
 
     @property
     def save_file_name(self):
-        return self._save_slot if ".yml" in self._save_slot else self._save_slot + ".yml"
+        return (
+            self._save_slot if ".yml" in self._save_slot else self._save_slot + ".yml"
+        )
 
     def save_game(self):
         """game should be saved and overwritten to the save slot"""

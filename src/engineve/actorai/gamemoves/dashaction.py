@@ -5,7 +5,7 @@ from ...enginecommands.gamecommands.changeloccommand import ChangeLocCommand
 from ...enginecommands.basecommands.command import Command
 
 
-class UseMovement(GameMove):
+class DashAction(GameMove):
     # TODO do we really need a name for moves?
     command_type = ChangeLocCommand  # None
     name = None
@@ -16,8 +16,12 @@ class UseMovement(GameMove):
 
     def make_command(self, state, *args, **kwargs) -> ChangeLocCommand:
         """find nearest enemy, set loc to nearest unoccupied space to that enemy"""
-        new_cmd = ChangeLocCommand(self.actor_id, locpath=locpath, log=f"{state.actors[self.actor_id].name} moves")
-        new_cmd.effects.append(ModifyResources(self.actor_id, changes=self.resource_cost))
+        new_cmd = ChangeLocCommand(
+            self.actor_id, locpath=None, log=f"{state.actors[self.actor_id].name} moves"
+        )
+        new_cmd.effects.append(
+            ModifyResources(self.actor_id, changes=self.resource_cost)
+        )
 
         return new_cmd
 

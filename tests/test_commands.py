@@ -61,11 +61,12 @@ def test_crit_damage():
         stat="str",
     )
     engine.game_state.actors[id_a].str = 1
+
     dmg_roll_cmd.evaluate(engine.game_state, engine.invoker)
     dmg_total = dmg_roll_cmd.tags[TAGS["damage"]]
     actual_roll_val = dmg_total - dmg_roll_cmd.get_total_flat_modifier()
 
-    assert f"{damage_range}+{damage_range}" in dmg_roll_cmd.log
+    assert f"{engine.game_state.actors[id_a].critical_multiplier}" in dmg_roll_cmd.log
     assert actual_roll_val == expected_roll_val
 
 

@@ -30,7 +30,7 @@ class AttackCommand(CompositeCommand):
         # TODO make sure this doesn't double dip on notifications
         # TODO especially animation frames
         self.add_tag("target_id", self.target_id)
-        # self.resources= [] if resources is None else ModifyResources(actor_id=attacker_id, changes={'turn_action': -1})
+
         self.children["attack_roll"] = AttackRollCommand(
             self.attacker_id, self.target_id, tags=self.tags.copy(), stat=self.stat
         )
@@ -69,8 +69,8 @@ class AttackCommand(CompositeCommand):
             self.children["damage_roll"].evaluate(state, invoker)
             # name attacks tgt_name
             self.log = f"{state.actors[self.attacker_id].name}{attacker_loc_str} {hit_str} {state.actors[self.target_id].name} {self.children['attack_roll'].log} for {self.children['damage_roll'].log}"
-            if check_tag(self.children["damage_roll"], TAGS["critical_hit"]):
-                logging.debug(f"CRITLOG: {self.log}")
+            # if check_tag(self.children["damage_roll"], TAGS["critical_hit"]):
+            #     logging.debug(f"CRITLOG: {self.log}")
         else:
             self.add_tag("miss")
             self.log = f"{state.actors[self.attacker_id].name}{attacker_loc_str} misses {state.actors[self.target_id].name}{target_loc_str} {self.children['attack_roll'].log}"

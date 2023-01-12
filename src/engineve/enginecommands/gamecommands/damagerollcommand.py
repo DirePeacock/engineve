@@ -37,17 +37,19 @@ class DamageRollCommand(RollCommand):
 
         flat_val = self.get_total_flat_modifier()
         dmg_value = roll_val + flat_val
-
         dmg_value = max(0, dmg_value)  # RULE no negative damage
+
+        func_log = f"({self.dmg_range}" + ("" if flat_val == 0 else f"+{flat_val})")
+
         if check_tag(self.tags, "critical_hit"):
             dmg_value *= state.actors[self.attacker_id].critical_multiplier
+            func_log = (
+                f"{state.actors[self.attacker_id].critical_multiplier} * {func_log}"
+            )
             # BONUS CRIT DAMAGE DICE?
 
         self.effects = [ModifyHP(self.target_id, (dmg_value * -1), self.attacker_id)]
 
-        func_log = f"{self.dmg_range}" + ("" if flat_val == 0 else f"+{flat_val}")
-        if check_tag(self.tags, "critical_hit"):
-            func_log = f"{self.dmg_range}" + "+" + func_log
         self.log = f"{dmg_value}=({func_log}) dmg"
         self.tags[TAGS["damage"]] = dmg_value
 

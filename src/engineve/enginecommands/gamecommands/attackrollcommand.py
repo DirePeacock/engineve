@@ -41,16 +41,16 @@ class AttackRollCommand(RollCommand):
         # removed critical_hit
         # elif dice_val == 1:
         #     self.add_tag("critical_miss")
-
-        to_hit_roll = (
-            dice_val
-            + state.actors[self.attacker_id].level_bonus * constants.ACCURACY_MULTIPLIER
+        to_hit_bonus = constants.ACCURACY_MULTIPLIER * (
+            state.actors[self.attacker_id].level_bonus
             + state.actors[self.attacker_id].get_ability_modifier(self.stat)
-            * constants.ACCURACY_MULTIPLIER
         )
+        to_hit_total = dice_val + to_hit_bonus
 
-        attack_hits = to_hit_roll >= state.actors[self.target_id].evasion
-        self.log = f"({to_hit_roll} v {state.actors[self.target_id].evasion})"
+        attack_hits = to_hit_total >= state.actors[self.target_id].evasion
+        self.log = (
+            f"({dice_val} + {to_hit_bonus} v {state.actors[self.target_id].evasion})"
+        )
 
         # notify that we are making an attack after we've determined a hit/crit/miss or whatever
         self.tags[TAGS["attack_roll_completed"]] = None

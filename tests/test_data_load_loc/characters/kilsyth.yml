@@ -1,59 +1,36 @@
 ---
 Kilsyth:
   ability_scores:
-    - 13
-    - 20
-    - 16
-    - 12
-    - 14
-  ac: 17
-  class_levels:
-    rogue: 4
-  critical_threat: 20
-  death_saves:
-    fail: 0
-    pass: 0
-  experience: 1200
+    - 1
+    - 4
+    - 3
+    - 4
+    - 2
+  evasion: 85
+  critical_chance: 10
   flavor:
     bonds: recieved training and parenting from a travelling monk
     flaws: born and bred to be a draconic sorcerer warlord changing that is a journey
     ideals: There are too many incompetent people that have too much power in the world
     traits: loaded with talent and ego
+  attack_speed: 2
   game_moves:
     swiftscythe_left:
       animtation_frames: 3
-      dmg_dice: 1d6
+      dmg_range: [3,6]
       parent_move: AttackAction
       stat: agi
     swiftscythe_right:
       animtation_frames: 3
-      dmg_dice: 1d6
       parent_move: AttackAction
+      dmg_range: [3,6]
       resource_cost:
         turn_bonus_action: -1
       stat: agi
-  hit_dice_num: 4
-  hit_dice_size: 8
-  languages: common
-  level_up_choices:
-    subcalss: thief
-  pb: 2
-  profs:
-    - persuasion
-    - acrobatics
-    - stealth
-    - deception
-    - insight
-    - animal_handling
-    - navigators_tools
-    - land_vehicles
-    - acquatic_vehicles
-  senses:
-    darkvision': 60
-  speed:
-    climb: 30
-    land: 30
-    swim: 30
+  max_hearts: 4
+  heart_size: 8
+  level_bonus: 2
+  speed: 6
   sprites:
     game_piece: kilsyth_token.png
     portrait: kilsyth_portrait.png

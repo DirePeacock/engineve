@@ -52,27 +52,27 @@ def test_load_spawn_fighter():
     # assert is fighter
 
 
-def test_applied_new_game_move():
-    """this test should add a game_move to a character"""
-    # TODO
-    is_good = False
-    assert is_good
+# def test_applied_new_game_move():
+#     """this test should add a game_move to a character"""
+#     # TODO
+#     is_good = False
+#     assert is_good
 
 
-def test_applied_new_game_move_resource():
-    """this test should add a resource to a character, it should know when it will recharge?"""
-    # TODO
-    is_good = False
-    assert is_good
+# def test_applied_new_game_move_resource():
+#     """this test should add a resource to a character, it should know when it will recharge?"""
+#     # TODO
+#     is_good = False
+#     assert is_good
 
 
-def test_rogue_sneak_attack():
-    # make a rogue
-    # verify hit dice size
-    # verify things
-    # TODO
-    is_good = False
-    assert is_good
+# def test_rogue_sneak_attack():
+#     # make a rogue
+#     # verify hit dice size
+#     # verify things
+#     # TODO
+#     is_good = False
+#     assert is_good
 
 
 # def test_save_fighter():

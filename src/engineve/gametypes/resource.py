@@ -1,5 +1,7 @@
 from ..serializable import Serializable
 from ..tags import TAGS, TaggedClass
+from ..utils import percent_rounding
+import math
 
 
 class Resource(Serializable, TaggedClass):
@@ -23,4 +25,9 @@ class Resource(Serializable, TaggedClass):
 
     def recharge(self):
         if self.value is not None:
-            self.value = self.max
+            remainder = math.abs(self.max) % 1
+            margin = 0.1
+            if remainder >= margin or remainder <= 1.0 - margin:
+                self.value = percent_rounding(self.max)
+            else:
+                self.value = self.max

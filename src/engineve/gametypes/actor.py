@@ -16,7 +16,7 @@ from ..enginecommands.observer.observer import Observer
 # notify with list of targets
 class Actor(Serializable, TaggedClass):
     # serializable_attrs = ["name", "team", "loc", "resources", "game_moves"]
-    turn_resources = ["turn_movement", "turn_action"]
+    turn_resources = ["turn_movement", "turn_attack"]
     delete_after_combat = False
 
     def __init__(self, name=None, team=1, loc=(0, 0), ai_class=None, *args, **kwargs):
@@ -40,23 +40,20 @@ class Actor(Serializable, TaggedClass):
 
         self.evasion = 65 if "evasion" not in kwargs.keys() else kwargs["evasion"]
         self.armor = 0 if "armor" not in kwargs.keys() else kwargs["armor"]
-        # crit_chance
-        # crit_multiplier
+
         self.attack_speed = get_kwarg("attack_speed", kwargs, 1.0)
+
         self.critical_chance = get_kwarg("critical_chance", kwargs, 5.0)
         self.critical_multiplier = get_kwarg("critical_multiplier", kwargs, 2.0)
 
         self._set_stats(*args, **kwargs)
         self.experience = get_kwarg("experience", kwargs, 0)
-        # self.death_saves = get_kwarg("death_saves", kwargs, 0)
-        # self.senses = {} if "senses" not in kwargs.keys() else kwargs["senses"]
-        # self.languages = get_kwarg("languages", kwargs, ["common"])
-        # self.flavor = get_kwarg("flavor", kwargs, {})
 
         # unused atm
         self.class_levels = get_kwarg("class_levels", kwargs, {})
         self.level_up_choices = get_kwarg("level_up_choices", kwargs, {})
         self.inventory = get_kwarg("inventory", kwargs, [])
+
         # probably not needed for headless but still
         self.sprites = get_kwarg("sprites", kwargs, {})
 
@@ -81,6 +78,9 @@ class Actor(Serializable, TaggedClass):
             self._load_game_moves(kwargs["game_moves"])
 
         self._init_actor_core()
+
+        # TODO bigtodo change to use base stats and bonuses
+        self.resources["turn_attack"].max = self.attack_speed
 
     def add_bonus():
         """add a bonus to the bonus list"""
@@ -108,7 +108,7 @@ class Actor(Serializable, TaggedClass):
             ):
                 self.add_game_move(AttackAction(actor_id=self.id))
         self.add_game_move(UseMovement(actor_id=self.id))
-        for resource_name in ["turn_action", "turn_movement", "turn_bonus_action"]:
+        for resource_name in ["turn_attack", "turn_movement"]:
             self.add_resource(Resource(name=resource_name, value=1, max=1))
 
     def _set_stats(self, *args, **kwargs):
@@ -138,9 +138,12 @@ class Actor(Serializable, TaggedClass):
         self.ability_scores = _list
 
     def roll_for_hp(self):
-        return self.max_hearts * (
+        retval =  self.max_hearts * (
             self.get_ability_modifier("con") + int(0.5 * self.heart_size) + 1
         )
+        if retval > 50.0:
+            print("OOOO")
+        return retval
 
     @property
     def loc(self):

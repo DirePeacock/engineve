@@ -11,7 +11,7 @@ from .. import aiutils
 class AttackAction(GameMove):
     command_type = AttackCommand  # None
     name = "attack_action"
-    resource_cost = {"turn_action": -1}  # if resource_cost is None else resource_cost
+    resource_cost = {"turn_attack": -1}  # if resource_cost is None else resource_cost
     attack_range = 1
 
     def __init__(self, *args, **kwargs):

@@ -27,7 +27,8 @@ def rec_to_dict(obj):
 
     for attrname, attr in obj.__dict__.items():
         if attrname == "game_moves":
-            print("fk")
+            # print("fk")
+            continue
 
         if blacklist_re.search(attrname) is not None or callable(attr):
             continue
@@ -36,10 +37,16 @@ def rec_to_dict(obj):
             retval[attrname] = attr.serialize()
         elif isinstance(attr, dict):
             retval[attrname] = {
-                key: rec_to_dict(val) if not hasattr(val, "serialize") else val.serialize() for key, val in attr.items()
+                key: rec_to_dict(val)
+                if not hasattr(val, "serialize")
+                else val.serialize()
+                for key, val in attr.items()
             }
         elif isinstance(attr, list):
-            retval[attrname] = [rec_to_dict(val) if not hasattr(val, "serialize") else val.serialize() for val in attr]
+            retval[attrname] = [
+                rec_to_dict(val) if not hasattr(val, "serialize") else val.serialize()
+                for val in attr
+            ]
         elif isinstance(attr, (int, float, str)):
             retval[attrname] = attr
         else:
